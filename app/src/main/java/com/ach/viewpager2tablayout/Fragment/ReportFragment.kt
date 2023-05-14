@@ -21,6 +21,8 @@ class ReportFragment : Fragment() {
         "일간 레포트",
         "주간 레포트"
     )
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

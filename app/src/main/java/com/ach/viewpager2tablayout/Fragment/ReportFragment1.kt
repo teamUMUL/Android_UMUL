@@ -18,6 +18,13 @@ import com.ach.viewpager2tablayout.R
 
 class ReportFragment1 : Fragment(), View.OnClickListener {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        childFragmentManager.beginTransaction().replace(R.id.reportFrame1, ReportFragment1_1())
+            .commit()
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
