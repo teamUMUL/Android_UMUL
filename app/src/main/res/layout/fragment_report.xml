@@ -65,7 +65,8 @@
                 android:layout_height="60dp"
                 android:id="@+id/tabs"
                 android:background="@color/white"
-                app:tabTextColor="@color/black">
+                app:tabTextColor="@color/black"
+                app:tabIndicatorHeight="3dp">
             </com.google.android.material.tabs.TabLayout>
         </com.google.android.material.appbar.AppBarLayout>
         <androidx.viewpager2.widget.ViewPager2

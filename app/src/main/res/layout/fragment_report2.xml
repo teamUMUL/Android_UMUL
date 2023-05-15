@@ -5,34 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RadioGroup
         android:id="@+id/btnContainer2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:orientation="horizontal">
 
-        <Button
+        <RadioButton
+            android:checked="true"
             android:id="@+id/btn2_1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="총 저작횟수"/>
+            android:text="총 저작횟수"
+            android:background="@drawable/report_button"
+            android:textColor="@drawable/report_text"
+            android:button="@null"
+            android:gravity="center"/>
 
-        <Button
+        <RadioButton
             android:id="@+id/btn2_2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="총 저작횟수"/>
+            android:text="총 저작횟수"
+            android:background="@drawable/report_button"
+            android:textColor="@drawable/report_text"
+            android:button="@null"
+            android:gravity="center"/>
 
-        <Button
+        <RadioButton
             android:id="@+id/btn2_3"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="총 저작횟수"/>
-    </LinearLayout>
+            android:text="총 저작횟수"
+            android:background="@drawable/report_button"
+            android:textColor="@drawable/report_text"
+            android:button="@null"
+            android:gravity="center"/>
+    </RadioGroup>
 
     <FrameLayout
         android:layout_width="0dp"
