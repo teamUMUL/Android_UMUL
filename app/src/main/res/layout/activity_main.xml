@@ -7,11 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
 
-
     <FrameLayout
-        android:id="@+id/mainFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:id="@+id/mainFrame"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"

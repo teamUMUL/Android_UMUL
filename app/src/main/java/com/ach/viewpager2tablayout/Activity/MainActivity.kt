@@ -2,15 +2,15 @@ package com.ach.viewpager2tablayout.Activity
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.Color.rgb
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
-import android.view.SubMenu
 import androidx.appcompat.app.AppCompatActivity
-import com.ach.viewpager2tablayout.Fragment.*
+import com.ach.viewpager2tablayout.Fragment.BottomNavFragment.*
 import com.ach.viewpager2tablayout.R
 import com.ach.viewpager2tablayout.databinding.ActivityMainBinding
+
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
@@ -19,6 +19,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
+
+
+
+
+
+
+
+
+        //하단바 ------------------------------------------
         val bottomNavigation = binding.bottomNavigationView
         val bottomNavigationMenu: Menu = bottomNavigation.getMenu()
         val playBtn = binding.playButton

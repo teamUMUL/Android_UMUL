@@ -19,46 +19,66 @@
             android:id="@+id/reportLinearlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:layout_width="0dp"
+            <ImageButton
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:text="저작 리포트"
-                android:textColor="@color/charcoal"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
+                app:srcCompat="@drawable/umul_logo_main"
+                android:layout_marginStart="20dp"
+                android:background="@android:color/transparent"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1" />
+                android:layout_weight="5" />
 
             <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="#00FFFFFF"
+                android:layout_marginEnd="21.5dp"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/shop" />
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="23.5dp"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/bell" />
         </LinearLayout>
+        <TextView
+            android:id="@+id/calendar_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_5"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:layout_marginStart="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/reportLinearlayout"
+            app:layout_constraintStart_toStartOf="parent"
+            android:lineSpacingExtra="1sp"
+            android:gravity="center_vertical"/>
+
+
+
+
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/appbarlayout"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-            app:layout_constraintTop_toBottomOf="@+id/reportLinearlayout"
             app:layout_constraintBottom_toTopOf="@+id/reportData"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/calendar_month">
 
             <com.google.android.material.tabs.TabLayout
                 android:layout_width="match_parent"
@@ -67,8 +87,8 @@
                 android:background="@color/white"
                 app:tabTextColor="@color/black"
                 app:tabIndicatorHeight="6dp"
-                app:tabIndicatorColor="@color/charcoal">
-            </com.google.android.material.tabs.TabLayout>
+                app:tabIndicatorColor="@color/black"
+                app:tabBackground="@drawable/tablayout_background"/>
         </com.google.android.material.appbar.AppBarLayout>
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="0dp"
@@ -83,9 +103,10 @@
             android:id="@+id/reportData"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:textSize="40dp"
             app:layout_constraintTop_toBottomOf="@+id/appbarlayout"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
