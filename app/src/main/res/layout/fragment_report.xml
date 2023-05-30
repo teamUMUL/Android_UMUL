@@ -54,6 +54,7 @@
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/bell" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/calendar_month"
             android:layout_width="wrap_content"
@@ -67,28 +68,37 @@
             android:lineSpacingExtra="1sp"
             android:gravity="center_vertical"/>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            app:layout_constraintTop_toBottomOf="@id/calendar_month"
+            app:layout_constraintBottom_toTopOf="@id/appbarlayout"/>
+
 
 
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
             android:id="@+id/appbarlayout"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             app:layout_constraintBottom_toTopOf="@+id/reportData"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/calendar_month">
+            app:layout_constraintTop_toBottomOf="@+id/calendarView">
 
             <com.google.android.material.tabs.TabLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="42dp"
                 android:id="@+id/tabs"
                 android:background="@color/white"
                 app:tabTextColor="@color/black"
-                app:tabIndicatorHeight="6dp"
                 app:tabIndicatorColor="@color/black"
-                app:tabBackground="@drawable/tablayout_background"/>
+                app:tabBackground="@drawable/tablayout_background" />
         </com.google.android.material.appbar.AppBarLayout>
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="0dp"

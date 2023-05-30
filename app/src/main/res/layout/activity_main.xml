@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/img_3"
         app:tint="@android:color/white"
+        android:background="@drawable/selector_playbutton"
         android:clickable="true"
         app:layout_anchor="@id/bottomAppBar" />
 

@@ -17,14 +17,10 @@ import com.ach.viewpager2tablayout.Fragment.WeekFragment.ReportFragment2_3
 import com.ach.viewpager2tablayout.R
 
 
-class ReportFragment2 : Fragment(), View.OnClickListener {
+class ReportFragment2 : Fragment() {
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        childFragmentManager.beginTransaction().replace(R.id.reportFrame2, ReportFragment2_1())
-            .commit()
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,42 +29,12 @@ class ReportFragment2 : Fragment(), View.OnClickListener {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_report2, container, false)
 
-        val reportBtn21 = view.findViewById<Button>(R.id.btn2_1)
-        val reportBtn22 = view.findViewById<Button>(R.id.btn2_2)
-        val reportBtn23 = view.findViewById<Button>(R.id.btn2_3)
-
-        reportBtn21.setOnClickListener(this)
-        reportBtn22.setOnClickListener(this)
-        reportBtn23.setOnClickListener(this)
 
         setInit(view)
         return view
     }
 
 
-    override fun onClick(v: View?){
-
-        val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
-
-        when(v?.id){
-            R.id.btn2_1 -> {
-                transaction.replace(R.id.reportFrame2, ReportFragment2_1())
-                transaction.addToBackStack(null)
-                transaction.commit()
-            }
-            R.id.btn2_2 -> {
-                transaction.replace(R.id.reportFrame2, ReportFragment2_2())
-                transaction.addToBackStack(null)
-                transaction.commit()
-            }
-            R.id.btn2_3 -> {
-                transaction.replace(R.id.reportFrame2, ReportFragment2_3())
-                transaction.addToBackStack(null)
-                transaction.commit()
-            }
-        }
-        true
-    }
 
     private fun setInit(view: View) {
         var imageView = view.findViewById<ImageView>(R.id.graph)
