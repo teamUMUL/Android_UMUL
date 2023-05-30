@@ -1,8 +1,8 @@
 package com.ach.viewpager2tablayout.Activity
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +15,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
 
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         //하단바 ------------------------------------------
         val bottomNavigation = binding.bottomNavigationView
-        val bottomNavigationMenu: Menu = bottomNavigation.getMenu()
+        val bottomNavigationMenu: Menu = bottomNavigation.menu
         val playBtn = binding.playButton
         val disabledButtonColor = Color.rgb(77, 79, 82) //버튼 비활성화 색 = Gray
         val enabledButtonColor = Color.rgb(0,199,255) //버튼 활성화 색 = Aqua_Blue
@@ -46,12 +47,16 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             bottomNavigationMenu.setGroupCheckable(0,false,true)
             playBtn.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
+
+
         }
 
         //하단 바 클릭 시 -> 화면전환, 플레이버튼 회색, 하단 바 선택 활성화
-        bottomNavigation.setOnItemSelectedListener() {
+        bottomNavigation.setOnItemSelectedListener {
             bottomNavigationMenu.setGroupCheckable(0,true,true)
             playBtn.backgroundTintList = ColorStateList.valueOf(disabledButtonColor)
+
+
             when (it.itemId) {
                 R.id.home -> {
                     supportFragmentManager.beginTransaction()

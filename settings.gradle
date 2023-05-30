@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         maven { url "https://jitpack.io" }
     }
 }
-rootProject.name = "ViewPager2TabLayout"
+rootProject.name = "UMUL"
 include ':app'

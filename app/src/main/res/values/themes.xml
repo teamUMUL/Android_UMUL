@@ -14,4 +14,10 @@
         <item name="android:windowLightStatusBar" >true</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="ReportBarBackgroundTheme" parent="Theme.MaterialComponents">
+        <item name="windowActionBar">false</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
 </resources>

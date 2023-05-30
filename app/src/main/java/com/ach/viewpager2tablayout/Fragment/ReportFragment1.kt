@@ -1,12 +1,17 @@
 package com.ach.viewpager2tablayout.Fragment
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
+import android.provider.MediaStore.Audio.Radio
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -14,9 +19,13 @@ import com.ach.viewpager2tablayout.Fragment.DayFragment.ReportFragment1_1
 import com.ach.viewpager2tablayout.Fragment.DayFragment.ReportFragment1_2
 import com.ach.viewpager2tablayout.Fragment.DayFragment.ReportFragment1_3
 import com.ach.viewpager2tablayout.R
+import com.ach.viewpager2tablayout.databinding.ActivityMainBinding
+import com.ach.viewpager2tablayout.databinding.FragmentReport1Binding
 
 
 class ReportFragment1 : Fragment(), View.OnClickListener {
+
+    private lateinit var binding : FragmentReport1Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,19 +56,23 @@ class ReportFragment1 : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?){
         val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
+        binding = FragmentReport1Binding.inflate(layoutInflater)
 
         when(v?.id){
             R.id.btn1_1 -> {
+                binding.reportName.text = "#총 저작횟수"
                 transaction.replace(R.id.reportFrame1, ReportFragment1_1())
                 transaction.addToBackStack(null)
                 transaction.commit()
             }
             R.id.btn1_2 -> {
+                binding.reportName.text = "#총 식사시간"
                 transaction.replace(R.id.reportFrame1, ReportFragment1_2())
                 transaction.addToBackStack(null)
                 transaction.commit()
             }
             R.id.btn1_3 -> {
+                binding.reportName.text = "#한 입당 저작횟수"
                 transaction.replace(R.id.reportFrame1, ReportFragment1_3())
                 transaction.addToBackStack(null)
                 transaction.commit()
