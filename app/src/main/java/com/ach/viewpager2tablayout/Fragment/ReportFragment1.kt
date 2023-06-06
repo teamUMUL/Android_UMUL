@@ -1,8 +1,5 @@
 package com.ach.viewpager2tablayout.Fragment
 
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.provider.MediaStore.Audio.Radio
 import android.view.LayoutInflater
@@ -21,6 +18,7 @@ import com.ach.viewpager2tablayout.Fragment.DayFragment.ReportFragment1_3
 import com.ach.viewpager2tablayout.R
 import com.ach.viewpager2tablayout.databinding.ActivityMainBinding
 import com.ach.viewpager2tablayout.databinding.FragmentReport1Binding
+import org.w3c.dom.Text
 
 
 class ReportFragment1 : Fragment(), View.OnClickListener {
@@ -31,6 +29,7 @@ class ReportFragment1 : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         childFragmentManager.beginTransaction().replace(R.id.reportFrame1, ReportFragment1_1())
             .commit()
+
     }
 
 
@@ -58,28 +57,35 @@ class ReportFragment1 : Fragment(), View.OnClickListener {
         val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
         binding = FragmentReport1Binding.inflate(layoutInflater)
 
+
         when(v?.id){
             R.id.btn1_1 -> {
-                binding.reportName.text = "#총 저작횟수"
                 transaction.replace(R.id.reportFrame1, ReportFragment1_1())
                 transaction.addToBackStack(null)
                 transaction.commit()
+
+                binding.reportName.text = "#총 저작횟수"
             }
             R.id.btn1_2 -> {
-                binding.reportName.text = "#총 식사시간"
                 transaction.replace(R.id.reportFrame1, ReportFragment1_2())
                 transaction.addToBackStack(null)
                 transaction.commit()
+
+
+                binding.reportName.text = "#총 식사시간"
             }
             R.id.btn1_3 -> {
-                binding.reportName.text = "#한 입당 저작횟수"
                 transaction.replace(R.id.reportFrame1, ReportFragment1_3())
                 transaction.addToBackStack(null)
                 transaction.commit()
+
+                binding.reportName.text = "#한 입당 저작횟수"
             }
         }
         true
     }
+
+
 
     private fun setInit(view: View) {
         var imageView = view.findViewById<ImageView>(R.id.graph)

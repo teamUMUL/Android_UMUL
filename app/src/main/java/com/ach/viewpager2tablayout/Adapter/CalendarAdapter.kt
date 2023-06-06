@@ -1,82 +1,138 @@
-import android.graphics.drawable.Drawable
+import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.Rect
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.ach.viewpager2tablayout.CalendarVO.CalendarVO
+import com.ach.viewpager2tablayout.Fragment.BottomNavFragment.ReportFragment
 import com.ach.viewpager2tablayout.R
-import com.ach.viewpager2tablayout.databinding.ItemCalendarListBinding
+import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
-
-class CalendarAdapter(private val cList: List<CalendarVO>) :
-    RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
-    var drawable: Drawable? = null
-
-    private lateinit var itemClickListener: AdapterView.OnItemClickListener
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val dateTv: TextView = view.findViewById(R.id.date)
-        val dayTv: TextView = view.findViewById(R.id.day)
-    }
-
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(viewGroup.context).inflate(R.layout.item_calendar_list, viewGroup, false)
-
-        drawable = ContextCompat.getDrawable(view.context, R.drawable.calendar_selected)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.dateTv.text = cList[position].cl_date
-        holder.dayTv.text = cList[position].cl_day
-    }
-
-    override fun getItemCount() = cList.size
-}
+import kotlin.collections.ArrayList
 
 
+class CalendarAdapter(private val context: ReportFragment,
+                      private val data: ArrayList<Date>,
+                      private val currentDate: Calendar,
+                      private val changeMonth: Calendar?): RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
+    private var mListener: OnItemClickListener? = null
+    private var index = -1
 
-
-
-
-
-/*    class CalendarViewHolder(private val binding: ItemCalendarListBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: CalendarVO) {
-            binding.date.text = item.cl_date
-            binding.day.text = item.cl_day
-
-            var today = binding.date.text
-
-            // 오늘 날짜
-            val now = LocalDate.now().format(DateTimeFormatter.ofPattern("dd").withLocale(Locale.forLanguageTag("ko")))
-            // 오늘 날짜와 캘린더의 오늘 날짜가 같을 경우 background 적용하기
-
-            if (today == now) {
-                binding.weekCardview.setBackgroundResource(R.drawable.calendar_selected)
-            }
+    private var selectCurrentDate = true
+    private val currentMonth = currentDate[Calendar.MONTH]
+    private val currentYear = currentDate[Calendar.YEAR]
+    private val currentDay = currentDate[Calendar.DAY_OF_MONTH]
+    private val selectedDay =
+        when {
+            changeMonth != null -> changeMonth.getActualMinimum(Calendar.DAY_OF_MONTH)
+            else -> currentDay
         }
+    private val selectedMonth =
+        when {
+            changeMonth != null -> changeMonth[Calendar.MONTH]
+            else -> currentMonth
+        }
+    private val selectedYear =
+        when {
+            changeMonth != null -> changeMonth[Calendar.YEAR]
+            else -> currentYear
+        }
+
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_calendar_list, parent, false), mListener!!)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val binding = ItemCalendarListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CalendarViewHolder(binding)
+    override fun getItemCount(): Int = data.size
+
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
+        val sdf = SimpleDateFormat("E", Locale.KOREAN)
+        val cal = Calendar.getInstance(Locale.KOREAN)
+        cal.time = data[position]
+
+        val displayMonth = cal[Calendar.MONTH]
+        val displayYear= cal[Calendar.YEAR]
+        val displayDay = cal[Calendar.DAY_OF_MONTH]
+
+        try {
+            holder.txtDayInWeek!!.text = sdf.format(cal.time)
+        } catch (ex: ParseException) {
+            Log.v("Exception", ex.localizedMessage!!)
+        }
+        holder.txtDay!!.text = cal[Calendar.DAY_OF_MONTH].toString()
+
+        if (displayYear >= currentYear)
+            if (displayMonth >= currentMonth || displayYear > currentYear)
+                if (displayDay >= currentDay || displayMonth > currentMonth || displayYear > currentYear) {
+
+                    holder.linearLayout!!.setOnClickListener {
+                        index = position
+                        selectCurrentDate = false
+                        holder.listener.onItemClick(position)
+                        notifyDataSetChanged()
+                    }
+
+                    if (index == position)
+                        makeItemSelected(holder)
+                    else {
+                        if (displayDay == selectedDay
+                            && displayMonth == selectedMonth
+                            && displayYear == selectedYear
+                            && selectCurrentDate)
+                            makeItemSelected(holder)
+                        else
+                            makeItemDefault(holder)
+                    }
+                } else makeItemDisabled(holder)
+            else makeItemDisabled(holder)
+        else makeItemDisabled(holder)
+
+
+
+
     }
 
-    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.bind(cList[position])
+    inner class ViewHolder(itemView: View, val listener: OnItemClickListener): RecyclerView.ViewHolder(itemView) {
+        var txtDay = itemView.findViewById<TextView>(R.id.txt_date)
+        var txtDayInWeek = itemView.findViewById<TextView>(R.id.txt_day)
+        var linearLayout = itemView.findViewById<LinearLayout>(R.id.calendar_linear_layout)
     }
 
-    override fun getItemCount(): Int {
-        return cList.size
-    }*/
+    //달력 item별 간격 설정
+
+
+
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        mListener = listener
+    }
+
+    private fun makeItemDisabled(holder: ViewHolder) {
+        holder.linearLayout!!.isEnabled = false
+    }
+
+    private fun makeItemSelected(holder: ViewHolder) {
+        holder.linearLayout!!.setBackgroundResource(R.drawable.calendar_selected)
+        holder.linearLayout!!.isEnabled = false
+    }
+
+    private fun makeItemDefault(holder: ViewHolder) {
+        holder.txtDay!!.setTextColor(Color.BLACK)
+        holder.txtDayInWeek!!.setTextColor(Color.BLACK)
+        holder.linearLayout!!.setBackgroundColor(Color.WHITE)
+        holder.linearLayout!!.isEnabled = true
+    }
+}
 
 
