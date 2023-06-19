@@ -13,18 +13,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.ach.viewpager2tablayout.adapter.decoration.CalendarAdapterDecoration
-import com.ach.viewpager2tablayout.adapter.ReportPagerAdapter
 import com.ach.viewpager2tablayout.R
+import com.ach.viewpager2tablayout.adapter.ReportPagerAdapter
+import com.ach.viewpager2tablayout.adapter.decoration.CalendarAdapterDecoration
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
 class ReportFragment : Fragment() {
     private lateinit var viewGroup: ViewGroup
-
 
     lateinit var calendarList: RecyclerView
     lateinit var mLayoutManager: LinearLayoutManager
@@ -45,6 +46,9 @@ class ReportFragment : Fragment() {
 
     private val dates = ArrayList<Date>()
 
+    private lateinit var outputDay : String
+    private lateinit var outputMonth : String
+    private lateinit var outputDate : LocalDate
     //달력 설정
 
    //레포트
@@ -173,6 +177,22 @@ class ReportFragment : Fragment() {
                 val clickCalendar = Calendar.getInstance()
                 clickCalendar.time = dates[position]
                 selectedDay = clickCalendar[Calendar.DAY_OF_MONTH]
+
+                //한자리 날짜인 경우 앞에 0붙여주기
+                outputDay = if(selectedDay.toString().length==1){
+                    "0$selectedDay"
+                } else{
+                    selectedDay.toString()
+                }
+                //한자리 개월인 경우 앞에 0붙여주기
+                outputMonth = if(selectedMonth.toString().length==1){
+                    "0$selectedMonth"
+                } else{
+                    selectedMonth.toString()
+                }
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                outputDate = LocalDate.parse("$selectedYear-$outputMonth-$outputDay", formatter)
+                println(outputDate)
             }
         })
     }
