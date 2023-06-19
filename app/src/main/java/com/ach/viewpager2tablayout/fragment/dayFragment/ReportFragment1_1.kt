@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.Fragment.DayFragment
+package com.ach.viewpager2tablayout.fragment.dayFragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import com.ach.viewpager2tablayout.R
 
 class ReportFragment1_1 : Fragment() {

@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.Fragment.DayFragment
+package com.ach.viewpager2tablayout.fragment.dayFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

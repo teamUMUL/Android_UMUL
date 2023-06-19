@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.Activity
+package com.ach.viewpager2tablayout.activity
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
-import com.ach.viewpager2tablayout.Fragment.BottomNavFragment.*
+import com.ach.viewpager2tablayout.fragment.bottomNavFragment.*
 import com.ach.viewpager2tablayout.R
 import com.ach.viewpager2tablayout.databinding.ActivityMainBinding
 

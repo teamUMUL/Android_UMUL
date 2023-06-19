@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.Fragment.BottomNavFragment
+package com.ach.viewpager2tablayout.fragment.bottomNavFragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.Adapter.Decoration
+package com.ach.viewpager2tablayout.adapter.decoration
 
 import android.graphics.Rect
 import android.view.View

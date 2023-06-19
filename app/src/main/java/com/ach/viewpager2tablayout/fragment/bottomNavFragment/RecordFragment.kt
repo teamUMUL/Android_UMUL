@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.Fragment.BottomNavFragment
+package com.ach.viewpager2tablayout.fragment.bottomNavFragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,12 +8,13 @@ import android.view.ViewGroup
 import com.ach.viewpager2tablayout.R
 
 
-class BMIFragment : Fragment() {
+class RecordFragment : Fragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_b_m_i, container, false)
+        return inflater.inflate(R.layout.fragment_record, container, false)
     }
 }

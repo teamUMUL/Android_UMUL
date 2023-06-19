@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.Fragment.DayFragment
+package com.ach.viewpager2tablayout.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,19 +9,26 @@ import android.widget.ImageView
 import com.ach.viewpager2tablayout.R
 
 
-class ReportFragment1_3 : Fragment() {
+class ReportFragment2 : Fragment() {
+
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.fragment_report_fragment1_3, container, false,)
+        val view = inflater.inflate(R.layout.fragment_report2, container, false)
+
 
         setInit(view)
         return view
     }
 
-    private fun setInit(view: View){
+
+
+    private fun setInit(view: View) {
         var imageView = view.findViewById<ImageView>(R.id.graph)
     }
 }

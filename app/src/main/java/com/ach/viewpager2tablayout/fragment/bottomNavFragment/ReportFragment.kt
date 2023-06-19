@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.Fragment.BottomNavFragment
+package com.ach.viewpager2tablayout.fragment.bottomNavFragment
 
 import CalendarAdapter
 import android.annotation.SuppressLint
@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.ach.viewpager2tablayout.Adapter.Decoration.CalendarAdapterDecoration
-import com.ach.viewpager2tablayout.Adapter.ReportPagerAdapter
+import com.ach.viewpager2tablayout.adapter.decoration.CalendarAdapterDecoration
+import com.ach.viewpager2tablayout.adapter.ReportPagerAdapter
 import com.ach.viewpager2tablayout.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -87,12 +87,8 @@ class ReportFragment : Fragment() {
 
         }
 
-        /**
-         * Go to the next month. First check if the current month (cal) is before lastDayInCalendar,
-         * so that you can't go after the last possible month. Then add one month to cal.
-         * Then put @param changeMonth.
-         */
-        viewGroup.findViewById<Button>(com.ach.viewpager2tablayout.R.id.calendar_next_button)!!.setOnClickListener {
+
+        viewGroup.findViewById<Button>(R.id.calendar_next_button)!!.setOnClickListener {
             cal.add(Calendar.MONTH, +1)
             if (cal == currentDate)
                 setUpCalendar()
@@ -127,7 +123,7 @@ class ReportFragment : Fragment() {
 
     @SuppressLint("CutPasteId")
     private fun setUpCalendar(changeMonth: Calendar? = null) {
-        viewGroup.findViewById<TextView>(com.ach.viewpager2tablayout.R.id.txt_current_month)!!.text = sdf.format(cal.time)
+        viewGroup.findViewById<TextView>(R.id.txt_current_month)!!.text = sdf.format(cal.time)
         val monthCalendar = cal.clone() as Calendar
         val maxDaysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
 
@@ -161,14 +157,14 @@ class ReportFragment : Fragment() {
 
         // Assigning calendar view.
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        viewGroup.findViewById<RecyclerView>(com.ach.viewpager2tablayout.R.id.calendar_recycler_view)!!.layoutManager = layoutManager
+        viewGroup.findViewById<RecyclerView>(R.id.calendar_recycler_view)!!.layoutManager = layoutManager
         val calendarAdapter = CalendarAdapter(this, dates, currentDate, changeMonth)
-        viewGroup.findViewById<RecyclerView>(com.ach.viewpager2tablayout.R.id.calendar_recycler_view)!!.adapter = calendarAdapter
+        viewGroup.findViewById<RecyclerView>(R.id.calendar_recycler_view)!!.adapter = calendarAdapter
 
         when {
-            currentPosition > 2 -> viewGroup.findViewById<RecyclerView>(com.ach.viewpager2tablayout.R.id.calendar_recycler_view)!!.scrollToPosition(currentPosition - 3)
-            maxDaysInMonth - currentPosition < 2 -> viewGroup.findViewById<RecyclerView>(com.ach.viewpager2tablayout.R.id.calendar_recycler_view)!!.scrollToPosition(currentPosition)
-            else -> viewGroup.findViewById<RecyclerView>(com.ach.viewpager2tablayout.R.id.calendar_recycler_view)!!.scrollToPosition(currentPosition)
+            currentPosition > 2 -> viewGroup.findViewById<RecyclerView>(R.id.calendar_recycler_view)!!.scrollToPosition(currentPosition - 3)
+            maxDaysInMonth - currentPosition < 2 -> viewGroup.findViewById<RecyclerView>(R.id.calendar_recycler_view)!!.scrollToPosition(currentPosition)
+            else -> viewGroup.findViewById<RecyclerView>(R.id.calendar_recycler_view)!!.scrollToPosition(currentPosition)
         }
 
 

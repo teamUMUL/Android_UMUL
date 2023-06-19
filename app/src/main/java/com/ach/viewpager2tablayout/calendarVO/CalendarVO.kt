@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.CalendarVO
+package com.ach.viewpager2tablayout.calendarVO
 
 data class CalendarVO(
     var cl_day: String = "", // 요일
