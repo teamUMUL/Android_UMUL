@@ -112,20 +112,16 @@ class CalendarAdapter(private val context: ReportFragment,
         mListener = listener
     }
 
-    private fun makeItemDisabled(holder: ViewHolder) {
-        holder.linearLayout!!.isEnabled = false
-    }
+
 
     private fun makeItemSelected(holder: ViewHolder) {
         holder.linearLayout!!.setBackgroundResource(R.drawable.calendar_selected)
-        holder.linearLayout!!.isEnabled = false
     }
 
     private fun makeItemDefault(holder: ViewHolder) {
         holder.txtDay!!.setTextColor(Color.BLACK)
         holder.txtDayInWeek!!.setTextColor(Color.BLACK)
         holder.linearLayout!!.setBackgroundColor(Color.WHITE)
-        holder.linearLayout!!.isEnabled = true
     }
 }
 

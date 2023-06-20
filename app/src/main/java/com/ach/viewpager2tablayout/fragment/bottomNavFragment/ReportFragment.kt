@@ -37,7 +37,7 @@ class ReportFragment : Fragment() {
 
     private val currentDate = Calendar.getInstance(Locale.KOREAN)
     private val currentDay = currentDate[Calendar.DAY_OF_MONTH]
-    private val currentMonth = currentDate[Calendar.MONTH]
+    private val currentMonth = currentDate[Calendar.MONTH] + 1
     private val currentYear = currentDate[Calendar.YEAR]
 
     private var selectedDay: Int = currentDay
@@ -110,12 +110,6 @@ class ReportFragment : Fragment() {
         //스와이프뷰
         setInit()
 
-
-
-
-
-
-
         TabLayoutMediator(tabs, viewPager){
                 tab, position ->
             tab.text = tabLists[position]
@@ -138,7 +132,7 @@ class ReportFragment : Fragment() {
             }
         selectedMonth =
             when {
-                changeMonth != null -> changeMonth[Calendar.MONTH]
+                changeMonth != null -> changeMonth[Calendar.MONTH]+1
                 else -> currentMonth
             }
         selectedYear =

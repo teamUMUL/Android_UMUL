@@ -22,13 +22,10 @@ class ReportFragment2 : Fragment() {
         val view = inflater.inflate(R.layout.fragment_report2, container, false)
 
 
-        setInit(view)
         return view
     }
 
 
 
-    private fun setInit(view: View) {
-        var imageView = view.findViewById<ImageView>(R.id.graph)
-    }
+
 }

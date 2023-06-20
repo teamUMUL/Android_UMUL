@@ -91,7 +91,5 @@ class ReportFragment1 : Fragment(), View.OnClickListener {
 
 
 
-    private fun setInit(view: View) {
-        var imageView = view.findViewById<ImageView>(R.id.graph)
-    }
+
 }
