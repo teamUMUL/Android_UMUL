@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout
+package inu.thebite.umul
 
 import org.junit.Test
 

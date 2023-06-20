@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout
+package inu.thebite.umul
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

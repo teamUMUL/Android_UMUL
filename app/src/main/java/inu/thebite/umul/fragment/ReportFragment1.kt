@@ -1,20 +1,19 @@
-package com.ach.viewpager2tablayout.fragment
+package inu.thebite.umul.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.MutableLiveData
-import com.ach.viewpager2tablayout.fragment.dayFragment.ReportFragment1_1
-import com.ach.viewpager2tablayout.fragment.dayFragment.ReportFragment1_2
-import com.ach.viewpager2tablayout.fragment.dayFragment.ReportFragment1_3
-import com.ach.viewpager2tablayout.R
-import com.ach.viewpager2tablayout.databinding.FragmentReport1Binding
+import inu.thebite.umul.fragment.dayFragment.ReportFragment1_1
+import inu.thebite.umul.fragment.dayFragment.ReportFragment1_2
+import inu.thebite.umul.fragment.dayFragment.ReportFragment1_3
+import inu.thebite.umul.R
+import inu.thebite.umul.databinding.FragmentReport1Binding
 
 
 class ReportFragment1 : Fragment(), View.OnClickListener {

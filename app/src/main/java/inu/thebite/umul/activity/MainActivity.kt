@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.activity
+package inu.thebite.umul.activity
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
@@ -6,9 +6,14 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
-import com.ach.viewpager2tablayout.fragment.bottomNavFragment.*
-import com.ach.viewpager2tablayout.R
-import com.ach.viewpager2tablayout.databinding.ActivityMainBinding
+import inu.thebite.umul.fragment.bottomNavFragment.*
+import inu.thebite.umul.R
+import inu.thebite.umul.databinding.ActivityMainBinding
+import inu.thebite.umul.fragment.bottomNavFragment.BMIFragment
+import inu.thebite.umul.fragment.bottomNavFragment.HomeFragment
+import inu.thebite.umul.fragment.bottomNavFragment.MyPageFragment
+import inu.thebite.umul.fragment.bottomNavFragment.RecordFragment
+import inu.thebite.umul.fragment.bottomNavFragment.ReportFragment
 
 import java.util.*
 

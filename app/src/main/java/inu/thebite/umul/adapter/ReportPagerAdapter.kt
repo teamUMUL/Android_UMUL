@@ -1,10 +1,10 @@
-package com.ach.viewpager2tablayout.adapter
+package inu.thebite.umul.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.ach.viewpager2tablayout.fragment.ReportFragment1
-import com.ach.viewpager2tablayout.fragment.ReportFragment2
+import inu.thebite.umul.fragment.ReportFragment1
+import inu.thebite.umul.fragment.ReportFragment2
 
 class ReportPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
 

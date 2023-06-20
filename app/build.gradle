@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace 'com.ach.viewpager2tablayout'
+    namespace 'inu.thebite.umul'
     compileSdk 33
 
 
     defaultConfig {
-        applicationId "com.ach.viewpager2tablayout"
+        applicationId "inu.thebite.umul"
         minSdk 26
         targetSdk 33
         versionCode 1

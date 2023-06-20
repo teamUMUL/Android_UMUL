@@ -1,24 +1,30 @@
-package com.ach.viewpager2tablayout.fragment.dayFragment
+package inu.thebite.umul.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import com.ach.viewpager2tablayout.R
+import inu.thebite.umul.R
 
 
-class ReportFragment1_3 : Fragment() {
+class ReportFragment2 : Fragment() {
+
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.fragment_report_fragment1_3, container, false,)
+        val view = inflater.inflate(R.layout.fragment_report2, container, false)
+
 
         return view
     }
+
+
 
 
 }

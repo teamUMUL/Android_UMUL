@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.fragment.dayFragment
+package inu.thebite.umul.fragment.dayFragment
 
 import android.graphics.Color
 import android.os.Bundle
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.ach.viewpager2tablayout.R
+import inu.thebite.umul.R
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.BarData

@@ -1,4 +1,4 @@
-package com.ach.viewpager2tablayout.fragment.bottomNavFragment
+package inu.thebite.umul.fragment.bottomNavFragment
 
 import CalendarAdapter
 import android.annotation.SuppressLint
@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -14,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.ach.viewpager2tablayout.R
-import com.ach.viewpager2tablayout.adapter.ReportPagerAdapter
-import com.ach.viewpager2tablayout.adapter.decoration.CalendarAdapterDecoration
+import inu.thebite.umul.R
+import inu.thebite.umul.adapter.ReportPagerAdapter
+import inu.thebite.umul.adapter.decoration.CalendarAdapterDecoration
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import java.text.SimpleDateFormat
@@ -63,8 +62,8 @@ class ReportFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewGroup = inflater.inflate(R.layout.fragment_report, container, false) as ViewGroup
-        val viewPager: ViewPager2 = viewGroup.findViewById<ViewPager2>(com.ach.viewpager2tablayout.R.id.viewPager)
-        val tabs: TabLayout = viewGroup.findViewById<TabLayout>(com.ach.viewpager2tablayout.R.id.tabs)
+        val viewPager: ViewPager2 = viewGroup.findViewById<ViewPager2>(inu.thebite.umul.R.id.viewPager)
+        val tabs: TabLayout = viewGroup.findViewById<TabLayout>(inu.thebite.umul.R.id.tabs)
 
         calendarList = viewGroup.findViewById(R.id.calendar_recycler_view)
         mLayoutManager = LinearLayoutManager(viewGroup.context)
