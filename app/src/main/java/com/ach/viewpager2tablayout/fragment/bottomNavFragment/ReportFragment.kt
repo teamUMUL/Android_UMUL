@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -81,7 +82,7 @@ class ReportFragment : Fragment() {
         //상단 달력
         setUpCalendar()
 
-        viewGroup.findViewById<Button>(R.id.calendar_prev_button)!!.setOnClickListener {
+        viewGroup.findViewById<ImageButton>(R.id.calendar_prev_button)!!.setOnClickListener {
 
             cal.add(Calendar.MONTH, -1)
             if (cal == currentDate)
@@ -92,7 +93,7 @@ class ReportFragment : Fragment() {
         }
 
 
-        viewGroup.findViewById<Button>(R.id.calendar_next_button)!!.setOnClickListener {
+        viewGroup.findViewById<ImageButton>(R.id.calendar_next_button)!!.setOnClickListener {
             cal.add(Calendar.MONTH, +1)
             if (cal == currentDate)
                 setUpCalendar()

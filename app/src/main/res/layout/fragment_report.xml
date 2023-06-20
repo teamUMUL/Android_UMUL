@@ -64,14 +64,19 @@
             app:layout_constraintTop_toBottomOf="@+id/reportLinearlayout"
             app:layout_constraintBottom_toTopOf="@+id/calendar_recycler_view">
             <!-- 이전 달로 이동하는 버튼 -->
-            <Button
+            <ImageButton
                 android:id="@+id/calendar_prev_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="prev"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
+                app:srcCompat="@drawable/prev_month_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside" />
 
             <!-- 월, 연 -->
             <TextView
@@ -89,14 +94,19 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!-- 다음 달로 이동하는 버튼 -->
-            <Button
+            <ImageButton
                 android:id="@+id/calendar_next_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="next"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
+                app:srcCompat="@drawable/next_month_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"/>
 
 
 
