@@ -19,6 +19,15 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/report_graph_background">
 
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/graph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"/>
+
 
 
     </FrameLayout>
