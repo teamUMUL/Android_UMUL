@@ -8,7 +8,7 @@
 
 
     <FrameLayout
-        android:id="@+id/graph_layout"
+        android:id="@+id/graph_layout1"
         android:layout_width="0dp"
         android:layout_height="267dp"
         android:layout_marginTop="17dp"
@@ -17,10 +17,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/feedback_layout1"
         android:background="@drawable/report_graph_background">
 
         <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/graph"
+            android:id="@+id/graph1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
@@ -34,8 +35,8 @@
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="128dp"
-        android:id="@+id/feedback_layout"
-        app:layout_constraintTop_toBottomOf="@+id/graph_layout"
+        android:id="@+id/feedback_layout1"
+        app:layout_constraintTop_toBottomOf="@+id/graph_layout1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="20dp"
@@ -43,11 +44,43 @@
         android:layout_marginTop="13dp"
         android:background="@drawable/report_feedback_background">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/feedback_title"
+                android:layout_marginStart="23dp"
+                android:layout_marginTop="15dp"
+                android:textSize="16sp"
+                android:textColor="#4D4F52"
+                android:lineSpacingExtra="9sp"
+                android:translationY="-4.42sp"
+                android:gravity="top"
+                android:textStyle="bold|normal"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"
+                android:text="@string/feedback_11"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"
+                android:text="@string/feedback_12"/>
+
+        </LinearLayout>
     </FrameLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="95dp"
-        app:layout_constraintTop_toBottomOf="@+id/feedback_layout"/>
+        app:layout_constraintTop_toBottomOf="@+id/feedback_layout1"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
