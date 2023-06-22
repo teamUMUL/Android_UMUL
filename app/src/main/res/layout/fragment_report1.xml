@@ -7,7 +7,7 @@
 
         <variable
             name="ReportFragment1"
-            type="com.ach.viewpager2tablayout.fragment.ReportFragment1" />
+            type="com.umul.umul_develop_ach.fragment.ReportFragment1" />
     </data>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
