@@ -6,7 +6,7 @@
     <data>
         <variable
             name="BMIFragment"
-            type="com.umul.umul_develop_ach.fragment.bottomNavFragment.BMIFragment" />
+            type="inu.thebite.umul.fragment.bottomNavFragment.BMIFragment" />
     </data>
 
     <androidx.core.widget.NestedScrollView

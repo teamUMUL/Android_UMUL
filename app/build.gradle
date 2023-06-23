@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace 'com.umul.umul_develop_ach'
+    namespace 'inu.thebite.umul'
     compileSdk 33
 
 
     defaultConfig {
-        applicationId "com.umul.umul_develop_ach"
+        applicationId "inu.thebite.umul"
         minSdk 26
         targetSdk 33
         versionCode 1
