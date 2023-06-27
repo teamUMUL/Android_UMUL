@@ -30,17 +30,18 @@ class ReportFragment1_1 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.fragment_report_fragment1_1, container, false)
+        var view = inflater.inflate(R.layout.fragment_report_fragment1_1, container, false,)
         var totalCntGraph : BarChart = view.findViewById(R.id.graph1)
         totalCntGraph.setDrawValueAboveBar(false)
-
         val barChartRender =
             CustomBarChartRender(totalCntGraph, totalCntGraph.animator, totalCntGraph.viewPortHandler)
         barChartRender.setRadius(30)
         totalCntGraph.renderer = barChartRender
+        totalCntGraph.setDrawValueAboveBar(false)
         initBarCHart(totalCntGraph)
         return view
     }
+
 
     private fun initBarCHart(barChart: BarChart) {
 
@@ -61,24 +62,26 @@ class ReportFragment1_1 : Fragment() {
                 }
 
                 axisMinimum = 0f
-                granularity = myChildTotalCnt
-                setDrawLabels(true)
-                setDrawGridLinesBehindData(false)
-                setDrawGridLines(true)
+                val ll = LimitLine(myChildTotalCnt )
+                ll.lineWidth = 3f
+                ll.labelPosition = LimitLine.LimitLabelPosition.LEFT_TOP
+                ll.enableDashedLine(10f,10f,2f)
+                ll.lineColor =
+                    ContextCompat.getColor(context, R.color.gray)
+                removeAllLimitLines()
+                addLimitLine(ll)
+                setDrawGridLines(false)
+                setDrawLimitLinesBehindData(false)
+                setDrawLabels(false)
                 setDrawAxisLine(false)
                 setDrawZeroLine(true)
-                enableGridDashedLine(10f,10f,2f)
-                gridLineWidth = 3f
+
                 zeroLineWidth = 4f
-                gridColor =
-                    ContextCompat.getColor(context, R.color.gray)
-                textColor =
-                    ContextCompat.getColor(context, R.color.black)
+
                 zeroLineColor =
                     ContextCompat.getColor(context, R.color.gray)
-                valueFormatter = MyLeftAxisFormatter()
-                textSize = 13f
             }
+
             xAxis.run {
                 position = XAxis.XAxisPosition.BOTTOM
                 granularity = 1f
@@ -96,6 +99,7 @@ class ReportFragment1_1 : Fragment() {
             legend.isEnabled = false
 
         }
+        barChart.extraTopOffset = 3f
 
         barChart.extraBottomOffset = 3f
 
@@ -109,13 +113,14 @@ class ReportFragment1_1 : Fragment() {
         set.valueTextSize = 10f
         val dataSet : ArrayList<IBarDataSet> = ArrayList()
         dataSet.add(set)
+
         val data = BarData(dataSet)
         data.barWidth = 0.6f
-
         barChart.run {
             this.data = data
             setFitBars(true)
             invalidate()
+
         }
     }
 

@@ -2,6 +2,8 @@ package inu.thebite.umul.fragment.bottomNavFragment
 
 import CalendarAdapter
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -98,6 +100,11 @@ class ReportFragment : Fragment() {
                 setUpCalendar()
             else
                 setUpCalendar(changeMonth = cal)
+        }
+
+        viewGroup.findViewById<ImageButton>(R.id.shopBtn).setOnClickListener {
+            setNotionUrl()
+
         }
 
 
@@ -207,6 +214,13 @@ class ReportFragment : Fragment() {
         viewPageSetUp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewPageSetUp.offscreenPageLimit = 2
 
+    }
+
+    fun setNotionUrl(){
+        val browserIntent = Intent(
+            Intent.ACTION_VIEW, Uri.parse("https://bit.ly/aboutthebite")
+        )
+        requireContext().startActivity(browserIntent);
     }
 }
 

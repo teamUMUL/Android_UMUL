@@ -12,6 +12,7 @@ import inu.thebite.umul.adapter.decoration.CustomBarChartRender
 import inu.thebite.umul.R
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -58,25 +59,25 @@ class ReportFragment1_2 : Fragment() {
                 } else{
                     averageTotalTime + 1f
                 }
-
                 axisMinimum = 0f
-                granularity = myChildTotalTime
-                setDrawLabels(true)
-                setDrawGridLinesBehindData(false)
-                setDrawGridLines(true)
+
+                val ll = LimitLine(myChildTotalTime)
+                ll.lineWidth = 3f
+                ll.enableDashedLine(10f,10f,2f)
+                ll.lineColor =
+                    ContextCompat.getColor(context, R.color.gray)
+                removeAllLimitLines()
+                addLimitLine(ll)
+                setDrawGridLines(false)
+                setDrawLimitLinesBehindData(false)
+                setDrawLabels(false)
                 setDrawAxisLine(false)
                 setDrawZeroLine(true)
-                enableGridDashedLine(10f,10f,2f)
-                gridLineWidth = 3f
+
                 zeroLineWidth = 4f
-                gridColor =
-                    ContextCompat.getColor(context, R.color.gray)
-                textColor =
-                    ContextCompat.getColor(context, R.color.black)
+
                 zeroLineColor =
                     ContextCompat.getColor(context, R.color.gray)
-                valueFormatter = MyLeftAxisFormatter()
-                textSize = 10f
             }
             xAxis.run {
                 position = XAxis.XAxisPosition.BOTTOM
@@ -95,6 +96,7 @@ class ReportFragment1_2 : Fragment() {
             legend.isEnabled = false
 
         }
+        barChart.extraTopOffset = 3f
 
         barChart.extraBottomOffset = 3f
 
@@ -150,6 +152,17 @@ class ReportFragment1_2 : Fragment() {
             }  else {
                 minute.toString() + "분 " + second.toString() + "초"
             }
+        }
+    }
+
+    fun timeFormatter(totalSecond : Float): String {
+        var totalSeconds = totalSecond.toInt()
+        var second = totalSeconds % 60
+        var minute = totalSeconds / 60 % 60
+        return if(minute == 0){
+            second.toString()+"초"
+        }  else {
+            minute.toString() + "분 " + second.toString() + "초"
         }
     }
 

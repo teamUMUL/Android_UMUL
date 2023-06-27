@@ -1,24 +1,26 @@
 package inu.thebite.umul.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityMainBinding
 import inu.thebite.umul.fragment.bottomNavFragment.*
-import inu.thebite.umul.fragment.bottomNavFragment.BMIFragment
-import inu.thebite.umul.fragment.bottomNavFragment.HomeFragment
-import inu.thebite.umul.fragment.bottomNavFragment.MyPageFragment
-import inu.thebite.umul.fragment.bottomNavFragment.RecordFragment
-import inu.thebite.umul.fragment.bottomNavFragment.ReportFragment
-
 import java.util.*
 
+
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
+    private val disabledButtonColor = Color.rgb(62, 97, 67) //버튼 비활성화 색 = 녹색
+    private val enabledButtonColor = Color.rgb(0,199,255) //버튼 활성화 색 = Aqua_Blue
+
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,9 +39,8 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = binding.bottomNavigationView
         val bottomNavigationMenu: Menu = bottomNavigation.menu
         val playBtn = binding.playButton
-        val disabledButtonColor = Color.rgb(77, 79, 82) //버튼 비활성화 색 = Gray
-        val enabledButtonColor = Color.rgb(0,199,255) //버튼 활성화 색 = Aqua_Blue
         setContentView(binding.root)
+
 
         //기본세팅: 플레이버튼회색, 기본화면 띄우기
         playBtn.backgroundTintList = ColorStateList.valueOf(disabledButtonColor)
@@ -50,17 +51,13 @@ class MainActivity : AppCompatActivity() {
         playBtn.setOnClickListener {
             supportFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordFragment())
                 .commit()
-            bottomNavigationMenu.setGroupCheckable(0,false,true)
-            playBtn.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
-
+            enableRecordButton(playBtn, bottomNavigationMenu)
 
         }
 
         //하단 바 클릭 시 -> 화면전환, 플레이버튼 회색, 하단 바 선택 활성화
         bottomNavigation.setOnItemSelectedListener {
-            bottomNavigationMenu.setGroupCheckable(0,true,true)
-            playBtn.backgroundTintList = ColorStateList.valueOf(disabledButtonColor)
-
+            disableRecordButton(playBtn, bottomNavigationMenu)
 
             when (it.itemId) {
                 R.id.home -> {
@@ -84,4 +81,67 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    fun disableRecordButton(playBtn : FloatingActionButton, bottomNavigationMenu : Menu){
+        bottomNavigationMenu.setGroupCheckable(0,true,true)
+        playBtn.backgroundTintList = ColorStateList.valueOf(disabledButtonColor)
+
+    }
+    fun enableRecordButton(playBtn: FloatingActionButton, bottomNavigationMenu : Menu){
+        bottomNavigationMenu.setGroupCheckable(0,false,true)
+        playBtn.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
+
+    }
+
+    fun setBMIChecked(){
+        val bottomNavigation = binding.bottomNavigationView
+        val bottomNavigationMenu: Menu = bottomNavigation.menu
+        val playBtn = binding.playButton
+        bottomNavigation.setOnItemSelectedListener {
+            disableRecordButton(playBtn, bottomNavigationMenu)
+            when (it.itemId) {
+                R.id.home -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.mainFrame, HomeFragment()).commit()
+                }
+                R.id.report -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.mainFrame, ReportFragment()).commit()
+                }
+                R.id.BMI -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.mainFrame, BMIFragment()).commit()
+                }
+                R.id.mypage -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.mainFrame, MyPageFragment()).commit()
+                }
+            }
+            true
+        }
+        bottomNavigation.selectedItemId = R.id.BMI
+    }
+
+    fun setRecordChecked(){
+        val bottomNavigation = binding.bottomNavigationView
+        val bottomNavigationMenu: Menu = bottomNavigation.menu
+        val recordButton = binding.playButton
+        recordButton.setOnClickListener {
+            supportFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordFragment())
+                .commit()
+            bottomNavigationMenu.setGroupCheckable(0,false,true)
+            recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
+        }
+        bottomNavigationMenu.setGroupCheckable(0,false,true)
+        recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
+
+    }
+
+    fun setBLE(){
+        val pairIntent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+        startActivityForResult(pairIntent, 0)
+    }
+
+
+
 }

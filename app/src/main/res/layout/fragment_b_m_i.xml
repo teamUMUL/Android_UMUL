@@ -41,11 +41,13 @@
                     android:layout_weight="5" />
 
                 <ImageButton
+                    android:id="@+id/shopBtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="21.5dp"
                     android:scaleType="centerInside"
+                    android:onClick="onShopButtonClicked"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/shop" />
 

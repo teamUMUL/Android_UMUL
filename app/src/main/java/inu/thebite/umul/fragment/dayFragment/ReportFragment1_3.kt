@@ -12,6 +12,7 @@ import inu.thebite.umul.adapter.decoration.CustomBarChartRender
 import inu.thebite.umul.R
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -21,7 +22,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 
 
 class ReportFragment1_3 : Fragment() {
-    var myChildAvgABite : Float = 18.0f
+    var myChildAvgABite : Float = 40.0f
     var averageAvgABite : Float = 32.0f
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -61,24 +62,23 @@ class ReportFragment1_3 : Fragment() {
                 }
 
                 axisMinimum = 0f
-                granularity = myChildAvgABite
-                setDrawLabels(true)
-                setDrawGridLinesBehindData(false)
-                setDrawGridLines(true)
+                val ll = LimitLine(myChildAvgABite)
+                ll.lineWidth = 3f
+                ll.enableDashedLine(10f,10f,2f)
+                ll.lineColor =
+                    ContextCompat.getColor(context, R.color.gray)
+                removeAllLimitLines()
+                addLimitLine(ll)
+                setDrawGridLines(false)
+                setDrawLimitLinesBehindData(false)
+                setDrawLabels(false)
                 setDrawAxisLine(false)
                 setDrawZeroLine(true)
 
-                enableGridDashedLine(10f,10f,2f)
-                gridLineWidth = 3f
                 zeroLineWidth = 4f
-                gridColor =
-                    ContextCompat.getColor(context, R.color.gray)
-                textColor =
-                    ContextCompat.getColor(context, R.color.black)
+
                 zeroLineColor =
                     ContextCompat.getColor(context, R.color.gray)
-                valueFormatter = MyLeftAxisFormatter()
-                textSize = 13f
             }
 
             xAxis.run {
@@ -98,6 +98,7 @@ class ReportFragment1_3 : Fragment() {
             legend.isEnabled = false
 
         }
+        barChart.extraTopOffset = 3f
 
         barChart.extraBottomOffset = 3f
 
