@@ -20,6 +20,7 @@ import inu.thebite.umul.adapter.decoration.CalendarAdapterDecoration
 import inu.thebite.umul.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import inu.thebite.umul.activity.MainActivity
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -70,7 +71,7 @@ class ReportFragment : Fragment() {
         calendarList = viewGroup.findViewById(R.id.calendar_recycler_view)
         mLayoutManager = LinearLayoutManager(viewGroup.context)
 
-
+        println(currentDate[Calendar.HOUR].toString()+currentDate[Calendar.MINUTE].toString())
         //달력 가로 방향 스크롤 설정
         mLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         calendarList.layoutManager = mLayoutManager
@@ -104,6 +105,12 @@ class ReportFragment : Fragment() {
 
         viewGroup.findViewById<ImageButton>(R.id.shopBtn).setOnClickListener {
             setNotionUrl()
+
+        }
+        viewGroup.findViewById<ImageButton>(R.id.logo_home).setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.mainFrame, HomeFragment())
+                .commit()
+            (activity as MainActivity?)?.setHomeChecked()
 
         }
 

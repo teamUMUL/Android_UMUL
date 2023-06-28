@@ -19,16 +19,12 @@ import inu.thebite.umul.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment(), View.OnClickListener {
 
-    val disabledButtonColor = Color.rgb(62, 97, 67) //버튼 비활성화 색 = Gray
-    private val enabledButtonColor = Color.rgb(0,199,255) //버튼 활성화 색 = Aqua_Blue
     private lateinit var binding : FragmentHomeBinding
-    private lateinit var activityBinding : ActivityMainBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-        activityBinding = ActivityMainBinding.inflate(layoutInflater)
         binding.homeFragment = this
         binding.lifecycleOwner = this
         return binding.root
@@ -44,11 +40,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
         val bmiButton = binding.homeBmiButton
         val bleButton = binding.homeBleButton
         val shopBtn = binding.shopBtn
+        val logoBtn = binding.logoHome
 
         recordButton.setOnClickListener(this)
         bmiButton.setOnClickListener(this)
         bleButton.setOnClickListener(this)
         shopBtn.setOnClickListener(this)
+        logoBtn.setOnClickListener(this)
 
     }
 
@@ -67,6 +65,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
             R.id.shopBtn -> {
                 setNotionUrl()
+            }
+            R.id.logo_home->{
+                parentFragmentManager.beginTransaction().replace(R.id.mainFrame, HomeFragment())
+                    .commit()
+                (activity as MainActivity?)?.setHomeChecked()
             }
             R.id.home_ble_button -> {
                 (activity as MainActivity?)?.setBLE()

@@ -41,8 +41,10 @@ class BMIFragment : Fragment(), View.OnClickListener {
     private fun setOnClickListener(){
         val calcBtn = binding.calcButton
         val shopBtn = binding.shopBtn
+        val logoBtn = binding.logoHome
         calcBtn.setOnClickListener(this)
         shopBtn.setOnClickListener(this)
+        logoBtn.setOnClickListener(this)
 
     }
 
@@ -62,9 +64,11 @@ class BMIFragment : Fragment(), View.OnClickListener {
                 catch (e : Exception){
                     Toast.makeText(activity, "숫자를 입력해 주세요.", Toast.LENGTH_SHORT).show();
                 }
-
-
-
+            }
+            R.id.logo_home->{
+                parentFragmentManager.beginTransaction().replace(R.id.mainFrame, HomeFragment())
+                    .commit()
+                (activity as MainActivity?)?.setHomeChecked()
             }
             R.id.shopBtn -> {
                 setNotionUrl()
