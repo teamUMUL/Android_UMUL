@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityMainBinding
+import inu.thebite.umul.dialog.ChangeChildDialog
 import inu.thebite.umul.fragment.bottomNavFragment.*
 import java.util.*
 
@@ -158,6 +159,8 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.selectedItemId = itemId
 
     }
+
+
 
 
 }

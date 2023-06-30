@@ -53,13 +53,14 @@
                     app:srcCompat="@drawable/shop" />
 
                 <ImageButton
+                    android:id="@+id/child"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="23.5dp"
                     android:scaleType="centerInside"
                     android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/bell" />
+                    app:srcCompat="@drawable/my_child" />
             </LinearLayout>
 
             <LinearLayout

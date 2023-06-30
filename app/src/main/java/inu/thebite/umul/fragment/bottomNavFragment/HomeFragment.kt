@@ -1,25 +1,28 @@
 package inu.thebite.umul.fragment.bottomNavFragment
 
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Transformations.map
 import inu.thebite.umul.R
 import inu.thebite.umul.activity.MainActivity
-import inu.thebite.umul.databinding.ActivityMainBinding
 import inu.thebite.umul.databinding.FragmentHomeBinding
+import inu.thebite.umul.dialog.ChangeChildDialog
 
 
 class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding : FragmentHomeBinding
+    var data = mapOf<String, String>(
+        "자녀1" to "홍길동(8세)","자녀2" to "홍길동(4세)","자녀3" to "홍길동(6세)","자녀4" to "홍길동(3세)","자녀5" to "홍길동(7세)"
+    )
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,12 +44,14 @@ class HomeFragment : Fragment(), View.OnClickListener {
         val bleButton = binding.homeBleButton
         val shopBtn = binding.shopBtn
         val logoBtn = binding.logoHome
+        val child = binding.child
 
         recordButton.setOnClickListener(this)
         bmiButton.setOnClickListener(this)
         bleButton.setOnClickListener(this)
         shopBtn.setOnClickListener(this)
         logoBtn.setOnClickListener(this)
+        child.setOnClickListener(this)
 
     }
 
@@ -75,6 +80,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 (activity as MainActivity?)?.setBLE()
 
             }
+            R.id.child -> {
+                showChangeChildDialog()
+
+            }
 
         }
     }
@@ -85,4 +94,15 @@ class HomeFragment : Fragment(), View.OnClickListener {
         )
         requireContext().startActivity(browserIntent);
     }
+
+    private fun showChangeChildDialog(){
+        val childDialog = ChangeChildDialog()
+        val args = Bundle()
+        for (key in data.keys) {
+            args.putString(key, data[key])
+        }
+        childDialog.arguments = args
+        childDialog.show(childFragmentManager, "ChangeChildDialog")
+    }
+
 }

@@ -104,6 +104,8 @@ class RecordFragment : Fragment(), View.OnClickListener {
                 resetChewCount()
                 resetSpoonCount()
                 showEndDialog()
+
+                successCount = 0
             }
 
             //상단바
