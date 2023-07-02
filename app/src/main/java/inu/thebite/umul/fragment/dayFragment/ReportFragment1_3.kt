@@ -3,6 +3,7 @@ package inu.thebite.umul.fragment.dayFragment
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +20,16 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import inu.thebite.umul.model.DailyReportBiteCountByMouthResponse
+import inu.thebite.umul.retrofit.RetrofitAPI
+import retrofit2.Call
+import retrofit2.Response
+import java.time.LocalDate
 
 
+/**
+ * Report 한 입당 저작횟수
+ */
 class ReportFragment1_3 : Fragment() {
     var myChildAvgABite : Float = 40.0f
     var averageAvgABite : Float = 32.0f
@@ -38,12 +47,42 @@ class ReportFragment1_3 : Fragment() {
         barChartRender.setRadius(30)
         avgABiteGraph.renderer = barChartRender
         avgABiteGraph.setDrawValueAboveBar(false)
-        initBarCHart(avgABiteGraph)
+
+
+        /**
+         * Connection to Server
+         * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
+         * 우선은 default 1로 설정
+         */
+        RetrofitAPI.emgMedService.getDailyReportBiteCountByMouth(1, LocalDate.now().toString())
+            .enqueue(object : retrofit2.Callback<DailyReportBiteCountByMouthResponse> {
+                override fun onResponse(
+                    call: Call<DailyReportBiteCountByMouthResponse>,
+                    response: Response<DailyReportBiteCountByMouthResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        Log.d("한 입당 저작횟수 가져오기 성공", "$result")
+                        initBarCHart(avgABiteGraph, result!!.biteCountByMouth)
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<DailyReportBiteCountByMouthResponse>,
+                    t: Throwable
+                ) {
+                    Log.d("한 입당 저작횟수 가져오기 실패", t.message.toString())
+                }
+            })
+
         return view
     }
 
 
-    private fun initBarCHart(barChart: BarChart) {
+    private fun initBarCHart(barChart: BarChart, childCnt: Float) {
+
+        Log.d("childCnt = ", childCnt.toString())
+        myChildAvgABite = childCnt
 
         val entries = ArrayList<BarEntry>()
         entries.add(BarEntry(1f,myChildAvgABite))

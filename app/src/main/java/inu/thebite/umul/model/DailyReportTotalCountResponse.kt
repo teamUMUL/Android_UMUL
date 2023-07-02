@@ -6,10 +6,10 @@ import java.time.LocalDate
 data class DailyReportTotalCountResponse (
 
     @SerializedName("date")
-    var date: LocalDate,
+    var date: String,
 
     @SerializedName("totalCount")
-    var totalCount: Int,
+    var totalCount: Float,
 
     @SerializedName("feedback")
     var feedback: String

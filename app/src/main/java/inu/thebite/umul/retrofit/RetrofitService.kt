@@ -15,6 +15,8 @@ import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
+import java.time.LocalDate
 
 interface RetrofitService {
 
@@ -51,17 +53,20 @@ interface RetrofitService {
     // 일일레포트 총 저작횟수 정보 가져오기
     @Headers("Content-Type: application/json")
     @GET("{childrenId}/dailyReport/totalCount")
-    fun getDailyReportWithTotalCount(@Path("childrenId") childrenId: Int) : Call<DailyReportTotalCountResponse>
+    fun getDailyReportWithTotalCount(@Path("childrenId") childrenId: Int,
+                                     @Query("date") date : String) : Call<DailyReportTotalCountResponse>
 
     // 일일레포트 총 식사시간 정보 가져오기
     @Headers("Content-Type: application/json")
     @GET("{childrenId}/dailyReport/totalTime")
-    fun getDailyReportWithTotalTime(@Path("childrenId") childrenId: Int) : Call<DailyReportTotalTimeResponse>
+    fun getDailyReportWithTotalTime(@Path("childrenId") childrenId: Int,
+                                    @Query("date") date : String) : Call<DailyReportTotalTimeResponse>
 
     // 일일레포트 한 입당 저작횟수 정보 가져오기
     @Headers("Content-Type: application/json")
     @GET("{childrenId}/dailyReport/biteCountByMouth")
-    fun getDailyReportBiteCountByMouth(@Path("childrenId") childrenId: Int) : Call<DailyReportBiteCountByMouthResponse>
+    fun getDailyReportBiteCountByMouth(@Path("childrenId") childrenId: Int,
+                                       @Query("date") date : String) : Call<DailyReportBiteCountByMouthResponse>
 
     // 저장되어 있는 자녀 리스트 가져오기
     @Headers("Content-Type: application/json")

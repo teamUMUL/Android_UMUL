@@ -6,10 +6,10 @@ import java.time.LocalDate
 data class DailyReportBiteCountByMouthResponse (
 
     @SerializedName("date")
-    var date: LocalDate,
+    var date: String,
 
     @SerializedName("biteCountByMouth")
-    var biteCountByMouth: Int,
+    var biteCountByMouth: Float,
 
     @SerializedName("feedback")
     var feedback: String

@@ -3,6 +3,7 @@ package inu.thebite.umul.fragment.dayFragment
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +18,15 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import inu.thebite.umul.model.DailyReportTotalCountResponse
+import inu.thebite.umul.retrofit.RetrofitAPI
+import retrofit2.Call
+import retrofit2.Response
+import java.time.LocalDate
 
-
+/**
+ * Report 총 저작횟수
+ */
 class ReportFragment1_1 : Fragment() {
 
     var myChildTotalCnt : Float = 323.0f
@@ -38,12 +46,38 @@ class ReportFragment1_1 : Fragment() {
         barChartRender.setRadius(30)
         totalCntGraph.renderer = barChartRender
         totalCntGraph.setDrawValueAboveBar(false)
-        initBarCHart(totalCntGraph)
+
+        /**
+         * Connection to Server
+         * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
+         * 우선은 default 1로 설정
+         */
+        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, LocalDate.now().toString())
+            .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
+                override fun onResponse(
+                    call: Call<DailyReportTotalCountResponse>,
+                    response: Response<DailyReportTotalCountResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        Log.d("총 저작횟수 가져오기 성공", "$result")
+                        initBarCHart(totalCntGraph, response.body()!!.totalCount)
+                    }
+                }
+
+                override fun onFailure(call: Call<DailyReportTotalCountResponse>, t: Throwable) {
+                    Log.d("총 저작횟수 가져오기 실패", t.message.toString())
+                }
+            })
+
         return view
     }
 
 
-    private fun initBarCHart(barChart: BarChart) {
+    private fun initBarCHart(barChart: BarChart, childCnt: Float) {
+
+        Log.d("childCnt = ", childCnt.toString())
+        myChildTotalCnt = childCnt
 
         val entries = ArrayList<BarEntry>()
         entries.add(BarEntry(1f,myChildTotalCnt))
