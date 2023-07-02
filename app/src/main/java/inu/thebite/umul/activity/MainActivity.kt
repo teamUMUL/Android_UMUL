@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityMainBinding
+import inu.thebite.umul.dialog.ChangeChildDialog
 import inu.thebite.umul.fragment.bottomNavFragment.*
 import java.util.*
 
@@ -93,7 +94,42 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
+    fun setRecordChecked(){
+        val bottomNavigation = binding.bottomNavigationView
+        val bottomNavigationMenu: Menu = bottomNavigation.menu
+        val recordButton = binding.playButton
+        recordButton.setOnClickListener {
+            supportFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordFragment())
+                .commit()
+            bottomNavigationMenu.setGroupCheckable(0,false,true)
+            recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
+        }
+        bottomNavigationMenu.setGroupCheckable(0,false,true)
+        recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
+
+    }
+
+
+    fun setBLE(){
+        val pairIntent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+        startActivityForResult(pairIntent, 0)
+    }
+
     fun setBMIChecked(){
+        itemSelectedListenerSetting(R.id.BMI)
+    }
+
+    fun setHomeChecked(){
+        itemSelectedListenerSetting(R.id.home)
+    }
+
+    fun setReportChecked(){
+        itemSelectedListenerSetting(R.id.report)
+    }
+
+    fun itemSelectedListenerSetting(itemId : Int){
         val bottomNavigation = binding.bottomNavigationView
         val bottomNavigationMenu: Menu = bottomNavigation.menu
         val playBtn = binding.playButton
@@ -119,28 +155,11 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        bottomNavigation.selectedItemId = R.id.BMI
-    }
 
-    fun setRecordChecked(){
-        val bottomNavigation = binding.bottomNavigationView
-        val bottomNavigationMenu: Menu = bottomNavigation.menu
-        val recordButton = binding.playButton
-        recordButton.setOnClickListener {
-            supportFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordFragment())
-                .commit()
-            bottomNavigationMenu.setGroupCheckable(0,false,true)
-            recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
-        }
-        bottomNavigationMenu.setGroupCheckable(0,false,true)
-        recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
+        bottomNavigation.selectedItemId = itemId
 
     }
 
-    fun setBLE(){
-        val pairIntent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
-        startActivityForResult(pairIntent, 0)
-    }
 
 
 

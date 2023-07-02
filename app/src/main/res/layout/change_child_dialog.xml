@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="ChangeChildDialog"
+            type="inu.thebite.umul.dialog.ChangeChildDialog" />
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_border"
+        android:elevation="10dp">
+
+        <TextView
+            android:id="@+id/child_select_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="자녀 선택"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/noto_sans_kr"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"/>
+        <ImageButton
+            android:id="@+id/child_select_cancel"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            app:srcCompat = "@drawable/select_child_cancel"
+            android:background="@null"
+            android:scaleType="centerInside"
+            app:layout_constraintStart_toEndOf="@+id/child_select_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="20dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/child_select_recyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            app:layout_constraintTop_toBottomOf="@+id/child_select_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/child_add_button"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="20dp"/>
+        <ImageButton
+            android:id="@+id/child_add_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:srcCompat = "@drawable/child_add_btn"
+            android:background="@null"
+            android:scaleType="centerInside"
+            app:layout_constraintTop_toBottomOf="@+id/child_select_recyclerView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"/>
+
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import inu.thebite.umul.fragment.bottomNavFragment.ReportFragment
 import inu.thebite.umul.R
@@ -82,8 +83,11 @@ class CalendarAdapter(private val context: ReportFragment,
             if (displayDay == selectedDay
                 && displayMonth == selectedMonth
                 && displayYear == selectedYear
-                && selectCurrentDate)
+                && selectCurrentDate) {
+                Toast.makeText(holder.itemView.context, displayDay.toString(), Toast.LENGTH_SHORT)
+                    .show()
                 makeItemSelected(holder)
+            }
             else
                 makeItemDefault(holder)
         }
