@@ -3,6 +3,7 @@ package inu.thebite.umul.fragment.dayFragment
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +20,16 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import inu.thebite.umul.model.DailyReportTotalTimeResponse
+import inu.thebite.umul.retrofit.RetrofitAPI
+import retrofit2.Call
+import retrofit2.Response
+import java.time.LocalDate
 
 
+/**
+ * Report 총 식사시간
+ */
 class ReportFragment1_2 : Fragment() {
     var myChildTotalTime : Float = 2870.0f
     var averageTotalTime : Float = 3300.0f
@@ -37,12 +46,39 @@ class ReportFragment1_2 : Fragment() {
             CustomBarChartRender(totalTimeGraph, totalTimeGraph.animator, totalTimeGraph.viewPortHandler)
         barChartRender.setRadius(30)
         totalTimeGraph.renderer = barChartRender
-        initBarCHart(totalTimeGraph)
+
+        /**
+         * Connection to Server
+         * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
+         * 우선은 default 1로 설정
+         */
+        RetrofitAPI.emgMedService.getDailyReportWithTotalTime(1, LocalDate.now().toString())
+            .enqueue(object : retrofit2.Callback<DailyReportTotalTimeResponse> {
+                override fun onResponse(
+                    call: Call<DailyReportTotalTimeResponse>,
+                    response: Response<DailyReportTotalTimeResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        Log.d("총 식사시간 가져오기 성공", "$result")
+                        initBarCHart(totalTimeGraph, result!!.totalTime)
+                    }
+                }
+
+                override fun onFailure(call: Call<DailyReportTotalTimeResponse>, t: Throwable) {
+                    Log.d("총 식사시간 가져오기 실패", t.message.toString())
+                }
+            })
+
         return view
     }
 
 
-    private fun initBarCHart(barChart: BarChart) {
+    private fun initBarCHart(barChart: BarChart, childTime: Float) {
+
+        Log.d("childCnt = ", childTime.toString())
+
+        myChildTotalTime = childTime
 
         val entries = ArrayList<BarEntry>()
         entries.add(BarEntry(1f,myChildTotalTime))
