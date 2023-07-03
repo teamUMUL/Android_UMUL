@@ -21,7 +21,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding : FragmentHomeBinding
     var data = mapOf<String, String>(
-        "자녀1" to "홍길동(8세)","자녀2" to "홍길동(4세)","자녀3" to "홍길동(6세)","자녀4" to "홍길동(3세)","자녀5" to "홍길동(7세)"
+        "자녀1" to "홍길동(8세)","자녀2" to "홍길동(4세)","자녀3" to "홍길동(6세)","자녀4" to "홍길동(3세)","자녀5" to "홍길동(7세)",
+        "자녀6" to "홍길동(8세)","자녀7" to "홍길동(4세)","자녀8" to "홍길동(6세)","자녀9" to "홍길동(3세)","자녀10" to "홍길동(7세)"
     )
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +60,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?){
         when(v?.id){
             R.id.home_record_button -> {
-                parentFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordFragment())
+                parentFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordReadyFragment())
                     .commit()
                 (activity as MainActivity?)?.setRecordChecked()
             }

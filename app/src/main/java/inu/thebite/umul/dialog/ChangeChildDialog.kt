@@ -48,10 +48,9 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
 
         calendarList = viewGroup.findViewById(R.id.child_select_recyclerView)
         mLayoutManager = LinearLayoutManager(viewGroup.context)
-
+        calendarList.setHasFixedSize(false)
         mLayoutManager.orientation = LinearLayoutManager.VERTICAL
         calendarList.layoutManager = mLayoutManager
-
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(calendarList)
 

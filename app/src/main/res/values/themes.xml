@@ -13,8 +13,8 @@
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar" >true</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges</item>
     </style>
-
     <style name="ReportBarBackgroundTheme" parent="Theme.MaterialComponents">
         <item name="windowActionBar">false</item>
         <item name="windowActionBarOverlay">true</item>

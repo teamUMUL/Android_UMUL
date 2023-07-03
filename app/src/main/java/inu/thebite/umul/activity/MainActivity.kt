@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityMainBinding
@@ -30,18 +31,14 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-
-
         //하단바 ------------------------------------------
         val bottomNavigation = binding.bottomNavigationView
         val bottomNavigationMenu: Menu = bottomNavigation.menu
         val playBtn = binding.playButton
         setContentView(binding.root)
 
+        //가운데 빈 버튼 비활성화
+        bottomNavigationMenu.findItem(R.id.placeholder).isEnabled = false
 
         //기본세팅: 플레이버튼회색, 기본화면 띄우기
         playBtn.backgroundTintList = ColorStateList.valueOf(disabledButtonColor)
@@ -50,8 +47,11 @@ class MainActivity : AppCompatActivity() {
 
         //플레이버튼 클릭 시 -> 화면전환, 하단바 선택 비활성화, 버튼 배경 색 변화
         playBtn.setOnClickListener {
-            supportFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordFragment())
-                .commit()
+/*            val intent = Intent(this, RecordActivity::class.java)
+            startActivity(intent)*/
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.mainFrame, RecordReadyFragment()).commit()
             enableRecordButton(playBtn, bottomNavigationMenu)
 
         }
@@ -109,6 +109,11 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationMenu.setGroupCheckable(0,false,true)
         recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
 
+    }
+
+    fun setGameActivityStart(){
+        val intent = Intent(this, RecordActivity::class.java)
+        startActivity(intent)
     }
 
 

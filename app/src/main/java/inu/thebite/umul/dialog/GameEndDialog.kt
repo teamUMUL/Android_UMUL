@@ -9,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.R
 import inu.thebite.umul.activity.MainActivity
+import inu.thebite.umul.activity.RecordActivity
 import inu.thebite.umul.databinding.FragmentRecordBinding
 import inu.thebite.umul.databinding.GameEndDialogBinding
 import inu.thebite.umul.fragment.bottomNavFragment.BMIFragment
@@ -22,8 +24,9 @@ import inu.thebite.umul.fragment.bottomNavFragment.HomeFragment
 class GameEndDialog : DialogFragment(), View.OnClickListener {
 
     private lateinit var binding : GameEndDialogBinding
-
+    private lateinit var carrotBox : ImageView
     var carrotNum = MutableLiveData("")
+    var successCount = 0
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,8 +36,14 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
         binding.gameEndDialog = this
         binding.lifecycleOwner = this
         val carrotArgs = arguments?.getString("successNum")
-        carrotNum.value = "당근을 총 "+ carrotArgs+"개 뽑았습니다!"
+        carrotNum.value = " 오늘의 식사\n\"당근 "+ carrotArgs+"개\"를\n 얻었습니다"
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        if (carrotArgs != null) {
+            successCount = carrotArgs.toInt()
+        }
+        carrotBox = binding.gameEndCarrotBox
+        setCarrotCarrier()
+
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +52,7 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
         setOnClickListener()
     }
     private fun setOnClickListener(){
-        val goReportBtn : Button = binding.goReport
+        val goReportBtn : Button = binding.goHome
         val cancelBtn : Button = binding.cancel
 
 
@@ -55,13 +64,79 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.goReport -> {
-                parentFragmentManager.beginTransaction().replace(R.id.mainFrame, BMIFragment())
-                    .commit()
-                (activity as MainActivity?)?.setReportChecked()
+            R.id.goHome -> {
+                (activity as RecordActivity?)?.setMainActivityStart()
             }
             R.id.cancel -> {
                 dismiss()
+            }
+        }
+    }
+
+    private fun setCarrotCarrier(){
+        when (successCount) {
+            0 -> {
+                carrotBox.setImageResource(R.drawable.carrot_0)
+            }
+            1 -> {
+                carrotBox.setImageResource(R.drawable.carrot_1)
+            }
+            2 -> {
+                carrotBox.setImageResource(R.drawable.carrot_2)
+            }
+            3 -> {
+                carrotBox.setImageResource(R.drawable.carrot_3)
+            }
+            4 -> {
+                carrotBox.setImageResource(R.drawable.carrot_4)
+            }
+            5 -> {
+                carrotBox.setImageResource(R.drawable.carrot_5)
+            }
+            6 -> {
+                carrotBox.setImageResource(R.drawable.carrot_6)
+            }
+            7 -> {
+                carrotBox.setImageResource(R.drawable.carrot_7)
+            }
+            8 -> {
+                carrotBox.setImageResource(R.drawable.carrot_8)
+            }
+            9 -> {
+                carrotBox.setImageResource(R.drawable.carrot_9)
+            }
+            10 -> {
+                carrotBox.setImageResource(R.drawable.carrot_10)
+            }
+            11 -> {
+                carrotBox.setImageResource(R.drawable.carrot_11)
+            }
+            12 -> {
+                carrotBox.setImageResource(R.drawable.carrot_12)
+            }
+            13 -> {
+                carrotBox.setImageResource(R.drawable.carrot_13)
+            }
+            14 -> {
+                carrotBox.setImageResource(R.drawable.carrot_14)
+            }
+            15 -> {
+                carrotBox.setImageResource(R.drawable.carrot_15)
+            }
+            16 -> {
+                carrotBox.setImageResource(R.drawable.carrot_16)
+            }
+            17 -> {
+                carrotBox.setImageResource(R.drawable.carrot_17)
+            }
+            18 -> {
+                carrotBox.setImageResource(R.drawable.carrot_18)
+            }
+            19 -> {
+                carrotBox.setImageResource(R.drawable.carrot_19)
+            }
+            else -> {
+                carrotBox.setImageResource(R.drawable.carrot_20)
             }
         }
     }

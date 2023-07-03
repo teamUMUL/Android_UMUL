@@ -40,6 +40,7 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
         return childKey.size
     }
 
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ChangeChildAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val childNum = childKey[position]

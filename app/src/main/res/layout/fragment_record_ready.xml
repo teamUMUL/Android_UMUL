@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+        <variable
+            name="RecordReadyFragment"
+            type="inu.thebite.umul.fragment.bottomNavFragment.RecordReadyFragment" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/reportLinearlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/logo_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/umul_logo_main"
+                    android:layout_marginStart="20dp"
+                    android:background="@android:color/transparent" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="5" />
+
+                <ImageButton
+                    android:id="@+id/shopBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="21.5dp"
+                    android:scaleType="centerInside"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/shop" />
+
+                <ImageButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="23.5dp"
+                    android:scaleType="centerInside"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/bell" />
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/topFrame"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/record_ready_banner"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toTopOf="@+id/mainImage"
+                app:layout_constraintTop_toBottomOf="@+id/reportLinearlayout"
+                tools:layout_editor_absoluteX="0dp" />
+
+
+            <ImageView
+                android:id="@+id/mainImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/record_ready_main"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="14dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintTop_toBottomOf="@+id/topFrame"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <ImageButton
+                android:id="@+id/gameStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{RecordReadyFragment::onClick}"
+                app:srcCompat="@drawable/record_ready_game_start"
+                app:layout_constraintTop_toBottomOf="@+id/mainImage"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="14dp"
+                android:scaleType="centerInside"
+                android:background="@null"
+                android:adjustViewBounds="true"/>
+
+
+
+            <FrameLayout
+                android:id="@+id/blank"
+                android:layout_width="match_parent"
+                android:layout_height="95dp"
+                app:layout_constraintTop_toBottomOf="@+id/gameStart"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

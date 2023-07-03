@@ -125,7 +125,7 @@
             <ImageButton
                 android:id="@+id/home_ble_button"
                 android:layout_width="wrap_content"
-                android:layout_height="151dp"
+                android:layout_height="120dp"
                 android:background="@null"
                 android:onClick="@{HomeFragment::onClick}"
                 android:scaleType="centerInside"
