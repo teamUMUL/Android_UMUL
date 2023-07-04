@@ -32,17 +32,21 @@
             app:labelVisibilityMode="labeled"
             app:itemIconTint="@drawable/menu_selector_color"
             app:itemTextColor="@drawable/menu_selector_color"
+            app:itemRippleColor="@null"
             />
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/playButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/img_3"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:src="@drawable/play_button"
+        app:fabCustomSize="64dp"
+        app:maxImageSize="36dp"
         app:tint="@android:color/white"
         android:clickable="true"
+        app:rippleColor="@null"
         app:layout_anchor="@id/bottomAppBar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

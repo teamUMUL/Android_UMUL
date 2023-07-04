@@ -1,13 +1,12 @@
 package inu.thebite.umul.dialog
 
-import android.animation.ObjectAnimator
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
@@ -16,10 +15,8 @@ import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.R
 import inu.thebite.umul.activity.MainActivity
 import inu.thebite.umul.activity.RecordActivity
-import inu.thebite.umul.databinding.FragmentRecordBinding
 import inu.thebite.umul.databinding.GameEndDialogBinding
-import inu.thebite.umul.fragment.bottomNavFragment.BMIFragment
-import inu.thebite.umul.fragment.bottomNavFragment.HomeFragment
+
 
 class GameEndDialog : DialogFragment(), View.OnClickListener {
 
@@ -36,12 +33,14 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
         binding.gameEndDialog = this
         binding.lifecycleOwner = this
         val carrotArgs = arguments?.getString("successNum")
-        carrotNum.value = " 오늘의 식사\n\"당근 "+ carrotArgs+"개\"를\n 얻었습니다"
+        carrotNum.value = "\'당근 "+ carrotArgs+"개\'를 얻었습니다"
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.setCanceledOnTouchOutside(false)
         if (carrotArgs != null) {
             successCount = carrotArgs.toInt()
         }
         carrotBox = binding.gameEndCarrotBox
+        carrotBox.rotation = 10F
         setCarrotCarrier()
 
         return binding.root
@@ -52,12 +51,10 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
         setOnClickListener()
     }
     private fun setOnClickListener(){
-        val goReportBtn : Button = binding.goHome
-        val cancelBtn : Button = binding.cancel
+        val goReportBtn : ImageButton = binding.goHome
 
 
         goReportBtn.setOnClickListener(this)
-        cancelBtn.setOnClickListener(this)
 
     }
 
@@ -66,9 +63,6 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
         when (v?.id) {
             R.id.goHome -> {
                 (activity as RecordActivity?)?.setMainActivityStart()
-            }
-            R.id.cancel -> {
-                dismiss()
             }
         }
     }

@@ -7,12 +7,13 @@ import android.graphics.Color
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.forEach
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityMainBinding
-import inu.thebite.umul.dialog.ChangeChildDialog
 import inu.thebite.umul.fragment.bottomNavFragment.*
 import java.util.*
 
@@ -39,7 +40,10 @@ class MainActivity : AppCompatActivity() {
 
         //가운데 빈 버튼 비활성화
         bottomNavigationMenu.findItem(R.id.placeholder).isEnabled = false
-
+        //꾹 누른 경우 뜨는 tooltip 끄기
+        bottomNavigationMenu.forEach {
+            TooltipCompat.setTooltipText(bottomNavigation.findViewById(it.itemId), null)
+        }
         //기본세팅: 플레이버튼회색, 기본화면 띄우기
         playBtn.backgroundTintList = ColorStateList.valueOf(disabledButtonColor)
         supportFragmentManager.beginTransaction().replace(R.id.mainFrame, HomeFragment())
@@ -55,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             enableRecordButton(playBtn, bottomNavigationMenu)
 
         }
-
         //하단 바 클릭 시 -> 화면전환, 플레이버튼 회색, 하단 바 선택 활성화
         bottomNavigation.setOnItemSelectedListener {
             disableRecordButton(playBtn, bottomNavigationMenu)
@@ -81,7 +84,10 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+
+
     }
+
 
     fun disableRecordButton(playBtn : FloatingActionButton, bottomNavigationMenu : Menu){
         bottomNavigationMenu.setGroupCheckable(0,true,true)
@@ -101,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationMenu: Menu = bottomNavigation.menu
         val recordButton = binding.playButton
         recordButton.setOnClickListener {
-            supportFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordFragment())
+            supportFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordReadyFragment())
                 .commit()
             bottomNavigationMenu.setGroupCheckable(0,false,true)
             recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
@@ -113,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
     fun setGameActivityStart(){
         val intent = Intent(this, RecordActivity::class.java)
-        startActivity(intent)
+        startActivityForResult(intent, 2)
     }
 
 
@@ -131,8 +137,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setReportChecked(){
+        supportFragmentManager.beginTransaction().replace(R.id.mainFrame, ReportFragment())
+            .commit()
         itemSelectedListenerSetting(R.id.report)
     }
+
+
 
     fun itemSelectedListenerSetting(itemId : Int){
         val bottomNavigation = binding.bottomNavigationView

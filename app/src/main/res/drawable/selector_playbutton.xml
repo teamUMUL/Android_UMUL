@@ -52,6 +52,7 @@
             </group>
         </vector>
     </item>
+
     <item android:state_focused="false">
         <vector
             xmlns:android="http://schemas.android.com/apk/res/android"

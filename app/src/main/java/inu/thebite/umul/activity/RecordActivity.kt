@@ -6,11 +6,14 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.SystemClock
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -25,16 +28,23 @@ import inu.thebite.umul.dialog.GameEndDialog
 import kotlin.random.Random
 
 
+@Suppress("DEPRECATION")
 class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding : ActivityRecordBinding
     private lateinit var gameStartButton: ImageButton
     private lateinit var getChewButton: ImageButton
     private lateinit var getCarrotButton: ImageButton
     private lateinit var gameEndButton : ImageButton
+    private lateinit var backPressButton : ImageButton
+
     private lateinit var characters : ImageView
     private lateinit var carrotBox : ImageView
     private lateinit var overlayView: ConstraintLayout
     private lateinit var ani : AnimationDrawable
+    private lateinit var handler: Handler
+    private var startTime: Long = 0
+    private var elapsedTime: Long = 0
+    private var isTimerRunning: Boolean = false
     private var chewCount = 0
     private var totalCnt = 0
     private var successCount = 0
@@ -53,7 +63,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         windowInsetsCompat.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         windowInsetsCompat.hide(WindowInsetsCompat.Type.navigationBars())
 
-
+        handler = Handler()
         createClouds()
 
         overlayView = binding.overlayView
@@ -62,11 +72,13 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         gameStartButton.bringToFront()
         gameStartButton.setOnClickListener {
             gameStartButton.isVisible = false
+            backPressButton.isVisible = false
             getChewButton.isVisible = true
             characters.isVisible = true
             carrotBox.isVisible = true
             gameEndButton.isVisible = true
             getCarrotButton.isVisible = true
+            startTimer()
         }
 
         getChewButton = binding.getChew
@@ -74,6 +86,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         carrotBox = binding.carrotBox
         gameEndButton = binding.gameEndButton
         getCarrotButton = binding.getCarrot
+        backPressButton = binding.gameBackPress
+        backPressButton.isVisible = true
         getChewButton.isVisible = false
         characters.isVisible = false
         carrotBox.isVisible = false
@@ -123,16 +137,46 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                     setCarrotCarrier()
                 }catch (_: Exception){
                 }
+                backPressButton.isVisible = true
                 gameStartButton.isVisible = true
                 getChewButton.isVisible = false
                 characters.isVisible = false
                 carrotBox.isVisible = false
                 gameEndButton.isVisible = false
                 getCarrotButton.isVisible = false
-
+                stopTimer()
+            }
+            R.id.game_back_press -> {
+                onBackPressed()
             }
 
 
+        }
+    }
+
+
+    private fun startTimer(){
+        if (!isTimerRunning) {
+            startTime = SystemClock.elapsedRealtime()
+            handler.postDelayed(timerRunnable, 0)
+            isTimerRunning = true
+        }
+    }
+    private fun stopTimer() {
+        if (isTimerRunning) {
+            handler.removeCallbacks(timerRunnable)
+            isTimerRunning = false
+            val seconds = (elapsedTime / 1000).toInt()
+            Toast.makeText(this, seconds.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+    private val timerRunnable = object : Runnable {
+        override fun run() {
+            val currentTime = SystemClock.elapsedRealtime()
+            elapsedTime = currentTime - startTime
+
+
+            handler.postDelayed(this, 1000) // Update every second
         }
     }
 
@@ -198,7 +242,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun createClouds() {
-        for (x in 0 until 12) {
+        for (x in 0 until 20) {
             val cloud = createCloud()
             val set = ConstraintSet()
             val parentLayout = binding.cloudContainer
@@ -229,8 +273,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
     private fun animateCloud(cloud: ImageView) {
-        ObjectAnimator.ofFloat(cloud, "translationX", -2000f).apply {
-            duration = Random.nextLong(6000, 15000)
+        ObjectAnimator.ofFloat(cloud, "translationX", -2400f).apply {
+            duration = Random.nextLong(18000, 23000)
             repeatCount = ValueAnimator.INFINITE
             start()
         }

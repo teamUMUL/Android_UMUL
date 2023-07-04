@@ -81,6 +81,7 @@
             android:background="@null"
             android:scaleType="centerInside"
             android:onClick="@{RecordActivity::onClick}"
+            android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -95,11 +96,12 @@
             android:background="@null"
             android:scaleType="centerInside"
             android:onClick="@{RecordActivity::onClick}"
+            android:adjustViewBounds="true"
             app:layout_constraintTop_toBottomOf="@+id/characters"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/get_carrot"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="20dp"
             android:layout_marginBottom="20dp"/>
 
         <ImageButton
@@ -107,6 +109,20 @@
             android:layout_width="wrap_content"
             android:layout_height="70dp"
             android:src="@drawable/game_end"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:onClick="@{RecordActivity::onClick}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:adjustViewBounds="true"/>
+
+        <ImageButton
+            android:id="@+id/game_back_press"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:src="@drawable/game_back_pressed"
             android:background="@null"
             android:scaleType="centerInside"
             android:onClick="@{RecordActivity::onClick}"

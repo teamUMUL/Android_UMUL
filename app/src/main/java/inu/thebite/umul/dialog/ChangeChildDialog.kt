@@ -47,6 +47,8 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         selectedChildID = pref.getString("selecetedChild", "자녀1")
 
         calendarList = viewGroup.findViewById(R.id.child_select_recyclerView)
+        calendarList.setHasFixedSize(true)
+        calendarList.isNestedScrollingEnabled = false
         mLayoutManager = LinearLayoutManager(viewGroup.context)
         calendarList.setHasFixedSize(false)
         mLayoutManager.orientation = LinearLayoutManager.VERTICAL

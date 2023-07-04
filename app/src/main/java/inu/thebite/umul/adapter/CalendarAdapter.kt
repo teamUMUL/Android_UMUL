@@ -51,6 +51,7 @@ class CalendarAdapter(private val context: ReportFragment,
 
     override fun getItemCount(): Int = data.size
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val sdf = SimpleDateFormat("E", Locale.KOREAN)
         val cal = Calendar.getInstance(Locale.KOREAN)
@@ -119,6 +120,8 @@ class CalendarAdapter(private val context: ReportFragment,
 
 
     private fun makeItemSelected(holder: ViewHolder) {
+        holder.txtDay!!.setTextColor(Color.BLACK)
+        holder.txtDayInWeek!!.setTextColor(Color.BLACK)
         holder.linearLayout!!.setBackgroundResource(R.drawable.calendar_selected)
     }
 

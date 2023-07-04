@@ -20,4 +20,8 @@
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>
+    <style name="Floating" parent="Widget.Design.FloatingActionButton">
+        <!---rest of your style-->
+        <item name="android:foreground">@drawable/selector_playbutton</item>
+    </style>
 </resources>
