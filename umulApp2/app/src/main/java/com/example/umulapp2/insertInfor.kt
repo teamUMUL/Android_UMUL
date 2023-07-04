@@ -5,25 +5,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 
-class MainActivity : AppCompatActivity() {
+
+class insertInfor : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_insert_infor)
 
-        val buttonMain = findViewById<Button>(R.id.button_main)
+        val buttonAddInfor = findViewById<Button>(R.id.button_addInfor)
 
         fun moveToAnotherPage(){
             val intent = Intent(this, insertInfor::class.java)
             startActivity(intent)
         }
 
-        buttonMain.setOnClickListener{
+        buttonAddInfor.setOnClickListener{
             moveToAnotherPage()
         }
-
-
-
-
 
 
 
