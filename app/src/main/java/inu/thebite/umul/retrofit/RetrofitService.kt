@@ -71,7 +71,7 @@ interface RetrofitService {
     // 저장되어 있는 자녀 리스트 가져오기
     @Headers("Content-Type: application/json")
     @GET("{memberNumber}/children/list")
-    fun getChildrenList(@Path("memberNumber") memberNumber: String) : Call<DailyReportBiteCountByMouthResponse>
+    fun getChildrenList(@Path("memberNumber") memberNumber: String) : Call<List<SaveChildrenResponse>>
 
 
 }

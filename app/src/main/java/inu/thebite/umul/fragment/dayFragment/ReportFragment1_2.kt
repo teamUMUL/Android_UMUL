@@ -2,11 +2,13 @@ package inu.thebite.umul.fragment.dayFragment
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import inu.thebite.umul.adapter.decoration.CustomBarChartRender
@@ -33,6 +35,7 @@ import java.time.LocalDate
 class ReportFragment1_2 : Fragment() {
     var myChildTotalTime : Float = 2870.0f
     var averageTotalTime : Float = 3300.0f
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,

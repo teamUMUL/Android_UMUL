@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+
 android {
     namespace 'inu.thebite.umul'
     compileSdk 33

@@ -4,12 +4,14 @@ import CalendarAdapter
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -170,7 +172,7 @@ class ReportFragment : Fragment() {
         // Assigning calendar view.
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         viewGroup.findViewById<RecyclerView>(R.id.calendar_recycler_view)!!.layoutManager = layoutManager
-        val calendarAdapter = CalendarAdapter(this, dates, currentDate, changeMonth)
+        val calendarAdapter = CalendarAdapter(this, dates, currentDate, changeMonth, )
         viewGroup.findViewById<RecyclerView>(R.id.calendar_recycler_view)!!.adapter = calendarAdapter
 
         when {
@@ -181,8 +183,10 @@ class ReportFragment : Fragment() {
 
 
         calendarAdapter.setOnItemClickListener(object : CalendarAdapter.OnItemClickListener {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onItemClick(position: Int) {
                 val clickCalendar = Calendar.getInstance()
+                val bundle = Bundle()
                 clickCalendar.time = dates[position]
                 selectedDay = clickCalendar[Calendar.DAY_OF_MONTH]
 
@@ -201,6 +205,7 @@ class ReportFragment : Fragment() {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 outputDate = LocalDate.parse("$selectedYear-$outputMonth-$outputDay", formatter)
                 println(outputDate)
+
             }
         })
     }
@@ -208,7 +213,9 @@ class ReportFragment : Fragment() {
 
 
 
+    inner class sendDate() {
 
+    }
 
 
     private fun setInit(){
