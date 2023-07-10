@@ -1,5 +1,6 @@
 package inu.thebite.umul.activity
 
+import inu.thebite.umul.service.BluetoothService.Companion.ACTION_DATA_RECEIVED
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -7,12 +8,18 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.os.Message
 import android.os.SystemClock
 import android.util.Log
@@ -35,6 +42,7 @@ import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityRecordBinding
 import inu.thebite.umul.dialog.GameEndDialog
+import inu.thebite.umul.service.BluetoothService
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -57,10 +65,24 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mThreadConnectedBluetooth: ConnectedBluetoothThread
     private lateinit var mBluetoothDevice: BluetoothDevice
     private lateinit var mBluetoothSocket: BluetoothSocket
+    private lateinit var bluetoothReceiver : BroadcastReceiver
+    private lateinit var bluetoothService: BluetoothService
+    private var bound: Boolean = false
     val BT_REQUEST_ENABLE = 1
     val BT_MESSAGE_READ = 2
     val BT_CONNECTING_STATUS = 3
     val BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as BluetoothService.LocalBinder
+            bluetoothService = binder.getService()
+            bound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            bound = false
+        }
+    }
 
     //---------------------------------------------------
     private lateinit var binding: ActivityRecordBinding
@@ -89,13 +111,34 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private var isStart : Boolean = false
 
 
-
+    companion object {
+        const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
+        const val EXTRA_DATA = "data"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_record)
         binding =
             DataBindingUtil.setContentView<ActivityRecordBinding>(this, R.layout.activity_record)
         binding.recordActivity = this
+
+
+        bluetoothReceiver = object : BroadcastReceiver(){
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if(intent?.action == ACTION_DATA_RECEIVED){
+                    if(isStart) {
+                        characters.layoutParams.width = 1200
+                        characters.requestLayout()
+                        chewCount++
+                        totalCnt++
+                        animateCharacter()
+                    }
+                }
+            }
+        }
+        val filter = IntentFilter(ACTION_DATA_RECEIVED)
+        val intent = Intent(this, BluetoothService::class.java)
+        bindService(intent, connection, Context.BIND_AUTO_CREATE)
 
         //상단바랑 하단바 숨기기 -> 전체화면
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -114,6 +157,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
         gameStartButton.bringToFront()
         gameStartButton.setOnClickListener {
+            registerReceiver(bluetoothReceiver, filter)
+
             gameStartButton.isVisible = false
             backPressButton.isVisible = false
             getChewButton.isVisible = true
@@ -268,7 +313,12 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun setMainActivityStart() {
-        mThreadConnectedBluetooth.cancel()
+/*        if (bound) {
+            unbindService(connection)
+            bound = false
+        }*/
+        unregisterReceiver(bluetoothReceiver)
+
 
         val intent = Intent(this, MainActivity::class.java)
         //activity 쌓이지 않도록 activity 초기화
