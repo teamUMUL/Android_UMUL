@@ -268,6 +268,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun setMainActivityStart() {
+        mThreadConnectedBluetooth.cancel()
+
         val intent = Intent(this, MainActivity::class.java)
         //activity 쌓이지 않도록 activity 초기화
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -479,7 +481,6 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        mThreadConnectedBluetooth.cancel()
     }
 
     // 블루투스 활성화 메서드

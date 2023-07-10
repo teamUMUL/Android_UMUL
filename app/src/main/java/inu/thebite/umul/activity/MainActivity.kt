@@ -1,9 +1,11 @@
 package inu.thebite.umul.activity
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
@@ -25,12 +27,15 @@ class MainActivity : AppCompatActivity() {
     private val enabledButtonColor = Color.rgb(0,199,255) //버튼 활성화 색 = Aqua_Blue
 
 
+    val BT_REQUEST_ENABLE = 1
+    val BT_MESSAGE_READ = 2
+    val BT_CONNECTING_STATUS = 3
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-
+        bluetoothPermissionChecker()
 
         //하단바 ------------------------------------------
         val bottomNavigation = binding.bottomNavigationView
@@ -173,6 +178,29 @@ class MainActivity : AppCompatActivity() {
 
         bottomNavigation.selectedItemId = itemId
 
+    }
+
+
+
+    fun bluetoothPermissionChecker() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestPermissions(
+                arrayOf<String>(
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_ADVERTISE,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ),
+                BT_REQUEST_ENABLE
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(
+                arrayOf<String>(
+                    Manifest.permission.BLUETOOTH
+                ),
+                BT_REQUEST_ENABLE
+            )
+        }
     }
 
 
