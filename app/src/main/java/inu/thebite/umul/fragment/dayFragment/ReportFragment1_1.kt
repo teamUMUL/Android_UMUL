@@ -1,12 +1,15 @@
 package inu.thebite.umul.fragment.dayFragment
 
+import CalendarAdapter
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import inu.thebite.umul.adapter.decoration.CustomBarChartRender
@@ -22,7 +25,6 @@ import inu.thebite.umul.model.DailyReportTotalCountResponse
 import inu.thebite.umul.retrofit.RetrofitAPI
 import retrofit2.Call
 import retrofit2.Response
-import java.time.LocalDate
 
 /**
  * Report 총 저작횟수
@@ -32,6 +34,7 @@ class ReportFragment1_1 : Fragment() {
     var myChildTotalCnt : Float = 323.0f
     var averageTotalCnt : Float = 300.0f
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,12 +50,15 @@ class ReportFragment1_1 : Fragment() {
         totalCntGraph.renderer = barChartRender
         totalCntGraph.setDrawValueAboveBar(false)
 
+        val date = arguments?.getString("date")!!
+
+
         /**
          * Connection to Server
          * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
          * 우선은 default 1로 설정
          */
-        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, LocalDate.now().toString())
+        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, date)
             .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
                 override fun onResponse(
                     call: Call<DailyReportTotalCountResponse>,
@@ -72,6 +78,8 @@ class ReportFragment1_1 : Fragment() {
 
         return view
     }
+
+
 
 
     private fun initBarCHart(barChart: BarChart, childCnt: Float) {
