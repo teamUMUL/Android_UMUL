@@ -15,6 +15,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
@@ -62,7 +63,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mListPairedDevices: List<String>
 
     private lateinit var mBluetoothHandler: Handler
-    private lateinit var mThreadConnectedBluetooth: ConnectedBluetoothThread
+    private lateinit var mThreadConnectedBluetooth: BluetoothService.ConnectedBluetoothThread
     private lateinit var mBluetoothDevice: BluetoothDevice
     private lateinit var mBluetoothSocket: BluetoothSocket
     private lateinit var bluetoothReceiver : BroadcastReceiver
@@ -188,7 +189,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
 
         // 해당 장치가 블루투스 기능을 지원하는지 알아오는 메서드
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+  /*      mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
         mBluetoothHandler = object : Handler() {
             @SuppressLint("HandlerLeak")
@@ -212,7 +213,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
             }
-        }
+        }*/
     }
 
 
@@ -269,8 +270,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 onBackPressed()
             }
             R.id.ble_connect_button -> {
-                bluetoothOn()
-                listPairedDevices()
+      /*          bluetoothOn()
+                listPairedDevices()*/
             }
 
 
@@ -313,14 +314,16 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun setMainActivityStart() {
-/*        if (bound) {
-            unbindService(connection)
-            bound = false
-        }*/
+        //데이터 안받기
         unregisterReceiver(bluetoothReceiver)
 
+        //RecordActivity -> MainActivity로 이동할 때 activity 를 초기화하기 때문에 sharedPreference도 같이 초기화 됨
+        //따라서 초기화하기 전에 intent에 연결 유무 boolean값 넣어주고 MainActivity로 이동
+        val pref: SharedPreferences = getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
+        val isBluetoothConnected = pref.getBoolean("isBluetoothConnected", false)
 
         val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("inBluetoothConnected", isBluetoothConnected)
         //activity 쌓이지 않도록 activity 초기화
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -534,7 +537,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     // 블루투스 활성화 메서드
-    @SuppressLint("MissingPermission")
+/*    @SuppressLint("MissingPermission")
     fun bluetoothOn() {
         if (mBluetoothAdapter == null) {
             Toast.makeText(applicationContext, "블루투스를 지원하지 않는 기기입니다.", Toast.LENGTH_LONG).show()
@@ -687,7 +690,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                     .show()
             }
         }
-    }
+    }*/
     //----------------------------------------------------------------------------------------------------
 
 

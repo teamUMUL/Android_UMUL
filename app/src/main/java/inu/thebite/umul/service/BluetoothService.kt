@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_CANCELED
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothSocket
 import android.content.DialogInterface
 import android.content.Intent
@@ -20,6 +21,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
+import inu.thebite.umul.BluetoothConnectionCallback
+import inu.thebite.umul.activity.MainActivity
 import inu.thebite.umul.activity.RecordActivity
 import java.io.InputStream
 import java.io.OutputStream
@@ -35,8 +38,7 @@ class BluetoothService : Service() {
     private lateinit var connectedThread: ConnectedBluetoothThread
 
     private lateinit var pairedDevices: Set<BluetoothDevice>
-    private lateinit var listPairedDevices: List<String>
-
+    private var callback: BluetoothConnectionCallback? = null
     private lateinit var bluetoothHandler: Handler
     val BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     companion object {
@@ -88,6 +90,9 @@ class BluetoothService : Service() {
             }
         }
     }
+    fun setBluetoothConnectionCallback(callback: BluetoothConnectionCallback){
+        this.callback = callback
+    }
 
     fun connectToDevice(device: BluetoothDevice) {
         bluetoothDevice = device
@@ -96,6 +101,7 @@ class BluetoothService : Service() {
 
     fun disconnect() {
         connectedThread?.cancel()
+        callback?.isDisConnected()
         try {
             bluetoothSocket?.close()
             bluetoothSocket = null
@@ -111,6 +117,7 @@ class BluetoothService : Service() {
 
     @SuppressLint("MissingPermission")
     fun connectSelectedDevice(selectedDeviceName: String) {
+
         pairedDevices = bluetoothAdapter!!.bondedDevices
         for (tempDevice in pairedDevices) {
             if (selectedDeviceName == tempDevice.name) {
@@ -131,7 +138,10 @@ class BluetoothService : Service() {
                     connectedThread.start()
                     bluetoothHandler.obtainMessage(BT_CONNECTING_STATUS, 1, -1)
                         .sendToTarget()
+                    callback?.isConnected()
+
                 } catch (e: IOException) {
+                    callback?.isDisConnected()
                     Log.e("Error Reason", e.toString())
                 }
             }catch (e : SecurityException){

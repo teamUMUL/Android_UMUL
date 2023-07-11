@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -27,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.forEach
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import inu.thebite.umul.BluetoothConnectionCallback
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityMainBinding
 import inu.thebite.umul.fragment.bottomNavFragment.*
@@ -36,18 +38,25 @@ import java.util.*
 
 
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     private lateinit var binding : ActivityMainBinding
+    private var homeFragment: HomeFragment? = null
+
+
     private val disabledButtonColor = Color.rgb(62, 97, 67) //버튼 비활성화 색 = 녹색
     private val enabledButtonColor = Color.rgb(0,199,255) //버튼 활성화 색 = Aqua_Blue
     private lateinit var mBluetoothAdapter : BluetoothAdapter
     private lateinit var bluetoothService: BluetoothService
     private var bound: Boolean = false
+    private var isConnected : Boolean = false
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as BluetoothService.LocalBinder
             bluetoothService = binder.getService()
             bound = true
+
+            //연결 될 때 isBluetoothConnected 함수를, 연결 끊을 때 isBluetoothDisconnected 함수를 사용하기 위해서 인터페이스 사용
+            bluetoothService?.setBluetoothConnectionCallback(this@MainActivity)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -56,10 +65,7 @@ class MainActivity : AppCompatActivity() {
     }
     private lateinit var mPairedDevices: Set<BluetoothDevice>
     private lateinit var mListPairedDevices: List<String>
-    private lateinit var mBluetoothHandler: Handler
-    private lateinit var mThreadConnectedBluetooth: RecordActivity.ConnectedBluetoothThread
     private lateinit var mBluetoothDevice: BluetoothDevice
-    private lateinit var mBluetoothSocket: BluetoothSocket
     val BT_REQUEST_ENABLE = 1
     val BT_MESSAGE_READ = 2
     val BT_CONNECTING_STATUS = 3
@@ -67,18 +73,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-
+        val pref: SharedPreferences = getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = pref.edit()
+        val isConnectedFromRecordActivity = intent.getBooleanExtra("inBluetoothConnected", false)
+        editor.putBoolean("isBluetoothConnected",isConnectedFromRecordActivity)
+        editor.apply()
         bluetoothPermissionChecker()
+        isConnected = pref.getBoolean("isBluetoothConnected", false)
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         val intent = Intent(this, BluetoothService::class.java)
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         startService(intent)
+
+        //checkBluetoothConnection()
         //하단바 ------------------------------------------
         val bottomNavigation = binding.bottomNavigationView
         val bottomNavigationMenu: Menu = bottomNavigation.menu
         val playBtn = binding.playButton
         setContentView(binding.root)
-
         //가운데 빈 버튼 비활성화
         bottomNavigationMenu.findItem(R.id.placeholder).isEnabled = false
         //꾹 누른 경우 뜨는 tooltip 끄기
@@ -166,10 +178,51 @@ class MainActivity : AppCompatActivity() {
 
     fun setBLE(){
         //bluetoothOn()
-        stopService(intent)
-        listPairedDevices()
+        if(isConnected){
+            bluetoothService.disconnect()
+        }else{
+            listPairedDevices()
+        }
+
 /*        val pairIntent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
         startActivityForResult(pairIntent, 0)*/
+    }
+    fun checkBluetoothConnection(){
+        if(isConnected){
+            isBluetoothConnected()
+        }
+        else{
+            isBluetoothDisconnected()
+        }
+    }
+
+
+    //연결 될 때 sharedPreference 사용해서 연결 유무 저장 -> HomeFragment에서 사용하기 위해서
+    @SuppressLint("CommitPrefEdits")
+    fun isBluetoothConnected(){
+        homeFragment = HomeFragment()
+        supportFragmentManager.beginTransaction()
+            .add(R.id.mainFrame, homeFragment!!, "MyFragment")
+            .commit()
+        isConnected = true
+
+        val pref: SharedPreferences = getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = pref.edit()
+        editor.putBoolean("isBluetoothConnected",true)
+        editor.apply()
+
+    }
+    //연결 끊길 때 sharedPreference 사용해서 연결 유무 저장 -> HomeFragment에서 사용하기 위해서
+    fun isBluetoothDisconnected(){
+        homeFragment = HomeFragment()
+        supportFragmentManager.beginTransaction()
+            .add(R.id.mainFrame, homeFragment!!, "MyFragment")
+            .commit()
+        isConnected = false
+        val pref: SharedPreferences = getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = pref.edit()
+        editor.putBoolean("isBluetoothConnected",false)
+        editor.apply()
     }
 
     fun setBMIChecked(){
@@ -272,7 +325,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-
+    //Service에서 UI건드는 것은 안되기에 list호출은 MainActivity 상에서 진행
     @SuppressLint("MissingPermission")
     fun listPairedDevices() {
         if (mBluetoothAdapter.isEnabled) {
@@ -293,7 +346,9 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this, BluetoothService::class.java)
                     startService(intent)
                     bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+                    //선택 이후로는 Service에서 진행
                     bluetoothService.connectSelectedDevice(items[item].toString())
+
                 }
                 val alert = builder.create()
                 alert.show()
@@ -305,18 +360,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    fun connectSelectedDevice(selectedDeviceName: String) {
-        for (tempDevice in mPairedDevices) {
-            if (selectedDeviceName == tempDevice.name) {
-                mBluetoothDevice = tempDevice
-
-                break
-            }
-        }
-
+    override fun isConnected() {
+        //BluetoothService에서 연결될 때 사용
+        isBluetoothConnected()
     }
 
+    override fun isDisConnected() {
+        //BluetoothService에서 연결 끊을 때 사용
+        isBluetoothDisconnected()
+    }
 
 
 }

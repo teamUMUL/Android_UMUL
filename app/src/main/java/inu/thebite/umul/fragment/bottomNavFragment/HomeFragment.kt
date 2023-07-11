@@ -1,25 +1,29 @@
 package inu.thebite.umul.fragment.bottomNavFragment
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Transformations.map
 import inu.thebite.umul.R
 import inu.thebite.umul.activity.MainActivity
 import inu.thebite.umul.databinding.FragmentHomeBinding
 import inu.thebite.umul.dialog.ChangeChildDialog
 
 
+@Suppress("DEPRECATION")
 class HomeFragment : Fragment(), View.OnClickListener {
-
-    private lateinit var binding : FragmentHomeBinding
+    private var _binding : FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var homeBluetoothButton : ImageButton
+    private lateinit var mainActivity : MainActivity
+    private var isBluetoothConnected = false
     var data = mapOf<String, String>(
         "자녀1" to "홍길동(8세)","자녀2" to "홍길동(4세)","자녀3" to "홍길동(6세)","자녀4" to "홍길동(3세)","자녀5" to "홍길동(7세)",
         "자녀6" to "홍길동(8세)","자녀7" to "홍길동(4세)","자녀8" to "홍길동(6세)","자녀9" to "홍길동(3세)","자녀10" to "홍길동(7세)"
@@ -28,14 +32,22 @@ class HomeFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.homeFragment = this
         binding.lifecycleOwner = this
+
         return binding.root
     }
 
+
+
+    //MainActivity에서 저장했던 연결 유무 값을 얻어서 연결 유무에 따른 이미지 설정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val pref: SharedPreferences = requireActivity().getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
+        isBluetoothConnected = pref.getBoolean("isBluetoothConnected", false)
+        checkBluetoothConnected(isBluetoothConnected)
+
         setOnClickListener()
     }
 
@@ -56,18 +68,24 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        mainActivity = activity as MainActivity
+    }
+
 
     override fun onClick(v: View?){
         when(v?.id){
             R.id.home_record_button -> {
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordReadyFragment())
                     .commit()
-                (activity as MainActivity?)?.setRecordChecked()
+                mainActivity.setRecordChecked()
             }
             R.id.home_bmi_button -> {
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, BMIFragment())
                     .commit()
-                (activity as MainActivity?)?.setBMIChecked()
+                mainActivity.setBMIChecked()
             }
             R.id.shopBtn -> {
                 setNotionUrl()
@@ -75,10 +93,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
             R.id.logo_home->{
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, HomeFragment())
                     .commit()
-                (activity as MainActivity?)?.setHomeChecked()
+                mainActivity.setHomeChecked()
             }
             R.id.home_ble_button -> {
-                (activity as MainActivity?)?.setBLE()
+                mainActivity.setBLE()
 
             }
             R.id.child -> {
@@ -95,6 +113,20 @@ class HomeFragment : Fragment(), View.OnClickListener {
         )
         requireContext().startActivity(browserIntent);
     }
+
+
+    fun checkBluetoothConnected(isConnected : Boolean){
+        if(isConnected){
+            binding.homeBleButton.setImageResource(R.drawable.bluetooth_connected)
+        }
+        else{
+            binding.homeBleButton.setImageResource(R.drawable.bluetooth_disconnected)
+
+        }
+
+    }
+
+
 
     private fun showChangeChildDialog(){
         val childDialog = ChangeChildDialog()
