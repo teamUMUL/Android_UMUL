@@ -25,7 +25,6 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
             else -> "자녀1"
         }
     inner class ViewHolder(itemView: View, val listener: OnItemClickListener): RecyclerView.ViewHolder(itemView) {
-//        var childNum = itemView.findViewById<TextView>(R.id.child_num)
         var childInfo = itemView.findViewById<TextView>(R.id.child_info)
         var frameLayout = itemView.findViewById<FrameLayout>(R.id.child_layout)
     }

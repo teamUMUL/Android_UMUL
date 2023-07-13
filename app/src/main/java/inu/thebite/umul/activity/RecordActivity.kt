@@ -15,6 +15,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
@@ -56,22 +57,11 @@ import kotlin.random.Random
 class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
     //블루투스 통신-------------------------------------
-
-    private lateinit var mBluetoothAdapter: BluetoothAdapter
-    private lateinit var mPairedDevices: Set<BluetoothDevice>
-    private lateinit var mListPairedDevices: List<String>
-
-    private lateinit var mBluetoothHandler: Handler
-    private lateinit var mThreadConnectedBluetooth: ConnectedBluetoothThread
-    private lateinit var mBluetoothDevice: BluetoothDevice
-    private lateinit var mBluetoothSocket: BluetoothSocket
+    //bluetoothReceiver = Service에서 보낸 데이터를 받기
+    //bluetoothService = 블루투스 연결을 유지하기 위한 Service
     private lateinit var bluetoothReceiver : BroadcastReceiver
     private lateinit var bluetoothService: BluetoothService
     private var bound: Boolean = false
-    val BT_REQUEST_ENABLE = 1
-    val BT_MESSAGE_READ = 2
-    val BT_CONNECTING_STATUS = 3
-    val BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as BluetoothService.LocalBinder
@@ -91,25 +81,28 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var getCarrotButton: ImageButton
     private lateinit var gameEndButton: ImageButton
     private lateinit var backPressButton: ImageButton
-
     private lateinit var characters: ImageView
     private lateinit var carrotBox: ImageView
     private lateinit var overlayView: ConstraintLayout
     private lateinit var ani: AnimationDrawable
     private lateinit var handler: Handler
-    private var seconds = 0
+
+    private var seconds = 0     //seconds = 식사시간
     private var startTime: Long = 0
     private var elapsedTime: Long = 0
     private var isTimerRunning: Boolean = false
-    private var chewCount = 0
-    private var totalCnt = 0
-    private var successCount = 0
-    private var avgABiteCnt = 0
-    private var spoonCount = 0
-    private var liveChewCount = MutableLiveData(0)
+    private var chewCnt = 0             //chewCount = 저작횟수(뽑기 -> 초기화)
+    private var totalCnt = 0            //totalCnt = 총 저작횟수(뽑기 -> 초기화X)
+    private var successCnt = 0          //succssCnt = 성공 횟수(chewCount>=30 -> +1)
+    private var avgABiteCnt = 0         //avgABiteCnt = 한 입당 저작횟수(totalCnt/spoonCnt)
+    private var successChewCnt = 0      //successChewCnt = 성공할 때의 총 저작횟수
+    private var successAvgABiteCnt = 0  //successAvgABiteCnt = 성공 시에 한 입당 저작횟수(successChewCnt/successCnt)
+    private var failChewCnt = 0         //failChewCnt = 실패할 때의 총 저작횟수
+    private var failAvgABiteCnt = 0     //failAvgABiteCnt = 실패 시에 한 입당 저작횟수(failChewCnt/(spoonCnt-successCnt))
+    private var spoonCnt = 0            //spoonCnt = 한 입 횟수(수저횟수)
 
-    private var isStart : Boolean = false
-
+    private var isStart : Boolean = false                   //게임 시작 유무
+    private var isBluetoothConnected : Boolean = false      //블루투스 연결 유무
 
     companion object {
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
@@ -129,7 +122,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                     if(isStart) {
                         characters.layoutParams.width = 1200
                         characters.requestLayout()
-                        chewCount++
+                        chewCnt++
                         totalCnt++
                         animateCharacter()
                     }
@@ -140,6 +133,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         val intent = Intent(this, BluetoothService::class.java)
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
 
+
+
         //상단바랑 하단바 숨기기 -> 전체화면
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val windowInsetsCompat = WindowInsetsControllerCompat(window, window.decorView)
@@ -147,7 +142,6 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         windowInsetsCompat.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         windowInsetsCompat.hide(WindowInsetsCompat.Type.navigationBars())
-        bluetoothPermissionChecker()
 
         handler = Handler()
         createClouds()
@@ -166,6 +160,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
             carrotBox.isVisible = true
             gameEndButton.isVisible = true
             getCarrotButton.isVisible = true
+            //타이머 시작
             startTimer()
             isStart = true
         }
@@ -186,67 +181,45 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
         ani.isOneShot = true
 
-
-        // 해당 장치가 블루투스 기능을 지원하는지 알아오는 메서드
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
-        mBluetoothHandler = object : Handler() {
-            @SuppressLint("HandlerLeak")
-            override fun handleMessage(msg: Message) {
-                if (msg.what == BT_MESSAGE_READ) {  //what =
-                    var readMessage: String? = null
-                    try {
-                        readMessage = String((msg.obj as ByteArray), StandardCharsets.UTF_8)
-                    } catch (e: UnsupportedEncodingException) {
-                        e.printStackTrace()
-                    }
-                    Log.d("handleMessage", readMessage!!)
-                    if(readMessage != "Reset"){
-                        if(isStart) {
-                            characters.layoutParams.width = 1200
-                            characters.requestLayout()
-                            chewCount++
-                            totalCnt++
-                            animateCharacter()
-                        }
-                    }
-                }
-            }
-        }
+        //블루투스 연결 체크
+        val pref: SharedPreferences = getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
+        isBluetoothConnected = pref.getBoolean("isBluetoothConnected", false)
+        checkBluetoothConnected(isBluetoothConnected)
     }
 
 
     override fun onClick(v: View?) {
 
         when (v?.id) {
-            R.id.get_chew -> {
-
-            }
-
             R.id.get_carrot -> {
+                //뽑기 -> 성공(chewCnt >= 30)과 실패에 따른 활동
+                //뽑기 시 발생하는 애니메이션은 저작활동 시 발생하는 애니메이션과 너비가 다르기 때문에 너비를 Wrap_Content로 설정
                 characters.layoutParams.width = RelativeLayout.LayoutParams.WRAP_CONTENT
                 characters.requestLayout()
-                spoonCount++
-                if (chewCount >= 30) {
-                    successCount++
+                spoonCnt++
+                if (chewCnt >= 30) {
+                    successCnt++
+                    successChewCnt += chewCnt
+                    //성공 -> success_get_carrot애니메이션 보여줌
                     characters.setImageResource(R.drawable.success_get_carrot)
                     ani = binding.characters.drawable as AnimationDrawable
                     ani.start()
                 } else {
+                    failChewCnt += chewCnt
                     characters.setImageResource(R.drawable.fail_get_carrot)
                     ani = binding.characters.drawable as AnimationDrawable
                     ani.start()
                 }
-
-                chewCount = 0
+                chewCnt = 0
                 setCarrotCarrier()
             }
 
             R.id.game_end_button -> {
                 showEndDialog()
                 try {
-                    avgABiteCnt = totalCnt / spoonCount
-
+                    avgABiteCnt = totalCnt / spoonCnt
+                    successAvgABiteCnt = successChewCnt / successCnt
+                    failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
 
                     setCarrotCarrier()
                 } catch (_: Exception) {
@@ -258,26 +231,16 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 carrotBox.isVisible = false
                 gameEndButton.isVisible = false
                 getCarrotButton.isVisible = false
+                //타이머 종료
                 stopTimer()
-                Toast.makeText(this, seconds.toString()+"초, 성공횟수 :"+ successCount.toString() + "수저횟수 :"+spoonCount.toString() + "평균저작횟수 : "+avgABiteCnt.toString()+"총 저작횟수 : "+totalCnt.toString(), Toast.LENGTH_LONG).show()
-                successCount = 0
-                spoonCount = 0
-                chewCount = 0
+                Toast.makeText(this, seconds.toString()+"초, 성공횟수 :"+ successCnt.toString() + "수저횟수 :"+spoonCnt.toString() + "평균저작횟수 : "+avgABiteCnt.toString()+"총 저작횟수 : "+totalCnt.toString(), Toast.LENGTH_LONG).show()
+                //모든 데이터 리셋
+                resetAllData()
             }
-
-            R.id.game_back_press -> {
-                onBackPressed()
-            }
-            R.id.ble_connect_button -> {
-                bluetoothOn()
-                listPairedDevices()
-            }
-
-
         }
     }
 
-
+    //타이머
     private fun startTimer() {
         if (!isTimerRunning) {
             startTime = SystemClock.elapsedRealtime()
@@ -305,22 +268,25 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun showEndDialog() {
+        //게임 종료 시 dialog에 성공횟수 데이터 보내면서 열기
         val dialog = GameEndDialog()
         val args = Bundle()
-        args.putString("successNum", successCount.toString())
+        args.putString("successNum", successCnt.toString())
         dialog.arguments = args
         dialog.show(supportFragmentManager, "click_game_end")
     }
 
     fun setMainActivityStart() {
-/*        if (bound) {
-            unbindService(connection)
-            bound = false
-        }*/
+        //데이터 안받기
         unregisterReceiver(bluetoothReceiver)
 
+        //RecordActivity -> MainActivity로 이동할 때 activity 를 초기화하기 때문에 sharedPreference도 같이 초기화 됨
+        //따라서 초기화하기 전에 intent에 연결 유무 boolean값 넣어주고 MainActivity로 이동
+        val pref: SharedPreferences = getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
+        val isBluetoothConnected = pref.getBoolean("isBluetoothConnected", false)
 
         val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("inBluetoothConnected", isBluetoothConnected)
         //activity 쌓이지 않도록 activity 초기화
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -328,7 +294,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun animateCharacter() {
-        when (chewCount) {
+        //각 저작횟수에 따른 캐릭터 애니메이션
+        when (chewCnt) {
             in 0..4 -> {
                 characters.setImageResource(R.drawable.pull_carrot_1)
                 ani = binding.characters.drawable as AnimationDrawable
@@ -381,6 +348,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun createClouds() {
+        //구름 생성
         for (x in 0 until 20) {
             val cloud = createCloud()
             val set = ConstraintSet()
@@ -407,13 +375,16 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 Random.nextInt(100, 250),
                 Random.nextInt(100, 250)
             )
+            //투명도 = alpha
             alpha = Random.nextDouble(0.4, 0.8).toFloat()
+            //이동 범위 = translationX
             translationX = Random.nextDouble(-500.0, 300.0).toFloat()
         }
     }
 
     private fun animateCloud(cloud: ImageView) {
         ObjectAnimator.ofFloat(cloud, "translationX", -2400f).apply {
+            //속도 = duration(클 수록 느림)
             duration = Random.nextLong(18000, 23000)
             repeatCount = ValueAnimator.INFINITE
             start()
@@ -421,7 +392,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setCarrotCarrier() {
-        when (successCount) {
+        //성공횟수에 따른 당근 보관함 이미지 변경
+        when (successCnt) {
             0 -> {
                 carrotBox.setImageResource(R.drawable.carrot_0)
             }
@@ -508,190 +480,29 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    fun bluetoothPermissionChecker() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            requestPermissions(
-                arrayOf<String>(
-                    Manifest.permission.BLUETOOTH,
-                    Manifest.permission.BLUETOOTH_SCAN,
-                    Manifest.permission.BLUETOOTH_ADVERTISE,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ),
-                BT_REQUEST_ENABLE
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(
-                arrayOf<String>(
-                    Manifest.permission.BLUETOOTH
-                ),
-                BT_REQUEST_ENABLE
-            )
-        }
+    private fun resetAllData(){
+        //게임 종료 -> 모든 데이터 리셋
+        seconds = 0
+        startTime = 0
+        elapsedTime = 0
+        isTimerRunning = false
+        chewCnt = 0
+        totalCnt = 0
+        successCnt = 0
+        avgABiteCnt = 0
+        successChewCnt = 0
+        successAvgABiteCnt = 0
+        failChewCnt = 0
+        failAvgABiteCnt = 0
+        spoonCnt = 0
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    //블루투스 연결 확인
+    //연결 O => 게임시작 버튼 보임
+    //연결 X => 게임시작 버튼 안보임
+    private fun checkBluetoothConnected(isConnected : Boolean){
+
+        gameStartButton.isVisible = isConnected
+
     }
-
-    // 블루투스 활성화 메서드
-    @SuppressLint("MissingPermission")
-    fun bluetoothOn() {
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(applicationContext, "블루투스를 지원하지 않는 기기입니다.", Toast.LENGTH_LONG).show()
-        } else {
-            if (mBluetoothAdapter.isEnabled) {
-                Toast.makeText(applicationContext, "블루투스가 이미 활성화 되어 있습니다.", Toast.LENGTH_LONG)
-                    .show()
-            } else {
-                Toast.makeText(applicationContext, "블루투스가 활성화 되어 있지 않습니다.", Toast.LENGTH_LONG)
-                    .show()
-                val intentBluetoothEnable = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                startActivityForResult(intentBluetoothEnable, BT_REQUEST_ENABLE)
-            }
-        }
-    }
-
-    // 블루투스 비활성화 메서드
-    @SuppressLint("MissingPermission")
-    fun bluetoothOff() {
-        if (mBluetoothAdapter.isEnabled) {
-            mBluetoothAdapter.disable()
-            Toast.makeText(this, "블루투스가 비활성화 되었습니다.", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "블루투스가 이미 비활성화 되어 있습니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == BT_REQUEST_ENABLE) {
-            if (resultCode == RESULT_OK) { // 블루투스 활성화를 확인을 클릭하였다면
-                Toast.makeText(this, "블루투스 활성화", Toast.LENGTH_LONG).show()
-            } else if (resultCode == RESULT_CANCELED) { // 블루투스 활성화를 취소를 클릭하였다면
-                Toast.makeText(this, "취소", Toast.LENGTH_LONG).show()
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    @SuppressLint("MissingPermission")
-    fun listPairedDevices() {
-        if (mBluetoothAdapter.isEnabled) {
-            mPairedDevices = mBluetoothAdapter.bondedDevices
-            if ((mPairedDevices as MutableSet<BluetoothDevice>?)!!.size > 0) {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("장치 선택")
-                mListPairedDevices = ArrayList()
-                for (device in (mPairedDevices as MutableSet<BluetoothDevice>?)!!) {
-                    (mListPairedDevices as ArrayList<String>).add(device.name)
-                    //mListPairedDevices.add(device.getName() + "\n" + device.getAddress());
-                }
-                val items = (mListPairedDevices as ArrayList<String>).toTypedArray<CharSequence>()
-                (mListPairedDevices as ArrayList<String>).toTypedArray<CharSequence>()
-                builder.setItems(
-                    items
-                ) { dialog: DialogInterface?, item: Int ->
-                    connectSelectedDevice(
-                        items[item].toString()
-                    )
-                }
-                val alert = builder.create()
-                alert.show()
-            } else {
-                Toast.makeText(this, "페어링된 장치가 없습니다.", Toast.LENGTH_LONG).show()
-            }
-        } else {
-            Toast.makeText(this, "블루투스가 비활성화 되어 있습니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    fun connectSelectedDevice(selectedDeviceName: String) {
-        for (tempDevice in mPairedDevices) {
-            if (selectedDeviceName == tempDevice.name) {
-                mBluetoothDevice = tempDevice
-                break
-            }
-        }
-        try {
-            mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BT_UUID)
-            mBluetoothSocket.connect()
-            mThreadConnectedBluetooth = ConnectedBluetoothThread(mBluetoothSocket)
-            mThreadConnectedBluetooth.start()
-            mBluetoothHandler.obtainMessage(BT_CONNECTING_STATUS, 1, -1)
-                .sendToTarget()
-        } catch (e: IOException) {
-            Toast.makeText(this, "블루투스 연결 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show()
-            Log.e("Error Reason", e.toString())
-        }
-    }
-
-    inner class ConnectedBluetoothThread(private val mmSocket: BluetoothSocket) : Thread() {
-        private val mmInStream: InputStream?
-        private val mmOutStream: OutputStream?
-
-        // 스레드 생성자
-        init {
-            var tmpIn: InputStream? = null
-            var tmpOut: OutputStream? = null
-            try {
-                tmpIn = mmSocket.inputStream
-                tmpOut = mmSocket.outputStream
-            } catch (e: IOException) {
-
-                Toast.makeText(applicationContext, "소켓 연결 중 오류가 발생했습니다.", Toast.LENGTH_LONG)
-                    .show()
-            }
-            mmInStream = tmpIn
-            mmOutStream = tmpOut
-        }
-
-        // run() 메서드
-        override fun run() {
-            val buffer = ByteArray(1024)
-            var bytes: Int
-            while (true) {
-                try {
-                    bytes = mmInStream!!.available() //현재 읽을 수 있는 바이트 수를 리턴
-                    if (bytes != 0) {
-                        SystemClock.sleep(100)
-                        bytes = mmInStream.available()
-                        bytes = mmInStream.read(
-                            buffer,
-                            0,
-                            bytes
-                        ) //read(byte[]b, int off, int len) -> len만큼 읽어서 byte[]b의 off위치에 저장하고 읽은 바이트 수를 리턴
-                        Log.d("run", "run")
-                        mBluetoothHandler.obtainMessage(BT_MESSAGE_READ, bytes, -1, buffer).sendToTarget()
-                    }
-                } catch (e: IOException) {
-                    break
-                }
-            }
-        }
-
-        fun write(str: String) {
-            val bytes = str.toByteArray()
-            try {
-                mmOutStream!!.write(bytes)
-            } catch (e: IOException) {
-                Toast.makeText(applicationContext, "데이터 전송 중 오류가 발생했습니다.", Toast.LENGTH_LONG)
-                    .show()
-            }
-        }
-
-        fun cancel() {
-            try {
-                mmSocket.close()
-            } catch (e: IOException) {
-                Toast.makeText(applicationContext, "소켓 해제 중 오류가 발생했습니다.", Toast.LENGTH_LONG)
-                    .show()
-            }
-        }
-    }
-    //----------------------------------------------------------------------------------------------------
-
-
-
-
-
 }
