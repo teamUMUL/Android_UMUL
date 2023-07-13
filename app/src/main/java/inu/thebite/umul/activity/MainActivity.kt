@@ -22,6 +22,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.TooltipCompat
@@ -32,6 +33,7 @@ import inu.thebite.umul.databinding.ActivityMainBinding
 import inu.thebite.umul.fragment.bottomNavFragment.*
 import inu.thebite.umul.service.BluetoothService
 import java.io.IOException
+import java.time.LocalDate
 import java.util.*
 
 
@@ -63,6 +65,7 @@ class MainActivity : AppCompatActivity() {
     val BT_REQUEST_ENABLE = 1
     val BT_MESSAGE_READ = 2
     val BT_CONNECTING_STATUS = 3
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = binding.bottomNavigationView
         val bottomNavigationMenu: Menu = bottomNavigation.menu
         val playBtn = binding.playButton
+        val bundle = Bundle()
         setContentView(binding.root)
 
         //가운데 빈 버튼 비활성화
@@ -110,8 +114,11 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.mainFrame, HomeFragment()).commit()
                 }
                 R.id.report -> {
+                    bundle.putString("date", LocalDate.now().toString())
+                    val reportFragment = ReportFragment()
+                    reportFragment.arguments = bundle
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.mainFrame, ReportFragment()).commit()
+                        .replace(R.id.mainFrame, reportFragment).commit()
                 }
                 R.id.BMI -> {
                     supportFragmentManager.beginTransaction()

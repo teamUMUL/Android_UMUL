@@ -6,13 +6,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -69,6 +72,9 @@ class ReportFragment : Fragment() {
         viewGroup = inflater.inflate(R.layout.fragment_report, container, false) as ViewGroup
         val viewPager: ViewPager2 = viewGroup.findViewById<ViewPager2>(R.id.viewPager)
         val tabs: TabLayout = viewGroup.findViewById<TabLayout>(R.id.tabs)
+        var date = arguments?.getString("date")!!
+        Log.d("argumentDate", date)
+        setFragmentResult(requestKey, bundleOf(resultKey to date))
 
         calendarList = viewGroup.findViewById(R.id.calendar_recycler_view)
         mLayoutManager = LinearLayoutManager(viewGroup.context)
@@ -182,11 +188,11 @@ class ReportFragment : Fragment() {
         }
 
 
+
         calendarAdapter.setOnItemClickListener(object : CalendarAdapter.OnItemClickListener {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onItemClick(position: Int) {
                 val clickCalendar = Calendar.getInstance()
-                val bundle = Bundle()
                 clickCalendar.time = dates[position]
                 selectedDay = clickCalendar[Calendar.DAY_OF_MONTH]
 
@@ -205,16 +211,11 @@ class ReportFragment : Fragment() {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 outputDate = LocalDate.parse("$selectedYear-$outputMonth-$outputDay", formatter)
                 println(outputDate)
+//                val bundle = bundleOf(resultKey to outputDate.toString())
+//                setFragmentResult(requestKey, bundle)
 
             }
         })
-    }
-
-
-
-
-    inner class sendDate() {
-
     }
 
 
@@ -235,6 +236,13 @@ class ReportFragment : Fragment() {
             Intent.ACTION_VIEW, Uri.parse("https://bit.ly/aboutthebite")
         )
         requireContext().startActivity(browserIntent);
+    }
+
+    companion object {
+        // FragmentResult에 데이터 전달을 위한 RequestKey
+        const val requestKey = "requestKey"
+        // Bundle에 저장할 데이터 Key
+        const val resultKey = "date"
     }
 }
 

@@ -1,9 +1,11 @@
 package inu.thebite.umul.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -14,6 +16,7 @@ import inu.thebite.umul.fragment.dayFragment.ReportFragment1_2
 import inu.thebite.umul.fragment.dayFragment.ReportFragment1_3
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.FragmentReport1Binding
+import java.time.LocalDate
 
 
 class ReportFragment1 : Fragment(), View.OnClickListener {
@@ -56,6 +59,7 @@ class ReportFragment1 : Fragment(), View.OnClickListener {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(v: View?){
         val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
 

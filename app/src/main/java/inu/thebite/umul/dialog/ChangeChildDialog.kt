@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,12 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import inu.thebite.umul.R
 import inu.thebite.umul.adapter.ChangeChildAdapter
+import inu.thebite.umul.model.DailyReportTotalCountResponse
+import inu.thebite.umul.model.SaveChildrenResponse
+import inu.thebite.umul.retrofit.RetrofitAPI
+import retrofit2.Call
+import retrofit2.Response
+import java.time.LocalDate
 
 class ChangeChildDialog : DialogFragment(), View.OnClickListener {
     private lateinit var viewGroup: ViewGroup
@@ -24,7 +31,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
     lateinit var mLayoutManager: LinearLayoutManager
     val childKey : MutableList<String> = mutableListOf()
     val childValue : MutableList<String> = mutableListOf()
-
+    var memberNumber = "010-1234-5678"
 
     var selectedChildID : String? = null
 
@@ -36,6 +43,31 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         viewGroup = inflater.inflate(R.layout.change_child_dialog, container, false) as ViewGroup
+
+        RetrofitAPI.emgMedService.getChildrenList(memberNumber)
+            .enqueue(object : retrofit2.Callback<List<SaveChildrenResponse>>{
+                override fun onResponse(
+                    call: Call<List<SaveChildrenResponse>>,
+                    response: Response<List<SaveChildrenResponse>>
+                ) {
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        Log.d("자녀정보 리스트 가져오기 성공", "$result")
+
+                        for (i : Int in 1..result!!.size){
+                            var key = "자녀$i"
+                            childKey.add(key)
+                            childValue.add(arguments?.getString(key)?:"default")
+                        }
+
+                    }
+                }
+
+                override fun onFailure(call: Call<List<SaveChildrenResponse>>, t: Throwable) {
+                    Log.d("자녀정보 리스트 가져오기 실패", t.message.toString())
+                }
+            })
+
         //argument to map
         for (i : Int in 1..arguments?.size()!!){
             var key = "자녀$i"
