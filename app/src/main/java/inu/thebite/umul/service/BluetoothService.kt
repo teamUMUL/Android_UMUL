@@ -101,7 +101,7 @@ class BluetoothService : Service() {
 
     fun disconnect() {
         connectedThread?.cancel()
-        callback?.isDisConnected()
+        callback?.disconnecting()
         try {
             bluetoothSocket?.close()
             bluetoothSocket = null
@@ -138,10 +138,10 @@ class BluetoothService : Service() {
                     connectedThread.start()
                     bluetoothHandler.obtainMessage(BT_CONNECTING_STATUS, 1, -1)
                         .sendToTarget()
-                    callback?.isConnected()
+                    callback?.connecting()
 
                 } catch (e: IOException) {
-                    callback?.isDisConnected()
+                    callback?.disconnecting()
                     Log.e("Error Reason", e.toString())
                 }
             }catch (e : SecurityException){

@@ -19,40 +19,36 @@ import inu.thebite.umul.dialog.ChangeChildDialog
 
 @Suppress("DEPRECATION")
 class HomeFragment : Fragment(), View.OnClickListener {
-    private var _binding : FragmentHomeBinding? = null
-    private val binding get() = _binding!!
-    private lateinit var homeBluetoothButton : ImageButton
+    private lateinit var binding : FragmentHomeBinding
     private lateinit var mainActivity : MainActivity
     private var isBluetoothConnected = false
     var data = mapOf<String, String>(
         "자녀1" to "홍길동(8세)","자녀2" to "홍길동(4세)","자녀3" to "홍길동(6세)","자녀4" to "홍길동(3세)","자녀5" to "홍길동(7세)",
         "자녀6" to "홍길동(8세)","자녀7" to "홍길동(4세)","자녀8" to "홍길동(6세)","자녀9" to "홍길동(3세)","자녀10" to "홍길동(7세)"
     )
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.homeFragment = this
         binding.lifecycleOwner = this
 
         return binding.root
     }
 
-
-
     //MainActivity에서 저장했던 연결 유무 값을 얻어서 연결 유무에 따른 이미지 설정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val pref: SharedPreferences = requireActivity().getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
-        isBluetoothConnected = pref.getBoolean("isBluetoothConnected", false)
+        getBluetoothConnectionInfo()
         checkBluetoothConnected(isBluetoothConnected)
 
         setOnClickListener()
     }
 
     private fun setOnClickListener(){
-        val recordButton : ImageButton  = binding.homeRecordButton
+        val recordButton = binding.homeRecordButton
         val bmiButton = binding.homeBmiButton
         val bleButton = binding.homeBleButton
         val shopBtn = binding.shopBtn
@@ -65,29 +61,24 @@ class HomeFragment : Fragment(), View.OnClickListener {
         shopBtn.setOnClickListener(this)
         logoBtn.setOnClickListener(this)
         child.setOnClickListener(this)
-
     }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        mainActivity = activity as MainActivity
-    }
-
 
     override fun onClick(v: View?){
         when(v?.id){
             R.id.home_record_button -> {
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordReadyFragment())
                     .commit()
+                //가운데 플레이버튼 체크
                 mainActivity.setRecordChecked()
             }
             R.id.home_bmi_button -> {
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, BMIFragment())
                     .commit()
+                //하단 바 BMI 체크
                 mainActivity.setBMIChecked()
             }
             R.id.shopBtn -> {
+                //노션 페이지 열기
                 setNotionUrl()
             }
             R.id.logo_home->{
@@ -101,34 +92,36 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
             R.id.child -> {
                 showChangeChildDialog()
-
             }
 
         }
     }
 
-    fun setNotionUrl(){
+    private fun setNotionUrl(){
         val browserIntent = Intent(
             Intent.ACTION_VIEW, Uri.parse("https://bit.ly/aboutthebite")
         )
         requireContext().startActivity(browserIntent);
     }
 
+    //sharedPreference에서 블루투스 연결 유무 확인 정보 얻음
+    private fun getBluetoothConnectionInfo(){
+        val pref: SharedPreferences = requireActivity().getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
+        isBluetoothConnected = pref.getBoolean("isBluetoothConnected", false)
+    }
 
-    fun checkBluetoothConnected(isConnected : Boolean){
+    private fun checkBluetoothConnected(isConnected : Boolean){
+        //블루투스 연결 유무에 따른 이미지 변경
         if(isConnected){
             binding.homeBleButton.setImageResource(R.drawable.bluetooth_connected)
         }
         else{
             binding.homeBleButton.setImageResource(R.drawable.bluetooth_disconnected)
-
         }
-
     }
 
-
-
     private fun showChangeChildDialog(){
+        //자녀 리스트를 argument로 ChangeChildDialog로 전달
         val childDialog = ChangeChildDialog()
         val args = Bundle()
         for (key in data.keys) {

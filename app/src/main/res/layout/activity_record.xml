@@ -131,14 +131,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:adjustViewBounds="true"/>
-        <Button
-            android:id="@+id/ble_connect_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{RecordActivity::onClick}"
-            android:text="블루투스 연결"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+
 
 
 
