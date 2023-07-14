@@ -38,7 +38,7 @@ class RetrofitChildren(
     }
 
     fun update() {
-        service.updateChildren(childrenId, childInfo)
+        service.updateChildren("김아무개", childInfo)
             .enqueue(object : retrofit2.Callback<SaveChildrenResponse> {
                 override fun onResponse(
                     call: Call<SaveChildrenResponse>,
@@ -55,7 +55,7 @@ class RetrofitChildren(
     }
 
     fun delete() {
-        service.deleteChildren(childrenId, memberNumber)
+        service.deleteChildren("김아무개", memberNumber)
             .enqueue(object : retrofit2.Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     val result = response.body()
