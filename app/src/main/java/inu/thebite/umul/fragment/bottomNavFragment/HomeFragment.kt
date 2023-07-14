@@ -22,10 +22,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var binding : FragmentHomeBinding
     private lateinit var mainActivity : MainActivity
     private var isBluetoothConnected = false
-    var data = mapOf<String, String>(
-        "자녀1" to "홍길동(8세)","자녀2" to "홍길동(4세)","자녀3" to "홍길동(6세)","자녀4" to "홍길동(3세)","자녀5" to "홍길동(7세)",
-        "자녀6" to "홍길동(8세)","자녀7" to "홍길동(4세)","자녀8" to "홍길동(6세)","자녀9" to "홍길동(3세)","자녀10" to "홍길동(7세)"
-    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -123,11 +120,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private fun showChangeChildDialog(){
         //자녀 리스트를 argument로 ChangeChildDialog로 전달
         val childDialog = ChangeChildDialog()
-        val args = Bundle()
-        for (key in data.keys) {
-            args.putString(key, data[key])
-        }
-        childDialog.arguments = args
         childDialog.show(childFragmentManager, "ChangeChildDialog")
     }
 

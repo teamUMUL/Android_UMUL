@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import inu.thebite.umul.R
+import inu.thebite.umul.activity.MainActivity
 import inu.thebite.umul.adapter.ChangeChildAdapter
 import inu.thebite.umul.model.SaveChildrenResponse
 import inu.thebite.umul.retrofit.RetrofitAPI
@@ -85,7 +86,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
             }
 
             R.id.child_add_button -> {
-
+                (activity as MainActivity?)?.startInsertInfoActivity()
             }
         }
     }

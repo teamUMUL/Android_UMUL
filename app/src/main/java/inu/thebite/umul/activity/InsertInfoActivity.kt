@@ -85,16 +85,23 @@ class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
                     weight = weightEdit.text.toString().toFloat()
                     birthDate = birthDateEdit.text.toString()
                     significant = significantEdit.text.toString()
+                    if(gender != "" && height != 0.0f && weight!=0.0f && birthDate != ""){
+                        Toast.makeText(this, gender+" "+height.toString()+"cm "+weight.toString()+"kg "+birthDate+" "+significant, Toast.LENGTH_LONG).show()
+                        //DB저장
+
+                        //--------
+                        setMainActivity()
+                    }
+                    else{
+                        Toast.makeText(this, "성별, 키, 몸무게, 생년월일울 입력해주세요", Toast.LENGTH_LONG).show()
+                    }
+
                 }catch (e : NumberFormatException){
                     Toast.makeText(this, "올바른 형태로 입력하세요", Toast.LENGTH_LONG).show()
 
                 }
 
-                Toast.makeText(this, gender+" "+height.toString()+"cm "+weight.toString()+"kg "+birthDate+" "+significant, Toast.LENGTH_LONG).show()
-                //DB저장
 
-                //--------
-                setMainActivity()
             }
         }
     }
