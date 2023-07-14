@@ -232,13 +232,9 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 resetAllData()
             }
             R.id.game_back_press->{
-                onDestroy()
+                finish()
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     //타이머

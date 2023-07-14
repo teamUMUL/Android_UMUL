@@ -62,7 +62,7 @@ class RecordReadyFragment : Fragment(), View.OnClickListener {
             //게임화면
             R.id.gameStart -> {
                 if(isBluetoothConnected){
-                    (activity as MainActivity?)?.setGameActivityStart()
+                    (activity as MainActivity?)?.startRecordActivity()
                 }
                 else{
                     setCustomToast("Tinyam과 연결해주세요")

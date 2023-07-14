@@ -165,9 +165,14 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     }
 
     //RecordReadyFragment에서 게임 실행 누를 시 RecordActivity 실행
-    fun setGameActivityStart(){
+    fun startRecordActivity(){
         val intent = Intent(this, RecordActivity::class.java)
         startActivityForResult(intent, 2)
+    }
+
+    fun startInsertInfoActivity(){
+        val intent = Intent(this, InsertInfoActivity::class.java)
+        startActivity(intent)
     }
 
     //하단 바에서 BMI선택
