@@ -52,8 +52,8 @@ class ReportFragment1_1 : Fragment() {
         barChartRender.setRadius(30)
         totalCntGraph.renderer = barChartRender
         totalCntGraph.setDrawValueAboveBar(false)
-//        setFragmentResultCallback()
-        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, LocalDate.now().toString())
+
+        RetrofitAPI.emgMedService.getDailyReportWithTotalCount("김아무개", LocalDate.now().toString())
                 .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
                     override fun onResponse(
                         call: Call<DailyReportTotalCountResponse>,
@@ -76,82 +76,6 @@ class ReportFragment1_1 : Fragment() {
         return view
     }
 
-//    @SuppressLint("UseRequireInsteadOfGet")
-//    private fun setFragmentResultCallback() {
-//        setFragmentResultListener("requestKey") { requestKey, bundle ->
-//            val date = bundle.getString("date").toString()
-//            Log.d("FragmentResultDate", date)
-//
-//            var totalCntGraph : BarChart = view!!.findViewById(R.id.graph1)
-//            totalCntGraph.setDrawValueAboveBar(false)
-//            val barChartRender =
-//                CustomBarChartRender(totalCntGraph, totalCntGraph.animator, totalCntGraph.viewPortHandler)
-//            barChartRender.setRadius(30)
-//            totalCntGraph.renderer = barChartRender
-//            totalCntGraph.setDrawValueAboveBar(false)
-//            /**
-//             * Connection to Server
-//             * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
-//             * 우선은 default 1로 설정
-//             */
-//            RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, date)
-//                .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
-//                    override fun onResponse(
-//                        call: Call<DailyReportTotalCountResponse>,
-//                        response: Response<DailyReportTotalCountResponse>
-//                    ) {
-//                        if (response.isSuccessful) {
-//                            val result = response.body()
-//                            Log.d("총 저작횟수 가져오기 성공", "$result")
-//                            initBarCHart(totalCntGraph, response.body()!!.totalCount)
-//                        }
-//                    }
-//
-//                    override fun onFailure(call: Call<DailyReportTotalCountResponse>, t: Throwable) {
-//                        Log.d("총 저작횟수 가져오기 실패", t.message.toString())
-//                    }
-//                })
-//        }
-//    }
-
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        setFragmentResultListener(ReportFragment.requestKey) { _, bundle ->
-//            val date = bundle.getString(ReportFragment.resultKey).toString()
-//            Log.d("FragmentResultDate", date)
-//
-//            var totalCntGraph : BarChart = view.findViewById(R.id.graph1)
-//            totalCntGraph.setDrawValueAboveBar(false)
-//            val barChartRender =
-//                CustomBarChartRender(totalCntGraph, totalCntGraph.animator, totalCntGraph.viewPortHandler)
-//            barChartRender.setRadius(30)
-//            totalCntGraph.renderer = barChartRender
-//            totalCntGraph.setDrawValueAboveBar(false)
-//            /**
-//             * Connection to Server
-//             * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
-//             * 우선은 default 1로 설정
-//             */
-//            RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, date)
-//                .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
-//                    override fun onResponse(
-//                        call: Call<DailyReportTotalCountResponse>,
-//                        response: Response<DailyReportTotalCountResponse>
-//                    ) {
-//                        if (response.isSuccessful) {
-//                            val result = response.body()
-//                            Log.d("총 저작횟수 가져오기 성공", "$result")
-//                            initBarCHart(totalCntGraph, response.body()!!.totalCount)
-//                        }
-//                    }
-//
-//                    override fun onFailure(call: Call<DailyReportTotalCountResponse>, t: Throwable) {
-//                        Log.d("총 저작횟수 가져오기 실패", t.message.toString())
-//                    }
-//                })
-//        }
-//    }
 
     private fun initBarCHart(barChart: BarChart, childCnt: Float) {
 

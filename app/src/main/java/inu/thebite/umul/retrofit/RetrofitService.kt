@@ -16,7 +16,6 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.time.LocalDate
 
 interface RetrofitService {
 
@@ -28,44 +27,44 @@ interface RetrofitService {
 
     // 자녀 정보 수정
     @Headers("Content-Type: application/json")
-    @PATCH("{childrenId}/children")
-    fun updateChildren(@Path("childrenId") childrenId: Int,
+    @PATCH("{childName}/children")
+    fun updateChildren(@Path("childName") childName: String,
                      @Body saveChildrenRequest: SaveChildrenRequest) : Call<SaveChildrenResponse>
 
     // 자녀 정보 삭제
     @Headers("Content-Type: application/json")
-    @DELETE("{childrenId}/children/{memberNumber}")
-    fun deleteChildren(@Path("childrenId") childrenId: Int,
+    @DELETE("{childName}/children/{memberNumber}")
+    fun deleteChildren(@Path("childName") childName: String,
                         @Path("memberNumber") memberNumber: String) : Call<Void>
 
     // 저장되어 있는 정보로 BMI 계산
     @Headers("Content-Type: application/json")
-    @GET("{childrenId}/children/bmi")
-    fun getChildrenBmi(@Path("childrenId") childrenId: Int) : Call<BmiResponse>
+    @GET("{childName}/children/bmi")
+    fun getChildrenBmi(@Path("childName") childName: String) : Call<BmiResponse>
 
     // 식습관 기록 저장
     @Headers("Content-Type: application/json")
-    @POST("{memberNumber}/{childrenId}/save")
+    @POST("{memberNumber}/{childName}/save")
     fun saveRecord(@Path("memberNumber") memberNumber: String,
-                    @Path("childrenId") childrenId: Int,
+                    @Path("childName") childName: String,
                     @Body saveRecordRequest: SaveRecordRequest) : Call<SaveRecordRequest>
 
     // 일일레포트 총 저작횟수 정보 가져오기
     @Headers("Content-Type: application/json")
-    @GET("{childrenId}/dailyReport/totalCount")
-    fun getDailyReportWithTotalCount(@Path("childrenId") childrenId: Int,
+    @GET("{childName}/dailyReport/totalCount")
+    fun getDailyReportWithTotalCount(@Path("childName") childName: String,
                                      @Query("date") date : String) : Call<DailyReportTotalCountResponse>
 
     // 일일레포트 총 식사시간 정보 가져오기
     @Headers("Content-Type: application/json")
-    @GET("{childrenId}/dailyReport/totalTime")
-    fun getDailyReportWithTotalTime(@Path("childrenId") childrenId: Int,
+    @GET("{childName}/dailyReport/totalTime")
+    fun getDailyReportWithTotalTime(@Path("childName") childName: String,
                                     @Query("date") date : String) : Call<DailyReportTotalTimeResponse>
 
     // 일일레포트 한 입당 저작횟수 정보 가져오기
     @Headers("Content-Type: application/json")
-    @GET("{childrenId}/dailyReport/biteCountByMouth")
-    fun getDailyReportBiteCountByMouth(@Path("childrenId") childrenId: Int,
+    @GET("{childName}/dailyReport/biteCountByMouth")
+    fun getDailyReportBiteCountByMouth(@Path("childName") childName: String,
                                        @Query("date") date : String) : Call<DailyReportBiteCountByMouthResponse>
 
     // 저장되어 있는 자녀 리스트 가져오기

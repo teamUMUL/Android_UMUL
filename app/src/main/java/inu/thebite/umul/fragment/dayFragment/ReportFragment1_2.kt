@@ -55,7 +55,7 @@ class ReportFragment1_2 : Fragment() {
          * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
          * 우선은 default 1로 설정
          */
-        RetrofitAPI.emgMedService.getDailyReportWithTotalTime(1, LocalDate.now().toString())
+        RetrofitAPI.emgMedService.getDailyReportWithTotalTime("김아무개", LocalDate.now().toString())
             .enqueue(object : retrofit2.Callback<DailyReportTotalTimeResponse> {
                 override fun onResponse(
                     call: Call<DailyReportTotalTimeResponse>,

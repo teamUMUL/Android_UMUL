@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,15 +37,14 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
     }
 
     override fun getItemCount(): Int {
-        return childKey.size
+        return childValue.size
     }
 
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ChangeChildAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        val childNum = childKey[position]
+//        val childNum = childKey[position]
         val childInfo = childValue[position]
-
         val displayChildID = "자녀"+(position+1).toString()
 //        holder.childNum.text = childNum
         holder.childInfo.text = childInfo
@@ -58,12 +58,10 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
 
         if (index == position){
             makeItemSelected(holder)
-            Toast.makeText(holder.itemView.context, "$childInfo",Toast.LENGTH_SHORT).show();
         }
         else{
             if (displayChildID == selectedChildID
                 && selectFirstChild) {
-                Toast.makeText(holder.itemView.context, displayChildID.toString(), Toast.LENGTH_SHORT).show()
                 makeItemSelected(holder)
             }
             else {

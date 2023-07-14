@@ -33,7 +33,9 @@ class BMIFragment : Fragment(), View.OnClickListener {
         binding.bmiFragment = this
         binding.lifecycleOwner = this
 
-        RetrofitAPI.emgMedService.getChildrenBmi(1)
+
+        // parameter 형식으로 수정하기 -> 고정값 x
+        RetrofitAPI.emgMedService.getChildrenBmi("홍길동")
             .enqueue(object : retrofit2.Callback<BmiResponse> {
                 override fun onResponse(
                     call: Call<BmiResponse>,
