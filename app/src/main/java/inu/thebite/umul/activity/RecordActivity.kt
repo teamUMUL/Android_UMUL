@@ -102,7 +102,6 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private var spoonCnt = 0            //spoonCnt = 한 입 횟수(수저횟수)
 
     private var isStart : Boolean = false                   //게임 시작 유무
-    private var isBluetoothConnected : Boolean = false      //블루투스 연결 유무
 
     companion object {
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
@@ -180,11 +179,6 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         ani = binding.characters.drawable as AnimationDrawable
 
         ani.isOneShot = true
-
-        //블루투스 연결 체크
-        val pref: SharedPreferences = getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
-        isBluetoothConnected = pref.getBoolean("isBluetoothConnected", false)
-        checkBluetoothConnected(isBluetoothConnected)
     }
 
 
@@ -237,7 +231,14 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 //모든 데이터 리셋
                 resetAllData()
             }
+            R.id.game_back_press->{
+                onDestroy()
+            }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     //타이머
@@ -495,14 +496,5 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         failChewCnt = 0
         failAvgABiteCnt = 0
         spoonCnt = 0
-    }
-
-    //블루투스 연결 확인
-    //연결 O => 게임시작 버튼 보임
-    //연결 X => 게임시작 버튼 안보임
-    private fun checkBluetoothConnected(isConnected : Boolean){
-
-        gameStartButton.isVisible = isConnected
-
     }
 }
