@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.Settings.System.DATE_FORMAT
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -17,7 +18,12 @@ import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityInsertInforBinding
 import inu.thebite.umul.databinding.ActivityMainBinding
 import inu.thebite.umul.databinding.ActivityRecordBinding
+import inu.thebite.umul.model.SaveChildrenRequest
+import inu.thebite.umul.retrofit.RetrofitAPI
+import inu.thebite.umul.retrofit.RetrofitChildren
 import java.lang.NumberFormatException
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
 
@@ -34,6 +40,9 @@ class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
     private var birthDate = ""
     private var significant = ""
     private var gender = ""
+    private var memberNumber = "010-1234-5678"      // 추후 번호 입력 activity에서 정보 전달 값으로 대체
+    private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_insert_infor)
@@ -52,7 +61,7 @@ class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
             if(b){
                 birthDateEdit.hint = ""
             }else{
-                birthDateEdit.hint = "생년월일을 입력해주세요(ex : 20180101)"
+                birthDateEdit.hint = "생년월일을 입력해주세요(ex : 2018-01-01)"
             }
         }
         significantEdit.onFocusChangeListener = View.OnFocusChangeListener { view, b ->
@@ -74,22 +83,30 @@ class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
                 finish()
             }
             R.id.radioButtonM -> {
-                gender = "남"
+                gender = "M"
             }
             R.id.radioButtonF -> {
-                gender = "여"
+                gender = "F"
             }
             R.id.button_addInfor -> {
                 try {
                     height = heightEdit.text.toString().toFloat() //값을 스트링으로 플로트로 저장
                     weight = weightEdit.text.toString().toFloat()
+                    // birthDate formatter 설정 필요 "yyyy-MM-dd"
                     birthDate = birthDateEdit.text.toString()
                     significant = significantEdit.text.toString()
                     if(gender != "" && height != 0.0f && weight!=0.0f && birthDate != ""){
                         Toast.makeText(this, gender+" "+height.toString()+"cm "+weight.toString()+"kg "+birthDate+" "+significant, Toast.LENGTH_LONG).show()
                         //DB저장
+                        val body = SaveChildrenRequest(
+                            "홍길동",
+                            birthDate,
+                            gender,
+                            height,
+                            weight
+                        )
 
-                        //--------
+                        RetrofitChildren(body, memberNumber).save()
                         setMainActivity()
                     }
                     else{

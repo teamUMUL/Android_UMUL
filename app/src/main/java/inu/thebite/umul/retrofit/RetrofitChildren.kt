@@ -9,7 +9,6 @@ import retrofit2.Response
 class RetrofitChildren(
     private val childInfo: SaveChildrenRequest,
     private val memberNumber: String,
-    private val childrenId: Int
 ) {
 
     private val service = RetrofitAPI.emgMedService
