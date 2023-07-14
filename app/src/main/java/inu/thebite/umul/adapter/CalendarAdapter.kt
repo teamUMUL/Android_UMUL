@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import inu.thebite.umul.fragment.bottomNavFragment.ReportFragment
 import inu.thebite.umul.R
-import inu.thebite.umul.fragment.dayFragment.DateItemClickListener
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,7 +24,6 @@ class CalendarAdapter(private val context: ReportFragment,
     private var index = -1
 
     private var selectCurrentDate = true
-    private var dateItemClickListener: DateItemClickListener? = null
     private val currentMonth = currentDate[Calendar.MONTH]
     private val currentYear = currentDate[Calendar.YEAR]
     private val currentDay = currentDate[Calendar.DAY_OF_MONTH]
@@ -89,20 +87,14 @@ class CalendarAdapter(private val context: ReportFragment,
                 && selectCurrentDate) {
                 Toast.makeText(holder.itemView.context, displayDay.toString(), Toast.LENGTH_SHORT)
                     .show()
-                holder.txtDay.setOnClickListener {
-                    val clickDate = "$selectedYear-$selectedMonth-$selectedDay"
-                    dateItemClickListener?.onDateItemClick(clickDate)
-                }
-
                 makeItemSelected(holder)
             }
             else
                 makeItemDefault(holder)
         }
 
-
-
     }
+
 
     inner class ViewHolder(itemView: View, val listener: OnItemClickListener): RecyclerView.ViewHolder(itemView) {
         var txtDay = itemView.findViewById<TextView>(R.id.txt_date)

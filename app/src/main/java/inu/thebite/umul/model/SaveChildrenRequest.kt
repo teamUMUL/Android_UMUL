@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class SaveChildrenRequest (
 
+    @SerializedName("name")
+    var name: String,
+
     @SerializedName("birth")
     var birth: String,
 

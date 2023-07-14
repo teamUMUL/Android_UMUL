@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import inu.thebite.umul.adapter.decoration.CustomBarChartRender
 import inu.thebite.umul.R
 import com.github.mikephil.charting.charts.BarChart
@@ -21,17 +22,19 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import inu.thebite.umul.fragment.bottomNavFragment.ReportFragment
 import inu.thebite.umul.model.DailyReportTotalCountResponse
 import inu.thebite.umul.retrofit.RetrofitAPI
 import retrofit2.Call
 import retrofit2.Response
+import java.time.LocalDate
 
 /**
  * Report 총 저작횟수
  */
 class ReportFragment1_1 : Fragment() {
 
-    var myChildTotalCnt : Float = 323.0f
+    var myChildTotalCnt : Float = 0f
     var averageTotalCnt : Float = 300.0f
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -49,38 +52,106 @@ class ReportFragment1_1 : Fragment() {
         barChartRender.setRadius(30)
         totalCntGraph.renderer = barChartRender
         totalCntGraph.setDrawValueAboveBar(false)
-
-        val date = arguments?.getString("date")!!
-
-
-        /**
-         * Connection to Server
-         * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
-         * 우선은 default 1로 설정
-         */
-        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, date)
-            .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
-                override fun onResponse(
-                    call: Call<DailyReportTotalCountResponse>,
-                    response: Response<DailyReportTotalCountResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val result = response.body()
-                        Log.d("총 저작횟수 가져오기 성공", "$result")
-                        initBarCHart(totalCntGraph, response.body()!!.totalCount)
+//        setFragmentResultCallback()
+        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, LocalDate.now().toString())
+                .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
+                    override fun onResponse(
+                        call: Call<DailyReportTotalCountResponse>,
+                        response: Response<DailyReportTotalCountResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val result = response.body()
+                            Log.d("총 저작횟수 가져오기 성공", "$result")
+                            initBarCHart(totalCntGraph, response.body()!!.totalCount)
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<DailyReportTotalCountResponse>, t: Throwable) {
-                    Log.d("총 저작횟수 가져오기 실패", t.message.toString())
-                }
-            })
+                    override fun onFailure(call: Call<DailyReportTotalCountResponse>, t: Throwable) {
+                        Log.d("총 저작횟수 가져오기 실패", t.message.toString())
+                    }
+                })
+
+        Log.d("reportFrag1", "들어옴!")
 
         return view
     }
 
+//    @SuppressLint("UseRequireInsteadOfGet")
+//    private fun setFragmentResultCallback() {
+//        setFragmentResultListener("requestKey") { requestKey, bundle ->
+//            val date = bundle.getString("date").toString()
+//            Log.d("FragmentResultDate", date)
+//
+//            var totalCntGraph : BarChart = view!!.findViewById(R.id.graph1)
+//            totalCntGraph.setDrawValueAboveBar(false)
+//            val barChartRender =
+//                CustomBarChartRender(totalCntGraph, totalCntGraph.animator, totalCntGraph.viewPortHandler)
+//            barChartRender.setRadius(30)
+//            totalCntGraph.renderer = barChartRender
+//            totalCntGraph.setDrawValueAboveBar(false)
+//            /**
+//             * Connection to Server
+//             * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
+//             * 우선은 default 1로 설정
+//             */
+//            RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, date)
+//                .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
+//                    override fun onResponse(
+//                        call: Call<DailyReportTotalCountResponse>,
+//                        response: Response<DailyReportTotalCountResponse>
+//                    ) {
+//                        if (response.isSuccessful) {
+//                            val result = response.body()
+//                            Log.d("총 저작횟수 가져오기 성공", "$result")
+//                            initBarCHart(totalCntGraph, response.body()!!.totalCount)
+//                        }
+//                    }
+//
+//                    override fun onFailure(call: Call<DailyReportTotalCountResponse>, t: Throwable) {
+//                        Log.d("총 저작횟수 가져오기 실패", t.message.toString())
+//                    }
+//                })
+//        }
+//    }
 
-
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//        setFragmentResultListener(ReportFragment.requestKey) { _, bundle ->
+//            val date = bundle.getString(ReportFragment.resultKey).toString()
+//            Log.d("FragmentResultDate", date)
+//
+//            var totalCntGraph : BarChart = view.findViewById(R.id.graph1)
+//            totalCntGraph.setDrawValueAboveBar(false)
+//            val barChartRender =
+//                CustomBarChartRender(totalCntGraph, totalCntGraph.animator, totalCntGraph.viewPortHandler)
+//            barChartRender.setRadius(30)
+//            totalCntGraph.renderer = barChartRender
+//            totalCntGraph.setDrawValueAboveBar(false)
+//            /**
+//             * Connection to Server
+//             * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
+//             * 우선은 default 1로 설정
+//             */
+//            RetrofitAPI.emgMedService.getDailyReportWithTotalCount(1, date)
+//                .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
+//                    override fun onResponse(
+//                        call: Call<DailyReportTotalCountResponse>,
+//                        response: Response<DailyReportTotalCountResponse>
+//                    ) {
+//                        if (response.isSuccessful) {
+//                            val result = response.body()
+//                            Log.d("총 저작횟수 가져오기 성공", "$result")
+//                            initBarCHart(totalCntGraph, response.body()!!.totalCount)
+//                        }
+//                    }
+//
+//                    override fun onFailure(call: Call<DailyReportTotalCountResponse>, t: Throwable) {
+//                        Log.d("총 저작횟수 가져오기 실패", t.message.toString())
+//                    }
+//                })
+//        }
+//    }
 
     private fun initBarCHart(barChart: BarChart, childCnt: Float) {
 
@@ -185,8 +256,5 @@ class ReportFragment1_1 : Fragment() {
             return value.toInt().toString()+"회"
         }
     }
-
-
-
 
 }

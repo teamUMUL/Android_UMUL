@@ -33,7 +33,7 @@ import java.time.LocalDate
  * Report 한 입당 저작횟수
  */
 class ReportFragment1_3 : Fragment() {
-    var myChildAvgABite : Float = 40.0f
+    var myChildAvgABite : Float = 0f
     var averageAvgABite : Float = 32.0f
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")

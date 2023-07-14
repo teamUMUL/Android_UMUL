@@ -6,7 +6,7 @@ import java.time.LocalDate
 data class SaveRecordRequest (
 
     @SerializedName("date")
-    var date: LocalDate,
+    var date: String,
 
     @SerializedName("slot")
     var slot: String,
@@ -21,5 +21,11 @@ data class SaveRecordRequest (
     var biteCountByMouth: Int,
 
     @SerializedName("successCount")
-    var successCount: Int
+    var successCount: Int,
+
+    @SerializedName("countPerSuccess")
+    var countPerSuccess: Int,
+
+    @SerializedName("countPerFail")
+    var countPerFail: Int
     )

@@ -33,7 +33,7 @@ import java.time.LocalDate
  * Report 총 식사시간
  */
 class ReportFragment1_2 : Fragment() {
-    var myChildTotalTime : Float = 2870.0f
+    var myChildTotalTime : Float = 0f
     var averageTotalTime : Float = 3300.0f
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")

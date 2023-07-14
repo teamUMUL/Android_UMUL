@@ -25,7 +25,6 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
             else -> "자녀1"
         }
     inner class ViewHolder(itemView: View, val listener: OnItemClickListener): RecyclerView.ViewHolder(itemView) {
-        //var childNum = itemView.findViewById<TextView>(R.id.child_num)
         var childInfo = itemView.findViewById<TextView>(R.id.child_info)
         var frameLayout = itemView.findViewById<FrameLayout>(R.id.child_layout)
     }
@@ -47,7 +46,7 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
         val childInfo = childValue[position]
 
         val displayChildID = "자녀"+(position+1).toString()
-        //holder.childNum.text = childNum
+//        holder.childNum.text = childNum
         holder.childInfo.text = childInfo
 
         holder.frameLayout!!.setOnClickListener {
@@ -59,7 +58,7 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
 
         if (index == position){
             makeItemSelected(holder)
-            Toast.makeText(holder.itemView.context, "$childNum : $childInfo",Toast.LENGTH_SHORT).show();
+            Toast.makeText(holder.itemView.context, "$childInfo",Toast.LENGTH_SHORT).show();
         }
         else{
             if (displayChildID == selectedChildID
