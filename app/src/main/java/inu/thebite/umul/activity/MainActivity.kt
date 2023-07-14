@@ -266,8 +266,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
             Toast.makeText(applicationContext, "블루투스를 지원하지 않는 기기입니다.", Toast.LENGTH_LONG).show()
         } else {
             if (mBluetoothAdapter.isEnabled) {
-                Toast.makeText(applicationContext, "블루투스가 이미 활성화 되어 있습니다.", Toast.LENGTH_LONG)
-                    .show()
+
             } else {
                 Toast.makeText(applicationContext, "블루투스가 활성화 되어 있지 않습니다.", Toast.LENGTH_LONG)
                     .show()

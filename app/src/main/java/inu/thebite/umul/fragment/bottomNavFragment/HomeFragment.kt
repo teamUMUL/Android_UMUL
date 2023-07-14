@@ -69,13 +69,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordReadyFragment())
                     .commit()
                 //가운데 플레이버튼 체크
-                mainActivity.setRecordChecked()
+                (activity as MainActivity?)?.setRecordChecked()
             }
             R.id.home_bmi_button -> {
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, BMIFragment())
                     .commit()
                 //하단 바 BMI 체크
-                mainActivity.setBMIChecked()
+                (activity as MainActivity?)?.setBMIChecked()
             }
             R.id.shopBtn -> {
                 //노션 페이지 열기
@@ -84,10 +84,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
             R.id.logo_home->{
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, HomeFragment())
                     .commit()
-                mainActivity.setHomeChecked()
+                (activity as MainActivity?)?.setHomeChecked()
             }
             R.id.home_ble_button -> {
-                mainActivity.setBLE()
+                (activity as MainActivity?)?.setBLE()
 
             }
             R.id.child -> {
