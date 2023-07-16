@@ -24,6 +24,7 @@ class insertInfor : AppCompatActivity() {
         val birthDateEdit: EditText = findViewById(R.id.editBirthDate)
         val significantEdit: EditText = findViewById(R.id.editSignificant)
         val buttonAddInfor:Button = findViewById(R.id.button_addInfor)
+        val nameEdit: EditText = findViewById(R.id.editName)
         val radioButtonM :Button = findViewById(R.id.radioButtonM)
         val radioButtonF:Button = findViewById(R.id.radioButtonF)
 //        var height: String = "" //값을 담을 변수
@@ -36,6 +37,7 @@ class insertInfor : AppCompatActivity() {
         var weight = weightEdit.toString().toFloat()
         var birthDate = birthDateEdit.toString()
         var significant = significantEdit.text.toString()
+        var name = nameEdit.text.toString()
         var radioBtnM = radioButtonM.text.toString()
         var radioBtnF = radioButtonF.text.toString()
 
