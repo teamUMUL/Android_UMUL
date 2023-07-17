@@ -30,6 +30,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -43,12 +44,16 @@ import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityRecordBinding
 import inu.thebite.umul.dialog.GameEndDialog
+import inu.thebite.umul.model.SaveRecordRequest
+import inu.thebite.umul.retrofit.RetrofitSaveRecord
+import inu.thebite.umul.retrofit.RetrofitService
 import inu.thebite.umul.service.BluetoothService
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.UnsupportedEncodingException
 import java.nio.charset.StandardCharsets
+import java.time.LocalDate
 import java.util.UUID
 import kotlin.random.Random
 
@@ -102,6 +107,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private var spoonCnt = 0            //spoonCnt = 한 입 횟수(수저횟수)
 
     private var isStart : Boolean = false                   //게임 시작 유무
+    private lateinit var memberNumber: String
 
     companion object {
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
@@ -113,7 +119,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         binding =
             DataBindingUtil.setContentView<ActivityRecordBinding>(this, R.layout.activity_record)
         binding.recordActivity = this
-
+        memberNumber = intent.getStringExtra("memberNumber").toString()
 
         bluetoothReceiver = object : BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -182,6 +188,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(v: View?) {
 
         when (v?.id) {
@@ -215,6 +222,20 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                     successAvgABiteCnt = successChewCnt / successCnt
                     failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
 
+                    // retrofit
+                    val result = SaveRecordRequest(LocalDate.now().toString(), "점심", 7000, totalCnt, avgABiteCnt, successCnt, successAvgABiteCnt, failAvgABiteCnt)
+                    Log.d("date", result.date)
+                    Log.d("slot", result.slot)
+                    Log.d("totalTime", result.totalTime.toString())
+                    Log.d("totalCnt", result.totalCount.toString())
+                    Log.d("avgABiteCnt", result.biteCountByMouth.toString())
+                    Log.d("successCnt", result.successCount.toString())
+                    Log.d("successAvgABiteCnt", result.countPerSuccess.toString())
+                    Log.d("failAvgABiteCnt", result.countPerFail.toString())
+
+                    saveEatingHabitData(result)
+
+
                     setCarrotCarrier()
                 } catch (_: Exception) {
                 }
@@ -235,6 +256,11 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 finish()
             }
         }
+    }
+
+
+    private fun saveEatingHabitData(saveRecordRequest: SaveRecordRequest) {
+        RetrofitSaveRecord(memberNumber, childName = "홍길동").save(saveRecordRequest)
     }
 
     //타이머

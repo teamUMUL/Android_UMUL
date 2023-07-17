@@ -6,6 +6,8 @@ import inu.thebite.umul.model.DailyReportTotalCountResponse
 import inu.thebite.umul.model.DailyReportTotalTimeResponse
 import inu.thebite.umul.model.SaveChildrenRequest
 import inu.thebite.umul.model.SaveChildrenResponse
+import inu.thebite.umul.model.SaveMemberRequest
+import inu.thebite.umul.model.SaveMemberResponse
 import inu.thebite.umul.model.SaveRecordRequest
 import retrofit2.Call
 import retrofit2.http.Body
@@ -18,6 +20,11 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RetrofitService {
+
+    // 회원 저장
+    @Headers("Content-Type: application/json")
+    @POST("members/join")
+    fun saveMember(@Body saveMemberRequest: SaveMemberRequest) : Call<SaveMemberResponse>
 
     // 자녀 등록
     @Headers("Content-Type: application/json")

@@ -4,8 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothSocket
-import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
@@ -16,12 +14,8 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
-import android.provider.Settings
-import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -34,7 +28,6 @@ import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityMainBinding
 import inu.thebite.umul.fragment.bottomNavFragment.*
 import inu.thebite.umul.service.BluetoothService
-import java.io.IOException
 import java.time.LocalDate
 import java.util.*
 
@@ -43,7 +36,7 @@ import java.util.*
 class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     private lateinit var binding : ActivityMainBinding
     private var homeFragment: HomeFragment? = null
-
+    private lateinit var memberNumber : String
 
     private val disabledButtonColor = Color.rgb(62, 97, 67) //버튼 비활성화 색 = 녹색
     private val enabledButtonColor = Color.rgb(0,199,255) //버튼 활성화 색 = Aqua_Blue
@@ -78,6 +71,8 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        memberNumber = intent.getStringExtra("memberNumber").toString()
+
         //블루투스 권한 확인
         bluetoothPermissionChecker()
 
@@ -112,8 +107,9 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
 
         //플레이버튼 클릭 시 -> 화면전환, 하단바 선택 비활성화, 버튼 배경 색 변화
         playBtn.setOnClickListener {
-
-
+            bundle.putString("memberNumber", memberNumber)
+            val recordReadyFragment = RecordReadyFragment()
+            recordReadyFragment.arguments = bundle
             supportFragmentManager.beginTransaction()
                 .replace(R.id.mainFrame, RecordReadyFragment()).commit()
             enableRecordButton(playBtn, bottomNavigationMenu)
@@ -171,7 +167,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     }
 
     fun startInsertInfoActivity(){
-        val intent = Intent(this, InsertInfoActivity::class.java)
+        val intent = Intent(this, InsertChildInformationActivity::class.java)
         startActivity(intent)
     }
 

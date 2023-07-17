@@ -151,7 +151,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         }.start()
 
         try {
-            Thread.sleep(100)
+            Thread.sleep(300)
         } catch (e: Exception) {
             e.printStackTrace()
         }

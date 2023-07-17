@@ -1,33 +1,25 @@
 package inu.thebite.umul.activity
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.provider.Settings.System.DATE_FORMAT
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import inu.thebite.umul.R
-import inu.thebite.umul.databinding.ActivityInsertInforBinding
-import inu.thebite.umul.databinding.ActivityMainBinding
-import inu.thebite.umul.databinding.ActivityRecordBinding
+import inu.thebite.umul.databinding.ActivityInsertChildInfomationBinding
 import inu.thebite.umul.model.SaveChildrenRequest
-import inu.thebite.umul.retrofit.RetrofitAPI
 import inu.thebite.umul.retrofit.RetrofitChildren
 import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
-import java.util.Date
 
-class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
+class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListener {
 
-    private lateinit var binding : ActivityInsertInforBinding
+    private lateinit var binding : ActivityInsertChildInfomationBinding
     private lateinit var heightEdit : EditText
     private lateinit var weightEdit : EditText
     private lateinit var birthDateEdit : EditText
@@ -40,20 +32,22 @@ class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
     private var birthDate = ""
     private var significant = ""
     private var gender = ""
-    private var memberNumber = "010-1234-5678"      // 추후 번호 입력 activity에서 정보 전달 값으로 대체
+    private var nameEdit = ""
+    private lateinit var memberNumber: String   // 추후 번호 입력 activity에서 정보 전달 값으로 대체
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_insert_infor)
-        binding.inserInfoActivity = this
+        binding = ActivityInsertChildInfomationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        memberNumber = intent.getStringExtra("memberNumber").toString()
         heightEdit = binding.editHeight
         weightEdit = binding.editWeight
         birthDateEdit = binding.editBirthDate
         significantEdit = binding.editSignificant
         buttonAddInfor = binding.buttonAddInfor
+        nameEdit = binding.editName.text.toString()
         radioButtonM = binding.radioButtonM
         radioButtonF = binding.radioButtonF
 
@@ -96,8 +90,6 @@ class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
                     birthDate = birthDateEdit.text.toString()
                     significant = significantEdit.text.toString()
                     if(gender != "" && height != 0.0f && weight!=0.0f && birthDate != ""){
-                        Toast.makeText(this, gender+" "+height.toString()+"cm "+weight.toString()+"kg "+birthDate+" "+significant, Toast.LENGTH_LONG).show()
-                        //DB저장
                         val body = SaveChildrenRequest(
                             "홍길동",
                             birthDate,
@@ -105,7 +97,6 @@ class InsertInfoActivity : AppCompatActivity(),  View.OnClickListener {
                             height,
                             weight
                         )
-
                         RetrofitChildren(body, memberNumber).save()
                         setMainActivity()
                     }
