@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".bmiActivity">
+
+    <ImageButton
+        android:id="@+id/button_bmi"
+        android:layout_width="279dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="66dp"
+        android:layout_marginEnd="66dp"
+        android:layout_marginBottom="610dp"
+        android:background="#ffffff"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bmiGrape"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/tranbtn" />
+
+    <ImageView
+        android:id="@+id/bmiGrape"
+        android:layout_width="362dp"
+        android:layout_height="149dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bmi_grape" />
+
+    <ImageView
+        android:id="@+id/bmiPoint"
+        android:layout_width="75dp"
+        android:layout_height="81dp"
+        android:layout_marginTop="104dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bmi_point" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
