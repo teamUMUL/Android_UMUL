@@ -9,12 +9,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityInsertChildInfomationBinding
 import inu.thebite.umul.model.SaveChildrenRequest
 import inu.thebite.umul.retrofit.RetrofitChildren
-import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 
 class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListener {
@@ -24,6 +22,7 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
     private lateinit var weightEdit : EditText
     private lateinit var birthDateEdit : EditText
     private lateinit var significantEdit : EditText
+    private lateinit var nameEdit: EditText
     private lateinit var buttonAddInfor : Button
     private lateinit var radioButtonM : Button
     private lateinit var radioButtonF : Button
@@ -32,7 +31,7 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
     private var birthDate = ""
     private var significant = ""
     private var gender = ""
-    private var nameEdit = ""
+    private var name = ""
     private lateinit var memberNumber: String   // 추후 번호 입력 activity에서 정보 전달 값으로 대체
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
 
@@ -47,26 +46,16 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
         birthDateEdit = binding.editBirthDate
         significantEdit = binding.editSignificant
         buttonAddInfor = binding.buttonAddInfor
-        nameEdit = binding.editName.text.toString()
+        nameEdit = binding.editName
+        name = binding.editName.text.toString()
         radioButtonM = binding.radioButtonM
         radioButtonF = binding.radioButtonF
 
-        birthDateEdit.onFocusChangeListener = View.OnFocusChangeListener { view, b ->
-            if(b){
-                birthDateEdit.hint = ""
-            }else{
-                birthDateEdit.hint = "생년월일을 입력해주세요(ex : 2018-01-01)"
-            }
-        }
-        significantEdit.onFocusChangeListener = View.OnFocusChangeListener { view, b ->
-            if(b){
-                significantEdit.hint = ""
-            }
-            else{
-                significantEdit.hint = "특이사항을 입력해주세요 ()"
-            }
-        }
-
+        deleteHintOnFocus(birthDateEdit, "생년월일을 입력해주세요(ex : 2018-01-01)")
+        deleteHintOnFocus(significantEdit, "특이사항을 입력해주세요 ()")
+        deleteHintOnFocus(heightEdit, "110")
+        deleteHintOnFocus(weightEdit, "20")
+        deleteHintOnFocus(nameEdit, "이름을 입력해주세요")
     }
 
     override fun onClick(v: View?) {
@@ -83,29 +72,31 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
                 gender = "F"
             }
             R.id.button_addInfor -> {
+
                 try {
+                    name = binding.editName.text.toString()
                     height = heightEdit.text.toString().toFloat() //값을 스트링으로 플로트로 저장
                     weight = weightEdit.text.toString().toFloat()
                     // birthDate formatter 설정 필요 "yyyy-MM-dd"
                     birthDate = birthDateEdit.text.toString()
                     significant = significantEdit.text.toString()
-                    if(gender != "" && height != 0.0f && weight!=0.0f && birthDate != ""){
+                    if(gender != "" && height != 0.0f && weight!=0.0f && birthDate != "" && checkDate(birthDate)){
                         val body = SaveChildrenRequest(
-                            "홍길동",
+                            name,
                             birthDate,
                             gender,
                             height,
                             weight
                         )
-                        RetrofitChildren(body, memberNumber).save()
                         setMainActivity()
+                        RetrofitChildren(body, memberNumber).save()
                     }
                     else{
-                        Toast.makeText(this, "성별, 키, 몸무게, 생년월일울 입력해주세요", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, "이름, 성별, 키, 몸무게, 생년월일울 올바르게 입력해주세요", Toast.LENGTH_LONG).show()
                     }
 
                 }catch (e : NumberFormatException){
-                    Toast.makeText(this, "올바른 형태로 입력하세요", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "올바른 형태로 입력하세요", Toast.LENGTH_LONG).show()
 
                 }
 
@@ -122,6 +113,7 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
         significantEdit.clearFocus()
         heightEdit.clearFocus()
         weightEdit.clearFocus()
+        nameEdit.clearFocus()
         return super.dispatchTouchEvent(ev)
     }
 
@@ -130,6 +122,27 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
         //activity 쌓이지 않도록 activity 초기화
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    private fun deleteHintOnFocus(editText: EditText,defaultHint : String){
+        editText.onFocusChangeListener = View.OnFocusChangeListener { view, b ->
+            if(b){
+                editText.hint = ""
+            }else{
+                editText.hint = defaultHint
+            }
+        }
+    }
+
+    fun checkDate(checkDate: String?): Boolean {
+        return try {
+            val dateFormatParser = SimpleDateFormat("yyyy-MM-dd") //검증할 날짜 포맷 설정
+            dateFormatParser.isLenient = false //false일경우 처리시 입력한 값이 잘못된 형식일 시 오류가 발생
+            dateFormatParser.parse(checkDate) //대상 값 포맷에 적용되는지 확인
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
 
