@@ -7,11 +7,11 @@ import inu.thebite.umul.model.SaveMemberResponse
 import retrofit2.Call
 import retrofit2.Response
 
-class RetrofitMember {
+class RetrofitMember(private val saveMemberRequest: SaveMemberRequest) {
 
     private val service = RetrofitAPI.emgMedService
 
-    fun save(saveMemberRequest: SaveMemberRequest) {
+    fun save() {
         service.saveMember(saveMemberRequest)
             .enqueue(object : retrofit2.Callback<SaveMemberResponse> {
                 override fun onResponse(

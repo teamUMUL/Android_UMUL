@@ -98,16 +98,15 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private var isTimerRunning: Boolean = false
     private var chewCnt = 0             //chewCount = 저작횟수(뽑기 -> 초기화)
     private var totalCnt = 0            //totalCnt = 총 저작횟수(뽑기 -> 초기화X)
-    private var successCnt = 0          //succssCnt = 성공 횟수(chewCount>=30 -> +1)
+    private var successCnt = 1          //succssCnt = 성공 횟수(chewCount>=30 -> +1)
     private var avgABiteCnt = 0         //avgABiteCnt = 한 입당 저작횟수(totalCnt/spoonCnt)
     private var successChewCnt = 0      //successChewCnt = 성공할 때의 총 저작횟수
     private var successAvgABiteCnt = 0  //successAvgABiteCnt = 성공 시에 한 입당 저작횟수(successChewCnt/successCnt)
     private var failChewCnt = 0         //failChewCnt = 실패할 때의 총 저작횟수
     private var failAvgABiteCnt = 0     //failAvgABiteCnt = 실패 시에 한 입당 저작횟수(failChewCnt/(spoonCnt-successCnt))
-    private var spoonCnt = 0            //spoonCnt = 한 입 횟수(수저횟수)
-
+    private var spoonCnt = 2            //spoonCnt = 한 입 횟수(수저횟수)
     private var isStart : Boolean = false                   //게임 시작 유무
-    private lateinit var memberNumber: String
+    private var memberNumber = "010-1234-5678"
 
     companion object {
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
@@ -119,7 +118,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         binding =
             DataBindingUtil.setContentView<ActivityRecordBinding>(this, R.layout.activity_record)
         binding.recordActivity = this
-        memberNumber = intent.getStringExtra("memberNumber").toString()
+//        memberNumber = intent.getStringExtra("memberNumber").toString()
 
         bluetoothReceiver = object : BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -216,27 +215,47 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.game_end_button -> {
+
                 showEndDialog()
+
+                avgABiteCnt = totalCnt / spoonCnt
+                successAvgABiteCnt = successChewCnt / successCnt
+                failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
+
+                // retrofit
+                val result = SaveRecordRequest(LocalDate.now().toString(), "점심", seconds, totalCnt, avgABiteCnt, successCnt, successAvgABiteCnt, failAvgABiteCnt)
+                Log.d("date = ", result.date)
+                Log.d("slot = ", result.slot)
+                Log.d("totalTime = ", result.totalTime.toString())
+                Log.d("totalCnt = ", result.totalCount.toString())
+                Log.d("avgABiteCnt = ", result.biteCountByMouth.toString())
+                Log.d("successCnt = ", result.successCount.toString())
+                Log.d("successAvgABiteCnt = ", result.countPerSuccess.toString())
+                Log.d("failAvgABiteCnt = ", result.countPerFail.toString())
+
+                saveEatingHabitData(result)
+
+                setCarrotCarrier()
+
                 try {
-                    avgABiteCnt = totalCnt / spoonCnt
-                    successAvgABiteCnt = successChewCnt / successCnt
-                    failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
-
-                    // retrofit
-                    val result = SaveRecordRequest(LocalDate.now().toString(), "점심", 7000, totalCnt, avgABiteCnt, successCnt, successAvgABiteCnt, failAvgABiteCnt)
-                    Log.d("date", result.date)
-                    Log.d("slot", result.slot)
-                    Log.d("totalTime", result.totalTime.toString())
-                    Log.d("totalCnt", result.totalCount.toString())
-                    Log.d("avgABiteCnt", result.biteCountByMouth.toString())
-                    Log.d("successCnt", result.successCount.toString())
-                    Log.d("successAvgABiteCnt", result.countPerSuccess.toString())
-                    Log.d("failAvgABiteCnt", result.countPerFail.toString())
-
-                    saveEatingHabitData(result)
-
-
-                    setCarrotCarrier()
+//                    avgABiteCnt = totalCnt / spoonCnt
+//                    successAvgABiteCnt = successChewCnt / successCnt
+//                    failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
+//
+//                    // retrofit
+//                    val result = SaveRecordRequest(LocalDate.now().toString(), "점심", seconds, totalCnt, avgABiteCnt, successCnt, successAvgABiteCnt, failAvgABiteCnt)
+//                    Log.d("date = ", result.date)
+//                    Log.d("slot = ", result.slot)
+//                    Log.d("totalTime = ", result.totalTime.toString())
+//                    Log.d("totalCnt = ", result.totalCount.toString())
+//                    Log.d("avgABiteCnt = ", result.biteCountByMouth.toString())
+//                    Log.d("successCnt = ", result.successCount.toString())
+//                    Log.d("successAvgABiteCnt = ", result.countPerSuccess.toString())
+//                    Log.d("failAvgABiteCnt = ", result.countPerFail.toString())
+//
+//                    saveEatingHabitData(result)
+//
+//                    setCarrotCarrier()
                 } catch (_: Exception) {
                 }
                 backPressButton.isVisible = true

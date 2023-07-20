@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SaveMemberRequest(
 
-    @SerializedName("member_number")
+    @SerializedName("phoneNumber")
     var memberNumber: String,
 
     @SerializedName("nickname")

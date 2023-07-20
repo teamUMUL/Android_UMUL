@@ -47,7 +47,6 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
         significantEdit = binding.editSignificant
         buttonAddInfor = binding.buttonAddInfor
         nameEdit = binding.editName
-        name = binding.editName.text.toString()
         radioButtonM = binding.radioButtonM
         radioButtonF = binding.radioButtonF
 
@@ -86,7 +85,8 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
                             birthDate,
                             gender,
                             height,
-                            weight
+                            weight,
+                            significant
                         )
                         setMainActivity()
                         RetrofitChildren(body, memberNumber).save()
@@ -119,6 +119,8 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
 
     private fun setMainActivity(){
         val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("memberNumber", memberNumber)
+        intent.putExtra("childName", name)
         //activity 쌓이지 않도록 activity 초기화
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

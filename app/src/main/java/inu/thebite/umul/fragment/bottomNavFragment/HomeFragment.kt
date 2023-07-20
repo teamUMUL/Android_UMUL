@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var binding : FragmentHomeBinding
     private lateinit var mainActivity : MainActivity
     private var isBluetoothConnected = false
+    private lateinit var memberNumber: String
+    val bundle = Bundle()
 
 
     override fun onCreateView(
@@ -31,6 +34,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.homeFragment = this
         binding.lifecycleOwner = this
+        memberNumber = bundle.getString("memberNumber").toString()
+        Log.d("HomeFragment memberNumber = ", memberNumber)
 
         return binding.root
     }
@@ -119,7 +124,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private fun showChangeChildDialog(){
         //자녀 리스트를 argument로 ChangeChildDialog로 전달
+        bundle.putString("memberNumber", memberNumber)
         val childDialog = ChangeChildDialog()
+        childDialog!!.arguments
         childDialog.show(childFragmentManager, "ChangeChildDialog")
     }
 

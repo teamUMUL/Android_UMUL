@@ -28,9 +28,10 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
     lateinit var mLayoutManager: LinearLayoutManager
     val childKey: MutableList<String> = mutableListOf()
     val childValue: MutableList<String> = mutableListOf()
-    var memberNumber = "010-1234-5678"
+    private lateinit var memberNumber: String
     var selectedChildID: String? = null
     var tempDateList: MutableList<String> = mutableListOf()    // 이 mi친 비동기
+    val bundle = Bundle()
 
 
     override fun onCreateView(
@@ -39,7 +40,8 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         viewGroup = inflater.inflate(R.layout.change_child_dialog, container, false) as ViewGroup
-
+        memberNumber = bundle.getString("memberNumber").toString()
+        Log.d("ChangeChildDialog memberNumber = ", memberNumber)
         val pref = requireActivity().getPreferences(0)
         val editor = pref.edit()
         selectedChildID = pref.getString("selecetedChild", "자녀1")

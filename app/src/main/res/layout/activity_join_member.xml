@@ -70,7 +70,7 @@
 
 
     <EditText
-        android:id="@+id/inputnickname"
+        android:id="@+id/inputNickname"
         android:layout_width="377dp"
         android:layout_height="49dp"
         android:layout_marginStart="8dp"
@@ -79,8 +79,7 @@
         android:background="@drawable/phone_num"
         android:ems="10"
         android:gravity="center"
-        android:hint="'-'를 넣어서 작성해주세요. ex) 010-1234-5678"
-        android:inputType="phone"
+        android:inputType="text"
         android:lineSpacingExtra="0sp"
         android:outlineProvider="none"
         app:layout_constraintEnd_toEndOf="parent"
@@ -91,8 +90,8 @@
 
     <Button
         android:id="@+id/button_main"
-        android:layout_width="368dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
@@ -105,7 +104,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputnickname" />
+        app:layout_constraintTop_toBottomOf="@+id/inputNickname" />
 
     <TextView
         android:id="@+id/textView6"

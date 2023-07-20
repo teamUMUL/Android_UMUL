@@ -15,6 +15,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         memberNumber = intent.getStringExtra("memberNumber").toString()
-
+        Log.d("MainActivity memberNumber = ", memberNumber)
         //블루투스 권한 확인
         bluetoothPermissionChecker()
 
@@ -339,7 +340,10 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     }
     override fun disconnecting() {
         //BluetoothService에서 연결 끊을 때 사용
+        val bundle = Bundle()
         homeFragment = HomeFragment()
+        bundle.putString("memberNumber", memberNumber)
+        homeFragment!!.arguments
         supportFragmentManager.beginTransaction()
             .add(R.id.mainFrame, homeFragment!!, "MyFragment")
             .commit()

@@ -24,4 +24,7 @@
         <!---rest of your style-->
         <item name="android:foreground">@drawable/selector_playbutton</item>
     </style>
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
 </resources>
