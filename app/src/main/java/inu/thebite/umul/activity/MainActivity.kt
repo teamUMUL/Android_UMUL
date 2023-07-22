@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     private lateinit var binding : ActivityMainBinding
     private var homeFragment: HomeFragment? = null
     private lateinit var memberNumber : String
+    private lateinit var childName: String
 
     private val disabledButtonColor = Color.rgb(62, 97, 67) //버튼 비활성화 색 = 녹색
     private val enabledButtonColor = Color.rgb(0,199,255) //버튼 활성화 색 = Aqua_Blue
@@ -73,6 +74,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         memberNumber = intent.getStringExtra("memberNumber").toString()
+        childName = intent.getStringExtra("childName").toString()
         Log.d("MainActivity memberNumber = ", memberNumber)
         //블루투스 권한 확인
         bluetoothPermissionChecker()
@@ -102,17 +104,22 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
             TooltipCompat.setTooltipText(bottomNavigation.findViewById(it.itemId), null)
         }
         //기본세팅: 플레이 버튼 회색, 기본화면 띄우기
+        bundle.putString("memberNumber", memberNumber)
+        bundle.putString("childName", childName)
+        val homeFragment = HomeFragment()
+        homeFragment.arguments = bundle
         playBtn.backgroundTintList = ColorStateList.valueOf(disabledButtonColor)
-        supportFragmentManager.beginTransaction().replace(R.id.mainFrame, HomeFragment())
+        supportFragmentManager.beginTransaction().replace(R.id.mainFrame, homeFragment)
             .commit()
 
         //플레이버튼 클릭 시 -> 화면전환, 하단바 선택 비활성화, 버튼 배경 색 변화
         playBtn.setOnClickListener {
             bundle.putString("memberNumber", memberNumber)
+            bundle.putString("childName", childName)
             val recordReadyFragment = RecordReadyFragment()
             recordReadyFragment.arguments = bundle
             supportFragmentManager.beginTransaction()
-                .replace(R.id.mainFrame, RecordReadyFragment()).commit()
+                .replace(R.id.mainFrame, recordReadyFragment).commit()
             enableRecordButton(playBtn, bottomNavigationMenu)
 
         }
@@ -164,6 +171,8 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     //RecordReadyFragment에서 게임 실행 누를 시 RecordActivity 실행
     fun startRecordActivity(){
         val intent = Intent(this, RecordActivity::class.java)
+        intent.putExtra("memberNumber", memberNumber)
+        intent.putExtra("childName", childName)
         startActivityForResult(intent, 2)
     }
 

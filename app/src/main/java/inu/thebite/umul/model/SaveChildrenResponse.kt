@@ -17,5 +17,8 @@ data class SaveChildrenResponse(
     var height: Float,
 
     @SerializedName("weight")
-    var weight: Float
+    var weight: Float,
+
+    @SerializedName("memo")
+    var memo: String
 )

@@ -27,15 +27,21 @@ class RecordReadyFragment : Fragment(), View.OnClickListener {
     private lateinit var binding : FragmentRecordReadyBinding
     private lateinit var customToastBinding : CustomToastBinding
     private var isBluetoothConnected : Boolean = false
+    private lateinit var memberNumber: String
+    private lateinit var childName: String
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_record_ready, container, false)
+
+        memberNumber = arguments?.getString("memberNumber").toString()
+        childName = arguments?.getString("childName").toString()
         binding.recordReadyFragment = this
         binding.lifecycleOwner = this
-        getBluetoothConnectionInfo()
+
         return binding.root
 
     }
@@ -61,15 +67,13 @@ class RecordReadyFragment : Fragment(), View.OnClickListener {
         when(v?.id) {
             //게임화면
             R.id.gameStart -> {
-                (activity as MainActivity?)?.startRecordActivity()
-
-//                if(isBluetoothConnected){
-//                    (activity as MainActivity?)?.startRecordActivity()
-//                }
-//                else{
-//                    setCustomToast("Tinyam과 연결해주세요")
-//
-//                }
+                getBluetoothConnectionInfo()
+                if(isBluetoothConnected){
+                    (activity as MainActivity?)?.startRecordActivity()
+                }
+                else{
+                    setCustomToast("Tinyam과 연결해주세요")
+                }
             }
 
             R.id.shopBtn -> {

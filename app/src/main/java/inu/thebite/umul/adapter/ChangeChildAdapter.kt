@@ -15,7 +15,7 @@ import inu.thebite.umul.R
 import inu.thebite.umul.dialog.ChangeChildDialog
 import java.util.Calendar
 
-class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : MutableList<String>, selectedChild : String?) : RecyclerView.Adapter<ChangeChildAdapter.ViewHolder>() {
+class ChangeChildAdapter(var childValue : MutableList<String>, selectedChild : String?) : RecyclerView.Adapter<ChangeChildAdapter.ViewHolder>() {
     private var mListener: OnItemClickListener? = null
     private var index = -1
     private var selectFirstChild = true
@@ -37,13 +37,13 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
     }
 
     override fun getItemCount(): Int {
-        return childKey.size
+        return childValue.size
     }
 
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ChangeChildAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        val childNum = childKey[position]
+//        val childNum = childKey[position]
         val childInfo = childValue[position]
 
         val displayChildID = "자녀"+(position+1).toString()
@@ -59,7 +59,7 @@ class ChangeChildAdapter(var childKey: MutableList<String>, var childValue : Mut
 
         if (index == position){
             makeItemSelected(holder)
-            Toast.makeText(holder.itemView.context, "$childNum : $childInfo",Toast.LENGTH_SHORT).show();
+            Toast.makeText(holder.itemView.context, "$childInfo",Toast.LENGTH_SHORT).show();
         }
         else{
             if (displayChildID == selectedChildID

@@ -25,7 +25,7 @@ class JoinMemberActivity : AppCompatActivity() {
         button.setOnClickListener{
 
             memberNumber = binding.editTextPhone.text.toString()
-            nickname = binding.inputNickname.text.toString()
+            nickname = binding.inputnickname.text.toString()
 
             Log.d("member", "name : $memberNumber, nickname: $nickname")
             val member = SaveMemberRequest(memberNumber, nickname)

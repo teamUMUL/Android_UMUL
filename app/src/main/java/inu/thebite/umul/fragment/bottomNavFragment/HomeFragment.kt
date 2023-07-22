@@ -24,6 +24,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var mainActivity : MainActivity
     private var isBluetoothConnected = false
     private lateinit var memberNumber: String
+    private lateinit var childName: String
     val bundle = Bundle()
 
 
@@ -34,7 +35,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.homeFragment = this
         binding.lifecycleOwner = this
-        memberNumber = bundle.getString("memberNumber").toString()
+        memberNumber = arguments?.getString("memberNumber").toString()
+        childName = arguments?.getString("childName").toString()
         Log.d("HomeFragment memberNumber = ", memberNumber)
 
         return binding.root
@@ -68,7 +70,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?){
         when(v?.id){
             R.id.home_record_button -> {
-                parentFragmentManager.beginTransaction().replace(R.id.mainFrame, RecordReadyFragment())
+                bundle.putString("memberNumber", memberNumber)
+                bundle.putString("childName", childName)
+                val recordReadyFragment = RecordReadyFragment()
+                recordReadyFragment.arguments = bundle
+                parentFragmentManager.beginTransaction().replace(R.id.mainFrame, recordReadyFragment)
                     .commit()
                 //가운데 플레이버튼 체크
                 (activity as MainActivity?)?.setRecordChecked()
@@ -126,7 +132,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         //자녀 리스트를 argument로 ChangeChildDialog로 전달
         bundle.putString("memberNumber", memberNumber)
         val childDialog = ChangeChildDialog()
-        childDialog!!.arguments
+        childDialog!!.arguments = bundle
         childDialog.show(childFragmentManager, "ChangeChildDialog")
     }
 

@@ -82,7 +82,6 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     //---------------------------------------------------
     private lateinit var binding: ActivityRecordBinding
     private lateinit var gameStartButton: ImageButton
-    private lateinit var getChewButton: ImageButton
     private lateinit var getCarrotButton: ImageButton
     private lateinit var gameEndButton: ImageButton
     private lateinit var backPressButton: ImageButton
@@ -98,15 +97,16 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
     private var isTimerRunning: Boolean = false
     private var chewCnt = 0             //chewCount = 저작횟수(뽑기 -> 초기화)
     private var totalCnt = 0            //totalCnt = 총 저작횟수(뽑기 -> 초기화X)
-    private var successCnt = 1          //succssCnt = 성공 횟수(chewCount>=30 -> +1)
+    private var successCnt = 0          //succssCnt = 성공 횟수(chewCount>=30 -> +1)
     private var avgABiteCnt = 0         //avgABiteCnt = 한 입당 저작횟수(totalCnt/spoonCnt)
     private var successChewCnt = 0      //successChewCnt = 성공할 때의 총 저작횟수
     private var successAvgABiteCnt = 0  //successAvgABiteCnt = 성공 시에 한 입당 저작횟수(successChewCnt/successCnt)
     private var failChewCnt = 0         //failChewCnt = 실패할 때의 총 저작횟수
     private var failAvgABiteCnt = 0     //failAvgABiteCnt = 실패 시에 한 입당 저작횟수(failChewCnt/(spoonCnt-successCnt))
-    private var spoonCnt = 2            //spoonCnt = 한 입 횟수(수저횟수)
+    private var spoonCnt = 0            //spoonCnt = 한 입 횟수(수저횟수)
     private var isStart : Boolean = false                   //게임 시작 유무
-    private var memberNumber = "010-1234-5678"
+    private lateinit var memberNumber: String
+    private lateinit var childName: String
 
     companion object {
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
@@ -118,8 +118,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         binding =
             DataBindingUtil.setContentView<ActivityRecordBinding>(this, R.layout.activity_record)
         binding.recordActivity = this
-//        memberNumber = intent.getStringExtra("memberNumber").toString()
-
+        memberNumber = intent.getStringExtra("memberNumber").toString()
+        childName = intent.getStringExtra("childName").toString()
         bluetoothReceiver = object : BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
                 if(intent?.action == ACTION_DATA_RECEIVED){
@@ -159,7 +159,6 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
             gameStartButton.isVisible = false
             backPressButton.isVisible = false
-            getChewButton.isVisible = true
             characters.isVisible = true
             carrotBox.isVisible = true
             gameEndButton.isVisible = true
@@ -169,14 +168,12 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
             isStart = true
         }
 
-        getChewButton = binding.getChew
         characters = binding.characters
         carrotBox = binding.carrotBox
         gameEndButton = binding.gameEndButton
         getCarrotButton = binding.getCarrot
         backPressButton = binding.gameBackPress
         backPressButton.isVisible = true
-        getChewButton.isVisible = false
         characters.isVisible = false
         carrotBox.isVisible = false
         gameEndButton.isVisible = false
@@ -222,8 +219,10 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 successAvgABiteCnt = successChewCnt / successCnt
                 failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
 
+                //타이머 종료
+                stopTimer()
                 // retrofit
-                val result = SaveRecordRequest(LocalDate.now().toString(), "점심", seconds, totalCnt, avgABiteCnt, successCnt, successAvgABiteCnt, failAvgABiteCnt)
+                val result = SaveRecordRequest(LocalDate.now().toString(), "저녁", seconds, totalCnt, avgABiteCnt, successCnt, successAvgABiteCnt, failAvgABiteCnt)
                 Log.d("date = ", result.date)
                 Log.d("slot = ", result.slot)
                 Log.d("totalTime = ", result.totalTime.toString())
@@ -238,35 +237,17 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 setCarrotCarrier()
 
                 try {
-//                    avgABiteCnt = totalCnt / spoonCnt
-//                    successAvgABiteCnt = successChewCnt / successCnt
-//                    failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
-//
-//                    // retrofit
-//                    val result = SaveRecordRequest(LocalDate.now().toString(), "점심", seconds, totalCnt, avgABiteCnt, successCnt, successAvgABiteCnt, failAvgABiteCnt)
-//                    Log.d("date = ", result.date)
-//                    Log.d("slot = ", result.slot)
-//                    Log.d("totalTime = ", result.totalTime.toString())
-//                    Log.d("totalCnt = ", result.totalCount.toString())
-//                    Log.d("avgABiteCnt = ", result.biteCountByMouth.toString())
-//                    Log.d("successCnt = ", result.successCount.toString())
-//                    Log.d("successAvgABiteCnt = ", result.countPerSuccess.toString())
-//                    Log.d("failAvgABiteCnt = ", result.countPerFail.toString())
-//
-//                    saveEatingHabitData(result)
-//
-//                    setCarrotCarrier()
+
                 } catch (_: Exception) {
                 }
                 backPressButton.isVisible = true
                 gameStartButton.isVisible = true
-                getChewButton.isVisible = false
                 characters.isVisible = false
                 carrotBox.isVisible = false
                 gameEndButton.isVisible = false
                 getCarrotButton.isVisible = false
-                //타이머 종료
-                stopTimer()
+
+
                 Toast.makeText(this, seconds.toString()+"초, 성공횟수 :"+ successCnt.toString() + "수저횟수 :"+spoonCnt.toString() + "평균저작횟수 : "+avgABiteCnt.toString()+"총 저작횟수 : "+totalCnt.toString(), Toast.LENGTH_LONG).show()
                 //모든 데이터 리셋
                 resetAllData()
@@ -279,7 +260,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun saveEatingHabitData(saveRecordRequest: SaveRecordRequest) {
-        RetrofitSaveRecord(memberNumber, childName = "홍길동").save(saveRecordRequest)
+        RetrofitSaveRecord(memberNumber, childName).save(saveRecordRequest)
     }
 
     //타이머
@@ -329,6 +310,8 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("inBluetoothConnected", isBluetoothConnected)
+        intent.putExtra("memberNumber", memberNumber)
+        intent.putExtra("childName", childName)
         //activity 쌓이지 않도록 activity 초기화
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

@@ -40,8 +40,9 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         viewGroup = inflater.inflate(R.layout.change_child_dialog, container, false) as ViewGroup
-        memberNumber = bundle.getString("memberNumber").toString()
+        memberNumber = arguments?.getString("memberNumber").toString()
         Log.d("ChangeChildDialog memberNumber = ", memberNumber)
+        setUpChangeChildDialog()
         val pref = requireActivity().getPreferences(0)
         val editor = pref.edit()
         selectedChildID = pref.getString("selecetedChild", "자녀1")
@@ -58,7 +59,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        setUpChangeChildDialog()
+
 
         return viewGroup
     }
@@ -96,18 +97,19 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
 
     @SuppressLint("CutPasteId")
     private fun setUpChangeChildDialog() {
+
+        getChildrenList(memberNumber)
+
         val pref = requireActivity().getPreferences(0)
 
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        getChildrenList(memberNumber)
-
         viewGroup.findViewById<RecyclerView>(R.id.child_select_recyclerView)!!.layoutManager =
             layoutManager
         //처음 adapter연결할 때 SharedPreference에서 선택했던 값이 있는 경우에는 그 값을 없는 경우에는 자녀1을 기본으로 설정해서 adapter생성
         val changeChildAdapter =
-            ChangeChildAdapter(childKey, childValue, pref.getString("selectedChild", "자녀1"))
+            ChangeChildAdapter(childValue, pref.getString("selectedChild", "자녀1"))
         viewGroup.findViewById<RecyclerView>(R.id.child_select_recyclerView)!!.adapter =
             changeChildAdapter
 
@@ -152,8 +154,10 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
                 })
         }.start()
 
+
         try {
-            Thread.sleep(300)
+            Thread.sleep(900)
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -163,6 +167,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         childValue.clear()
         for (child in childrenValue) {
             childValue.add(child)
+            Log.d("childValue = ", child)
         }
     }
 
