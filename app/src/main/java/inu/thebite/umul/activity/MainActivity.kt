@@ -178,6 +178,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
 
     fun startInsertInfoActivity(){
         val intent = Intent(this, InsertChildInformationActivity::class.java)
+        intent.putExtra("memberNumber", memberNumber)
         startActivity(intent)
     }
 
