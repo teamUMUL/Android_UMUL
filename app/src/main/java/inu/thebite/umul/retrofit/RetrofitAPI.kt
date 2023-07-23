@@ -4,10 +4,11 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitAPI {
 
-    private const val BASE_URL = "http://172.20.10.9:8080"
+    private const val BASE_URL = "https://port-0-umul-server-rt92alkf2qbix.sel4.cloudtype.app/"
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
