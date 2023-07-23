@@ -25,6 +25,7 @@ class ReportFragment1 : Fragment(), View.OnClickListener {
 
     //실시간 반응이 필요한 경우 MutableLiveData 타입 사용
     var reportName = MutableLiveData("#총 저작횟수")
+    private lateinit var childName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         childFragmentManager.beginTransaction().replace(R.id.reportFrame1, ReportFragment1_1())
