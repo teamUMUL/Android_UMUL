@@ -65,9 +65,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     private lateinit var mListPairedDevices: List<String>
 
     val BT_REQUEST_ENABLE = 1
-    val BT_MESSAGE_READ = 2
-    val BT_CONNECTING_STATUS = 3
-    
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,6 +136,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
                 }
                 R.id.report -> {
                     bundle.putString("date", LocalDate.now().toString())
+                    bundle.putString("childName", childName)
                     val reportFragment = ReportFragment()
                     reportFragment.arguments = bundle
                     supportFragmentManager.beginTransaction()
@@ -184,6 +183,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
         startActivityForResult(intent, 2)
     }
 
+    //자녀 추가 버튼 클릭 시 자녀 추가 Activity 실행
     fun startInsertInfoActivity(){
         val intent = Intent(this, InsertChildInformationActivity::class.java)
         intent.putExtra("memberNumber", memberNumber)

@@ -42,13 +42,10 @@ class BluetoothService : Service() {
     private lateinit var bluetoothHandler: Handler
     val BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     companion object {
-        const val BT_REQUEST_ENABLE = 1
         const val BT_MESSAGE_READ = 2
         const val BT_CONNECTING_STATUS = 3
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
-        const val ACTION_CONNECT_DEVICE = "com.example.bluetooth.CONNECT_DEVICE"
         const val EXTRA_DATA = "data"
-        const val EXTRA_DEVICE = "device"
     }
 
     inner class LocalBinder : Binder() {
