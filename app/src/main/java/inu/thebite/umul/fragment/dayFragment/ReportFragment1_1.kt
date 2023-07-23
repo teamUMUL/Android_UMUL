@@ -36,6 +36,7 @@ class ReportFragment1_1 : Fragment() {
 
     var myChildTotalCnt : Float = 0f
     var averageTotalCnt : Float = 300.0f
+    private lateinit var childName: String
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
@@ -47,13 +48,14 @@ class ReportFragment1_1 : Fragment() {
         var view = inflater.inflate(R.layout.fragment_report_fragment1_1, container, false,)
         var totalCntGraph : BarChart = view.findViewById(R.id.graph1)
         totalCntGraph.setDrawValueAboveBar(false)
+        childName = arguments?.getString("childName").toString()
         val barChartRender =
             CustomBarChartRender(totalCntGraph, totalCntGraph.animator, totalCntGraph.viewPortHandler)
         barChartRender.setRadius(30)
         totalCntGraph.renderer = barChartRender
         totalCntGraph.setDrawValueAboveBar(false)
 
-        RetrofitAPI.emgMedService.getDailyReportWithTotalCount("김아무개", LocalDate.now().toString())
+        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(childName, LocalDate.now().toString())
                 .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
                     override fun onResponse(
                         call: Call<DailyReportTotalCountResponse>,

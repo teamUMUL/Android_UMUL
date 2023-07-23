@@ -35,6 +35,8 @@ import java.time.LocalDate
 class ReportFragment1_3 : Fragment() {
     var myChildAvgABite : Float = 0f
     var averageAvgABite : Float = 32.0f
+    private lateinit var childName: String
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -42,6 +44,7 @@ class ReportFragment1_3 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        childName =arguments?.getString("chidlName").toString()
         var view = inflater.inflate(R.layout.fragment_report_fragment1_3, container, false,)
         var avgABiteGraph : BarChart = view.findViewById(R.id.graph3)
         avgABiteGraph.setDrawValueAboveBar(false)
@@ -57,7 +60,7 @@ class ReportFragment1_3 : Fragment() {
          * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
          * 우선은 default 1로 설정
          */
-        RetrofitAPI.emgMedService.getDailyReportBiteCountByMouth("김아무개", LocalDate.now().toString())
+        RetrofitAPI.emgMedService.getDailyReportBiteCountByMouth(childName, LocalDate.now().toString())
             .enqueue(object : retrofit2.Callback<DailyReportBiteCountByMouthResponse> {
                 override fun onResponse(
                     call: Call<DailyReportBiteCountByMouthResponse>,

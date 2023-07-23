@@ -35,6 +35,8 @@ import java.time.LocalDate
 class ReportFragment1_2 : Fragment() {
     var myChildTotalTime : Float = 0f
     var averageTotalTime : Float = 3300.0f
+    private lateinit var childName: String
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -42,6 +44,7 @@ class ReportFragment1_2 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        childName = arguments?.getString("childName").toString()
         var view = inflater.inflate(R.layout.fragment_report_fragment1_2, container, false,)
         var totalTimeGraph : BarChart = view.findViewById(R.id.graph2)
         totalTimeGraph.setDrawValueAboveBar(false)
@@ -55,7 +58,7 @@ class ReportFragment1_2 : Fragment() {
          * childrenId -> 홈 화면에서 자녀 설정 후 id값 넘겨주기
          * 우선은 default 1로 설정
          */
-        RetrofitAPI.emgMedService.getDailyReportWithTotalTime("김아무개", LocalDate.now().toString())
+        RetrofitAPI.emgMedService.getDailyReportWithTotalTime(childName, LocalDate.now().toString())
             .enqueue(object : retrofit2.Callback<DailyReportTotalTimeResponse> {
                 override fun onResponse(
                     call: Call<DailyReportTotalTimeResponse>,

@@ -129,8 +129,12 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
 
             when (it.itemId) {
                 R.id.home -> {
+                    bundle.putString("memberNumber", memberNumber)
+                    bundle.putString("childName", childName)
+                    val homeFragment = HomeFragment()
+                    homeFragment.arguments = bundle
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.mainFrame, HomeFragment()).commit()
+                        .replace(R.id.mainFrame, homeFragment).commit()
                 }
                 R.id.report -> {
                     bundle.putString("date", LocalDate.now().toString())
@@ -140,8 +144,12 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
                         .replace(R.id.mainFrame, reportFragment).commit()
                 }
                 R.id.BMI -> {
+                    bundle.putString("memberNumber", memberNumber)
+                    bundle.putString("childName", childName)
+                    val bmiFragment = BMIFragment()
+                    bmiFragment.arguments = bundle
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.mainFrame, BMIFragment()).commit()
+                        .replace(R.id.mainFrame, bmiFragment).commit()
                 }
                 R.id.mypage -> {
                     supportFragmentManager.beginTransaction()

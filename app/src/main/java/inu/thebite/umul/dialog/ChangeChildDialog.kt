@@ -30,7 +30,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
     val childValue: MutableList<String> = mutableListOf()
     private lateinit var memberNumber: String
     var selectedChildID: String? = null
-    var tempDateList: MutableList<String> = mutableListOf()    // 이 mi친 비동기
+    var tempDateList: MutableList<String> = mutableListOf()   // 이 mi친 비동기
     val bundle = Bundle()
 
 
