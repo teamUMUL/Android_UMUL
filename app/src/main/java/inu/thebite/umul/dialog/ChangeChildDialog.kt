@@ -127,7 +127,6 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
     }
 
     private fun getChildrenList(memberNumber: String) {
-        Thread {
             RetrofitAPI.emgMedService.getChildrenList(memberNumber)
                 .enqueue(object : retrofit2.Callback<List<SaveChildrenResponse>> {
                     override fun onResponse(
@@ -151,15 +150,6 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
                         Log.d("자녀정보 리스트 가져오기 실패", t.message.toString())
                     }
                 })
-        }.start()
-
-
-        try {
-            Thread.sleep(900)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     private fun setChildrenList(childrenValue: MutableList<String>) {
