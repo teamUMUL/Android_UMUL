@@ -97,15 +97,57 @@
                         android:text="자녀정보를 토대로 나온 BMI 수치에요!"
                         android:layout_marginTop="10dp"
                         android:layout_marginStart="15dp"
-                        android:layout_marginEnd="15dp"
+                        android:layout_marginEnd="20dp"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#4D4F52"
                         android:gravity="center" />
-                    <com.github.mikephil.charting.charts.PieChart
+
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="10dp"/>
+                        android:layout_height="wrap_content"
+                        android:text="저체중                    정상                      비만"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="20dp"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#4D4F52"
+                        android:gravity="center" />
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:id="@+id/bmiGrape"
+                            android:layout_width="match_parent"
+                            android:layout_height="77dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="20dp"
+                            app:srcCompat="@drawable/bmi_graph" />
+
+                        <ImageView
+                            android:id="@+id/bmiPoint"
+                            android:layout_width="30dp"
+                            android:layout_height="87dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginStart="15dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/bmi_point" />
+
+                        <ImageButton
+                            android:id="@+id/imageButton"
+                            android:layout_width="208dp"
+                            android:layout_height="57dp"
+                            android:layout_marginStart="80dp"
+                            android:layout_marginTop="105dp"
+                            android:layout_marginEnd="50dp"
+                            android:background="@android:color/transparent"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/tranbtn" />
+                    </FrameLayout>
+
 
 
                 </LinearLayout>

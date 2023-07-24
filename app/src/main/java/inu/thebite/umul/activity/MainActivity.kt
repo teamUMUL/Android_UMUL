@@ -274,6 +274,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
         bluetoothOn()
         if(isConnected){
             bluetoothService.disconnect()
+
         }else{
             listPairedDevices()
         }

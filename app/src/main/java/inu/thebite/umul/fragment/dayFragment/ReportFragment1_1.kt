@@ -14,8 +14,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.adapter.decoration.CustomBarChartRender
 import inu.thebite.umul.R
 import com.github.mikephil.charting.charts.BarChart
@@ -25,6 +27,8 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import inu.thebite.umul.databinding.FragmentReport1Binding
+import inu.thebite.umul.databinding.FragmentReportFragment11Binding
 import inu.thebite.umul.fragment.bottomNavFragment.ReportFragment
 import inu.thebite.umul.model.DailyReportTotalCountResponse
 import inu.thebite.umul.retrofit.RetrofitAPI
@@ -40,6 +44,9 @@ class ReportFragment1_1 : Fragment() {
     var myChildTotalCnt : Float = 0f
     var averageTotalCnt : Float = 300.0f
     private lateinit var childName: String
+    private lateinit var binding : FragmentReportFragment11Binding
+    var feedback1 = MutableLiveData("피드백 내용")
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
@@ -53,7 +60,10 @@ class ReportFragment1_1 : Fragment() {
         childName = selectedChildName
         Toast.makeText(activity, childName, Toast.LENGTH_SHORT).show();
 
-        var view = inflater.inflate(R.layout.fragment_report_fragment1_1, container, false,)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_report_fragment1_1, container, false)
+        binding.reportFragment11 = this
+        binding.lifecycleOwner = this
+        var view = binding.root
         var totalCntGraph : BarChart = view.findViewById(R.id.graph1)
         totalCntGraph.setDrawValueAboveBar(false)
         val barChartRender =
@@ -71,6 +81,7 @@ class ReportFragment1_1 : Fragment() {
                             val result = response.body()
                             Log.d("총 저작횟수 가져오기 성공", "$result")
                             initBarCHart(totalCntGraph, response.body()!!.totalCount)
+                            initFeedback(response.body()!!.feedback)
                         }
                     }
 
@@ -167,6 +178,9 @@ class ReportFragment1_1 : Fragment() {
             invalidate()
 
         }
+    }
+    private fun initFeedback(feedbackText : String){
+        feedback1.value = feedbackText
     }
 
     inner class MyXAxisFormatter : ValueFormatter(){

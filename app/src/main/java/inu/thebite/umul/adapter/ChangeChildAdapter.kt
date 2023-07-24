@@ -3,6 +3,7 @@ package inu.thebite.umul.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ class ChangeChildAdapter(var childValue : MutableList<String>, selectedChild : S
 
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
+        Log.d("childValue in adapter = ", childValue.toString())
 
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.change_child_item, parent, false), mListener!!)
     }
@@ -41,7 +43,7 @@ class ChangeChildAdapter(var childValue : MutableList<String>, selectedChild : S
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ChangeChildAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-//        val childNum = childKey[position]
+//      val childNum = childKey[position]
         val childInfo = childValue[position]
         val pref: SharedPreferences = context.getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
         val editor = pref.edit()

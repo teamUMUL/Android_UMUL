@@ -99,8 +99,6 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
                     Toast.makeText(applicationContext, "올바른 형태로 입력하세요", Toast.LENGTH_LONG).show()
 
                 }
-
-
             }
         }
     }
