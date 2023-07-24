@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.adapter.decoration.CustomBarChartRender
 import inu.thebite.umul.R
 import com.github.mikephil.charting.charts.BarChart
@@ -22,6 +24,8 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import inu.thebite.umul.databinding.FragmentReportFragment11Binding
+import inu.thebite.umul.databinding.FragmentReportFragment13Binding
 import inu.thebite.umul.model.DailyReportBiteCountByMouthResponse
 import inu.thebite.umul.retrofit.RetrofitAPI
 import retrofit2.Call
@@ -36,7 +40,8 @@ class ReportFragment1_3 : Fragment() {
     var myChildAvgABite : Float = 0f
     var averageAvgABite : Float = 32.0f
     private lateinit var childName: String
-
+    private lateinit var binding : FragmentReportFragment13Binding
+    var feedback3 = MutableLiveData("피드백 내용")
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -45,7 +50,10 @@ class ReportFragment1_3 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         childName =arguments?.getString("chidlName").toString()
-        var view = inflater.inflate(R.layout.fragment_report_fragment1_3, container, false,)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_report_fragment1_3, container, false)
+        binding.reportFragment13 = this
+        binding.lifecycleOwner = this
+        var view = binding.root
         var avgABiteGraph : BarChart = view.findViewById(R.id.graph3)
         avgABiteGraph.setDrawValueAboveBar(false)
         val barChartRender =
@@ -70,6 +78,7 @@ class ReportFragment1_3 : Fragment() {
                         val result = response.body()
                         Log.d("한 입당 저작횟수 가져오기 성공", "$result")
                         initBarCHart(avgABiteGraph, result!!.biteCountByMouth)
+                        initFeedback(response.body()!!.feedback)
                     }
                 }
 
@@ -166,6 +175,9 @@ class ReportFragment1_3 : Fragment() {
             invalidate()
 
         }
+    }
+    private fun initFeedback(feedbackText : String){
+        feedback3.value = feedbackText
     }
 
     inner class MyXAxisFormatter : ValueFormatter(){

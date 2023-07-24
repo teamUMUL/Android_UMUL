@@ -1,9 +1,9 @@
 package inu.thebite.umul.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +12,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import inu.thebite.umul.R
-import inu.thebite.umul.dialog.ChangeChildDialog
-import java.util.Calendar
 
-class ChangeChildAdapter(var childValue : MutableList<String>, selectedChild : String?) : RecyclerView.Adapter<ChangeChildAdapter.ViewHolder>() {
+
+class ChangeChildAdapter(var childValue : MutableList<String>, selectedChild : String?, private val context: Context) : RecyclerView.Adapter<ChangeChildAdapter.ViewHolder>() {
     private var mListener: OnItemClickListener? = null
     private var index = -1
     private var selectFirstChild = true
-    private val selectedChildID =
+    private var selectedChildID =
         when {
             selectedChild != null -> selectedChild
             else -> "자녀1"
@@ -32,6 +31,7 @@ class ChangeChildAdapter(var childValue : MutableList<String>, selectedChild : S
 
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
+        Log.d("childValue in adapter = ", childValue.toString())
 
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.change_child_item, parent, false), mListener!!)
     }
@@ -43,10 +43,11 @@ class ChangeChildAdapter(var childValue : MutableList<String>, selectedChild : S
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ChangeChildAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-//        val childNum = childKey[position]
+//      val childNum = childKey[position]
         val childInfo = childValue[position]
-
-        val displayChildID = "자녀"+(position+1).toString()
+        val pref: SharedPreferences = context.getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
+        val editor = pref.edit()
+        selectedChildID = pref.getString("selectedChild", "ㅇㅇㅇ").toString()
         //holder.childNum.text = childNum
         holder.childInfo.text = childInfo
 
@@ -59,12 +60,11 @@ class ChangeChildAdapter(var childValue : MutableList<String>, selectedChild : S
 
         if (index == position){
             makeItemSelected(holder)
-            Toast.makeText(holder.itemView.context, "$childInfo",Toast.LENGTH_SHORT).show();
+            Toast.makeText(holder.itemView.context, "$selectedChildID",Toast.LENGTH_SHORT).show();
         }
         else{
-            if (displayChildID == selectedChildID
+            if (childInfo == selectedChildID
                 && selectFirstChild) {
-                Toast.makeText(holder.itemView.context, displayChildID.toString(), Toast.LENGTH_SHORT).show()
                 makeItemSelected(holder)
             }
             else {

@@ -1,6 +1,8 @@
 package inu.thebite.umul.dialog
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -40,12 +42,11 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         viewGroup = inflater.inflate(R.layout.change_child_dialog, container, false) as ViewGroup
-        memberNumber = arguments?.getString("memberNumber").toString()
+        val memberNumberPref = requireContext().getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
+        memberNumber =  memberNumberPref.getString("MemberNumber", "010-0000-0000").toString()
         Log.d("ChangeChildDialog memberNumber = ", memberNumber)
         setUpChangeChildDialog()
-        val pref = requireActivity().getPreferences(0)
-        val editor = pref.edit()
-        selectedChildID = pref.getString("selecetedChild", "자녀1")
+
 
         calendarList = viewGroup.findViewById(R.id.child_select_recyclerView)
         calendarList.setHasFixedSize(true)
@@ -99,8 +100,9 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
     private fun setUpChangeChildDialog() {
 
         getChildrenList(memberNumber)
-
-        val pref = requireActivity().getPreferences(0)
+        Log.d("childValue1 = ", childValue.toString())
+        val pref: SharedPreferences = requireContext().getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
+        val selectedChildName = pref.getString("selectedChild", "홍길동").toString()
 
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -109,7 +111,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
             layoutManager
         //처음 adapter연결할 때 SharedPreference에서 선택했던 값이 있는 경우에는 그 값을 없는 경우에는 자녀1을 기본으로 설정해서 adapter생성
         val changeChildAdapter =
-            ChangeChildAdapter(childValue, pref.getString("selectedChild", "자녀1"))
+            ChangeChildAdapter(childValue, selectedChildName, requireContext())
         viewGroup.findViewById<RecyclerView>(R.id.child_select_recyclerView)!!.adapter =
             changeChildAdapter
 
@@ -117,9 +119,8 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         changeChildAdapter.setOnItemClickListener(object : ChangeChildAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 selectedChildID = childValue[position]
-                val pref = requireActivity().getPreferences(0)
+                val pref: SharedPreferences = context!!.getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
                 val editor = pref.edit()
-
                 //선택될 시 SharedPreference에 key-value로 선택한 id(ex: 자녀1, 자녀1 ...)가 저장
                 editor.putString("selectedChild", selectedChildID)
                 editor.apply()
@@ -167,7 +168,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         childValue.clear()
         for (child in childrenValue) {
             childValue.add(child)
-            Log.d("childValue = ", child)
+            Log.d("childValue2 = ", child)
         }
     }
 

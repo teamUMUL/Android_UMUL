@@ -1,6 +1,8 @@
 package inu.thebite.umul.activity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +34,10 @@ class JoinMemberActivity : AppCompatActivity() {
 
             RetrofitMember(member).save()
 
+            val pref: SharedPreferences = getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = pref.edit()
+            editor.putString("MemberNumber",memberNumber)
+            editor.apply()
             val intent = Intent(this, InsertChildInformationActivity::class.java)
             intent.putExtra("memberNumber", memberNumber)
             startActivity(intent)
