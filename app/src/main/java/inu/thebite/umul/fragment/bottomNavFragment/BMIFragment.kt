@@ -80,4 +80,5 @@ class BMIFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
 }
