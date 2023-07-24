@@ -71,7 +71,7 @@ class ReportFragment1_1 : Fragment() {
         barChartRender.setRadius(30)
         totalCntGraph.renderer = barChartRender
         totalCntGraph.setDrawValueAboveBar(false)
-        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(childName, memberNumber, LocalDate.now().toString())
+        RetrofitAPI.emgMedService.getDailyReportWithTotalCount(childName, LocalDate.now().toString())
                 .enqueue(object : retrofit2.Callback<DailyReportTotalCountResponse> {
                     override fun onResponse(
                         call: Call<DailyReportTotalCountResponse>,

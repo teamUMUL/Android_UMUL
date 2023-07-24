@@ -58,23 +58,20 @@ interface RetrofitService {
 
     // 일일레포트 총 저작횟수 정보 가져오기
     @Headers("Content-Type: application/json")
-    @GET("{memberNumber}/{childName}/dailyReport/totalCount")
+    @GET("{childName}/dailyReport/totalCount")
     fun getDailyReportWithTotalCount(@Path("childName") childName: String,
-                                     @Path("memberNumber") memberNumber: String,
                                      @Query("date") date : String) : Call<DailyReportTotalCountResponse>
 
     // 일일레포트 총 식사시간 정보 가져오기
     @Headers("Content-Type: application/json")
-    @GET("{memberNumber}/{childName}/dailyReport/totalTime")
+    @GET("{childName}/dailyReport/totalTime")
     fun getDailyReportWithTotalTime(@Path("childName") childName: String,
-                                    @Path("memberNumber") memberNumber: String,
                                     @Query("date") date : String) : Call<DailyReportTotalTimeResponse>
 
     // 일일레포트 한 입당 저작횟수 정보 가져오기
     @Headers("Content-Type: application/json")
-    @GET("{memberNumber}/{childName}/dailyReport/biteCountByMouth")
+    @GET("{childName}/dailyReport/biteCountByMouth")
     fun getDailyReportBiteCountByMouth(@Path("childName") childName: String,
-                                       @Path("memberNumber") memberNumber: String,
                                        @Query("date") date : String) : Call<DailyReportBiteCountByMouthResponse>
 
     // 저장되어 있는 자녀 리스트 가져오기
