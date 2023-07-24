@@ -35,9 +35,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.homeFragment = this
         binding.lifecycleOwner = this
-        memberNumber = arguments?.getString("memberNumber").toString()
-        childName = arguments?.getString("childName").toString()
+        memberNumber = getMemberNumberFromPref()
+        childName = getChildNameFromPref()
         Log.d("HomeFragment memberNumber = ", memberNumber)
+        Log.d("HomeFragment childName = ", childName)
 
         return binding.root
     }
@@ -136,4 +137,16 @@ class HomeFragment : Fragment(), View.OnClickListener {
         childDialog.show(childFragmentManager, "ChangeChildDialog")
     }
 
+    fun getMemberNumberFromPref(): String {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
+        val memberNumber = pref.getString("MemberNumber", "010-0000-0000").toString()
+
+        return memberNumber
+    }
+    fun getChildNameFromPref(): String {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
+        val childName = pref.getString("selectedChild", "홍길동").toString()
+
+        return childName
+    }
 }

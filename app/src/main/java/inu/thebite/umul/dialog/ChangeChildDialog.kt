@@ -31,7 +31,6 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
     val childKey: MutableList<String> = mutableListOf()
     val childValue: MutableList<String> = mutableListOf()
     private lateinit var memberNumber: String
-    var selectedChildID: String? = null
     var tempDateList: MutableList<String> = mutableListOf()   // 이 mi친 비동기
     val bundle = Bundle()
 
@@ -45,7 +44,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
         val memberNumberPref = requireContext().getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
         memberNumber =  memberNumberPref.getString("MemberNumber", "010-0000-0000").toString()
         Log.d("ChangeChildDialog memberNumber = ", memberNumber)
-        setUpChangeChildDialog()
+        getChildrenList(memberNumber)
 
 
         calendarList = viewGroup.findViewById(R.id.child_select_recyclerView)
@@ -99,7 +98,6 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
     @SuppressLint("CutPasteId")
     private fun setUpChangeChildDialog() {
 
-        getChildrenList(memberNumber)
         Log.d("childValue1 = ", childValue.toString())
         val pref: SharedPreferences = requireContext().getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
         val selectedChildName = pref.getString("selectedChild", "홍길동").toString()
@@ -118,7 +116,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
 
         changeChildAdapter.setOnItemClickListener(object : ChangeChildAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                selectedChildID = childValue[position]
+                val selectedChildID = childValue[position]
                 val pref: SharedPreferences = context!!.getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
                 val editor = pref.edit()
                 //선택될 시 SharedPreference에 key-value로 선택한 id(ex: 자녀1, 자녀1 ...)가 저장
@@ -170,6 +168,7 @@ class ChangeChildDialog : DialogFragment(), View.OnClickListener {
             childValue.add(child)
             Log.d("childValue2 = ", child)
         }
-    }
 
+        setUpChangeChildDialog()
+    }
 }

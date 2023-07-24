@@ -1,6 +1,8 @@
 package inu.thebite.umul.fragment.dayFragment
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -40,6 +42,7 @@ class ReportFragment1_3 : Fragment() {
     var myChildAvgABite : Float = 0f
     var averageAvgABite : Float = 32.0f
     private lateinit var childName: String
+    private lateinit var memberNumber : String
     private lateinit var binding : FragmentReportFragment13Binding
     var feedback3 = MutableLiveData("피드백 내용")
     @RequiresApi(Build.VERSION_CODES.O)
@@ -49,7 +52,8 @@ class ReportFragment1_3 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        childName =arguments?.getString("chidlName").toString()
+        childName = getChildNameFromPref()
+        memberNumber = getMemberNumberFromPref()
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_report_fragment1_3, container, false)
         binding.reportFragment13 = this
         binding.lifecycleOwner = this
@@ -198,6 +202,20 @@ class ReportFragment1_3 : Fragment() {
         override fun getFormattedValue(value: Float): String {
             return value.toInt().toString()+"회"
         }
+    }
+
+    fun getMemberNumberFromPref(): String {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
+        val memberNumber = pref.getString("MemberNumber", "010-0000-0000").toString()
+
+        return memberNumber
+    }
+
+    fun getChildNameFromPref(): String {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
+        val childName = pref.getString("selectedChild", "홍길동").toString()
+
+        return childName
     }
 
 }
