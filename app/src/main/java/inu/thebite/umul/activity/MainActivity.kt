@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
                 }
                 R.id.report -> {
                     bundle.putString("date", LocalDate.now().toString())
+                    bundle.putString("childName", childName)
                     val reportFragment = ReportFragment()
                     reportFragment.arguments = bundle
                     supportFragmentManager.beginTransaction()
