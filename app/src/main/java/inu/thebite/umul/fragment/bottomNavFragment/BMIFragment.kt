@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.FragmentBMIBinding
@@ -80,5 +81,8 @@ class BMIFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
+
+
 
 }

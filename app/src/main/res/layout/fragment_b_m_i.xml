@@ -95,7 +95,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="자녀정보를 토대로 나온 BMI 수치에요!"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="15dp"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="20dp"
                         android:textSize="16sp"
@@ -125,7 +125,7 @@
                             android:layout_height="77dp"
                             android:layout_marginStart="15dp"
                             android:layout_marginEnd="20dp"
-                            app:srcCompat="@drawable/bmi_graph" />
+                            app:srcCompat="@drawable/bmi_grape" />
 
                         <ImageView
                             android:id="@+id/bmiPoint"
@@ -141,7 +141,7 @@
                             android:layout_width="208dp"
                             android:layout_height="57dp"
                             android:layout_marginStart="80dp"
-                            android:layout_marginTop="105dp"
+                            android:layout_marginTop="100dp"
                             android:layout_marginEnd="50dp"
                             android:background="@android:color/transparent"
                             android:scaleType="fitXY"
@@ -154,6 +154,7 @@
 
             </FrameLayout>
 
+            
             <FrameLayout
                 android:id="@+id/feedback_frame"
                 android:layout_width="match_parent"
