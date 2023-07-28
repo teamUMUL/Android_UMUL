@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
         //블루투스 권한 확인
         bluetoothPermissionChecker()
 
+        setMemberNumberAndChildName()
         //intent에서 블루투스 연결 유무에 대한 값을 sharedPreference에 저장 (RecordActivity -> MainActivity로 이동 시 intent에 블루투스 연결 유무 값 전달)
         val pref: SharedPreferences = getSharedPreferences("BluetoothConnection", Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = pref.edit()
@@ -215,6 +216,20 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
         recordButton.backgroundTintList = ColorStateList.valueOf(enabledButtonColor)
     }
 
+    fun setMemberNumberAndChildName(){
+        val memberNumberPref: SharedPreferences = getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
+        val memberNumberEditor: SharedPreferences.Editor = memberNumberPref.edit()
+        val memberNumber = intent.getStringExtra("memberNumber").toString()
+        memberNumberEditor.putString("MemberNumber",memberNumber)
+        memberNumberEditor.apply()
+        val childNamePref: SharedPreferences = getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
+        val childNameEditor: SharedPreferences.Editor = childNamePref.edit()
+        val childName = intent.getStringExtra("childName").toString()
+        childNameEditor.putString("selectedChild",childName)
+        childNameEditor.apply()
+    }
+
+
     //하단 바 클릭에 따른 활동
     fun itemSelectedListenerSetting(itemId : Int){
         val bottomNavigation = binding.bottomNavigationView
@@ -274,6 +289,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
         bluetoothOn()
         if(isConnected){
             bluetoothService.disconnect()
+
         }else{
             listPairedDevices()
         }

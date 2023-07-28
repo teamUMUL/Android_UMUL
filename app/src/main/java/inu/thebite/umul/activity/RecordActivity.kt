@@ -35,6 +35,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -52,6 +53,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.UnsupportedEncodingException
+import java.lang.ArithmeticException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 import java.util.UUID
@@ -118,8 +120,10 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
         binding =
             DataBindingUtil.setContentView<ActivityRecordBinding>(this, R.layout.activity_record)
         binding.recordActivity = this
-        memberNumber = intent.getStringExtra("memberNumber").toString()
-        childName = intent.getStringExtra("childName").toString()
+        val memberNumberPref = getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
+        memberNumber =  memberNumberPref.getString("MemberNumber", "010-0000-0000").toString()
+        val pref: SharedPreferences = getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
+        childName = pref.getString("selectedChild", "홍길동").toString()
         bluetoothReceiver = object : BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
                 if(intent?.action == ACTION_DATA_RECEIVED){
@@ -214,10 +218,14 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
             R.id.game_end_button -> {
 
                 showEndDialog()
+                try{
+                    avgABiteCnt = totalCnt / spoonCnt
+                    successAvgABiteCnt = successChewCnt / successCnt
+                    failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
+                }catch (e : ArithmeticException){
 
-                avgABiteCnt = totalCnt / spoonCnt
-                successAvgABiteCnt = successChewCnt / successCnt
-                failAvgABiteCnt = failChewCnt / (spoonCnt - successCnt)
+                }
+
 
                 //타이머 종료
                 stopTimer()

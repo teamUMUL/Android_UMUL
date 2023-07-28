@@ -1,6 +1,8 @@
 package inu.thebite.umul.fragment.dayFragment
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -10,7 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.adapter.decoration.CustomBarChartRender
 import inu.thebite.umul.R
 import com.github.mikephil.charting.charts.BarChart
@@ -22,6 +26,8 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import inu.thebite.umul.databinding.FragmentReportFragment11Binding
+import inu.thebite.umul.databinding.FragmentReportFragment12Binding
 import inu.thebite.umul.model.DailyReportTotalTimeResponse
 import inu.thebite.umul.retrofit.RetrofitAPI
 import retrofit2.Call
@@ -36,7 +42,9 @@ class ReportFragment1_2 : Fragment() {
     var myChildTotalTime : Float = 0f
     var averageTotalTime : Float = 3300.0f
     private lateinit var childName: String
-
+    private lateinit var memberNumber : String
+    private lateinit var binding : FragmentReportFragment12Binding
+    var feedback2 = MutableLiveData("피드백 내용")
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -44,8 +52,12 @@ class ReportFragment1_2 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        childName = arguments?.getString("childName").toString()
-        var view = inflater.inflate(R.layout.fragment_report_fragment1_2, container, false,)
+        childName = getChildNameFromPref()
+        memberNumber = getMemberNumberFromPref()
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_report_fragment1_2, container, false)
+        binding.reportFragment12 = this
+        binding.lifecycleOwner = this
+        var view = binding.root
         var totalTimeGraph : BarChart = view.findViewById(R.id.graph2)
         totalTimeGraph.setDrawValueAboveBar(false)
         val barChartRender =
@@ -68,6 +80,7 @@ class ReportFragment1_2 : Fragment() {
                         val result = response.body()
                         Log.d("총 식사시간 가져오기 성공", "$result")
                         initBarCHart(totalTimeGraph, result!!.totalTime)
+                        initFeedback(response.body()!!.feedback)
                     }
                 }
 
@@ -161,6 +174,9 @@ class ReportFragment1_2 : Fragment() {
             invalidate()
         }
     }
+    private fun initFeedback(feedbackText : String){
+        feedback2.value = feedbackText
+    }
 
     inner class MyXAxisFormatter : ValueFormatter(){
         private val xLabel = arrayOf("우리아이", "비만군")
@@ -206,6 +222,20 @@ class ReportFragment1_2 : Fragment() {
         }  else {
             minute.toString() + "분 " + second.toString() + "초"
         }
+    }
+
+    fun getMemberNumberFromPref(): String {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
+        val memberNumber = pref.getString("MemberNumber", "010-0000-0000").toString()
+
+        return memberNumber
+    }
+
+    fun getChildNameFromPref(): String {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
+        val childName = pref.getString("selectedChild", "홍길동").toString()
+
+        return childName
     }
 
 }
