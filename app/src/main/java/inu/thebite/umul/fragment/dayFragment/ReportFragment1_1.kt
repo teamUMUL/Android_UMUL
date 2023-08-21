@@ -18,6 +18,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import inu.thebite.umul.adapter.decoration.CustomBarChartRender
 import inu.thebite.umul.R
 import com.github.mikephil.charting.charts.BarChart
@@ -32,6 +34,7 @@ import inu.thebite.umul.databinding.FragmentReportFragment11Binding
 import inu.thebite.umul.fragment.bottomNavFragment.ReportFragment
 import inu.thebite.umul.model.DailyReportTotalCountResponse
 import inu.thebite.umul.retrofit.RetrofitAPI
+import inu.thebite.umul.viewmodel.ReportViewModel
 import retrofit2.Call
 import retrofit2.Response
 import java.time.LocalDate
@@ -41,13 +44,21 @@ import java.time.LocalDate
  */
 class ReportFragment1_1 : Fragment() {
 
+    private lateinit var viewModel: ReportViewModel
+
     var myChildTotalCnt : Float = 0f
-    var averageTotalCnt : Float = 300.0f
+    var fatTotalCnt : Float = 140.0f
     private lateinit var childName: String
     private lateinit var memberNumber : String
     private lateinit var binding : FragmentReportFragment11Binding
     var feedback1 = MutableLiveData("피드백 내용")
+    private lateinit var gender : String
+    private lateinit var totalCntGraph : BarChart
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity())[ReportViewModel::class.java]
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
@@ -59,7 +70,13 @@ class ReportFragment1_1 : Fragment() {
         childName = getChildNameFromPref()
         memberNumber = getMemberNumberFromPref()
         Toast.makeText(activity, childName, Toast.LENGTH_SHORT).show();
-
+        gender = getChildGenderFromPref()
+        if(gender == "M"){
+            fatTotalCnt = 80.0f
+        }
+        else if(gender == "F"){
+            fatTotalCnt = 320.0f
+        }
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_report_fragment1_1, container, false)
         binding.reportFragment11 = this
         binding.lifecycleOwner = this
@@ -95,6 +112,16 @@ class ReportFragment1_1 : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        totalCntGraph = view.findViewById(R.id.graph1)
+        viewModel.touchedDay.observe(viewLifecycleOwner, Observer { newData ->
+            val dayByString = newData.toString().takeLast(2)
+            val childData = dayByString.toFloat()
+            initBarCHart(totalCntGraph ,childData)
+        })
+    }
+
 
     private fun initBarCHart(barChart: BarChart, childCnt: Float) {
 
@@ -103,7 +130,7 @@ class ReportFragment1_1 : Fragment() {
 
         val entries = ArrayList<BarEntry>()
         entries.add(BarEntry(1f,myChildTotalCnt))
-        entries.add(BarEntry(2f,averageTotalCnt))
+        entries.add(BarEntry(2f,fatTotalCnt))
         barChart.run {
             description.isEnabled = false
             setMaxVisibleValueCount(10)
@@ -111,10 +138,10 @@ class ReportFragment1_1 : Fragment() {
             setDrawBarShadow(false)
             setDrawGridBackground(false)
             axisLeft.run {
-                axisMaximum = if(myChildTotalCnt > averageTotalCnt){
+                axisMaximum = if(myChildTotalCnt > fatTotalCnt){
                     myChildTotalCnt + 1f
                 } else{
-                    averageTotalCnt + 1f
+                    fatTotalCnt + 1f
                 }
 
                 axisMinimum = 0f
@@ -183,6 +210,12 @@ class ReportFragment1_1 : Fragment() {
         feedback1.value = feedbackText
     }
 
+    fun updateGraph(touchedDay: LocalDate){
+        //val childData = getDataforDay(selectedDay)
+        val childData = 100f
+        initBarCHart(totalCntGraph ,childData)
+    }
+
     inner class MyXAxisFormatter : ValueFormatter(){
         private val xLabel = arrayOf("우리아이", "비만군")
 
@@ -215,6 +248,13 @@ class ReportFragment1_1 : Fragment() {
         val childName = pref.getString("selectedChild", "홍길동").toString()
 
         return childName
+    }
+
+    fun getChildGenderFromPref(): String {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("selectedChildGender", Context.MODE_PRIVATE)
+        val gender = pref.getString("selectedChildGender", "없음").toString()
+
+        return gender
     }
 
 }

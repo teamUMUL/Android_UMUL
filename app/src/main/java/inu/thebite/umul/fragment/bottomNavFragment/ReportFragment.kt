@@ -16,6 +16,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +28,8 @@ import inu.thebite.umul.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import inu.thebite.umul.activity.MainActivity
+import inu.thebite.umul.fragment.ReportFragment1
+import inu.thebite.umul.viewmodel.ReportViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -34,6 +38,8 @@ import java.util.*
 
 class ReportFragment : Fragment() {
     private lateinit var viewGroup: ViewGroup
+
+    private lateinit var viewModel: ReportViewModel
 
     lateinit var calendarList: RecyclerView
     lateinit var mLayoutManager: LinearLayoutManager
@@ -56,7 +62,7 @@ class ReportFragment : Fragment() {
 
     private lateinit var outputDay : String
     private lateinit var outputMonth : String
-    private lateinit var outputDate : LocalDate
+    private lateinit var touchedDay : LocalDate
     //달력 설정
 
    //레포트
@@ -64,6 +70,11 @@ class ReportFragment : Fragment() {
         "일간 레포트",
         "주간 레포트"
     )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity())[ReportViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -209,10 +220,12 @@ class ReportFragment : Fragment() {
                     selectedMonth.toString()
                 }
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                outputDate = LocalDate.parse("$selectedYear-$outputMonth-$outputDay", formatter)
-                println(outputDate)
+                touchedDay = LocalDate.parse("$selectedYear-$outputMonth-$outputDay", formatter)
+                println(touchedDay)
 //                val bundle = bundleOf(resultKey to outputDate.toString())
 //                setFragmentResult(requestKey, bundle)
+                viewModel.updateCalendarDay(touchedDay)
+
 
             }
         })

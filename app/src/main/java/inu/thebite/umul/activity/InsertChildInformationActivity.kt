@@ -1,6 +1,8 @@
 package inu.thebite.umul.activity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -66,11 +68,14 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
             }
             R.id.radioButtonM -> {
                 gender = "M"
+                setGenderPref(gender)
             }
             R.id.radioButtonF -> {
                 gender = "F"
+                setGenderPref(gender)
             }
             R.id.button_addInfor -> {
+                setMainActivity() //테스트 원할히 하기 위한 임시 원래는 삭제
 
                 try {
                     name = binding.editName.text.toString()
@@ -143,6 +148,13 @@ class InsertChildInformationActivity : AppCompatActivity(),  View.OnClickListene
         } catch (e: Exception) {
             false
         }
+    }
+
+    fun setGenderPref(gender : String){
+        val pref: SharedPreferences = getSharedPreferences("selectedChildGender", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = pref.edit()
+        editor.putString("selectedChildGender",gender)
+        editor.apply()
     }
 
 

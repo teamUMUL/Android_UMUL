@@ -92,6 +92,11 @@ class ReportFragment1 : Fragment(), View.OnClickListener {
         true
     }
 
+    fun updateGraphForDay(touchedDay: LocalDate){
+        val ReportFragment1_1 = childFragmentManager.findFragmentById(R.id.viewPager) as ReportFragment1_1
+        ReportFragment1_1.updateGraph(touchedDay)
+    }
+
 
 
 

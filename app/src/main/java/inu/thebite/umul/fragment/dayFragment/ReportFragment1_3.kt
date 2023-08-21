@@ -40,11 +40,13 @@ import java.time.LocalDate
  */
 class ReportFragment1_3 : Fragment() {
     var myChildAvgABite : Float = 0f
-    var averageAvgABite : Float = 32.0f
+    var fatAvgABite : Float = 7.0f
     private lateinit var childName: String
     private lateinit var memberNumber : String
     private lateinit var binding : FragmentReportFragment13Binding
     var feedback3 = MutableLiveData("피드백 내용")
+    private lateinit var gender : String
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -54,6 +56,13 @@ class ReportFragment1_3 : Fragment() {
     ): View? {
         childName = getChildNameFromPref()
         memberNumber = getMemberNumberFromPref()
+        gender = getChildGenderFromPref()
+        if(gender == "M"){
+            fatAvgABite = 5.0f
+        }
+        else if(gender == "F"){
+            fatAvgABite = 10.0f
+        }
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_report_fragment1_3, container, false)
         binding.reportFragment13 = this
         binding.lifecycleOwner = this
@@ -105,7 +114,7 @@ class ReportFragment1_3 : Fragment() {
 
         val entries = ArrayList<BarEntry>()
         entries.add(BarEntry(1f,myChildAvgABite))
-        entries.add(BarEntry(2f,averageAvgABite))
+        entries.add(BarEntry(2f,fatAvgABite))
         barChart.run {
             description.isEnabled = false
             setMaxVisibleValueCount(10)
@@ -113,10 +122,10 @@ class ReportFragment1_3 : Fragment() {
             setDrawBarShadow(false)
             setDrawGridBackground(false)
             axisLeft.run {
-                axisMaximum = if(myChildAvgABite > averageAvgABite){
+                axisMaximum = if(myChildAvgABite > fatAvgABite){
                     myChildAvgABite + 1f
                 } else{
-                    averageAvgABite + 1f
+                    fatAvgABite + 1f
                 }
 
                 axisMinimum = 0f
@@ -217,5 +226,10 @@ class ReportFragment1_3 : Fragment() {
 
         return childName
     }
+    fun getChildGenderFromPref(): String {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("selectedChildGender", Context.MODE_PRIVATE)
+        val gender = pref.getString("selectedChildGender", "없음").toString()
 
+        return gender
+    }
 }

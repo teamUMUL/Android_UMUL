@@ -112,7 +112,6 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
-        const val EXTRA_DATA = "data"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,7 +197,7 @@ class RecordActivity : AppCompatActivity(), View.OnClickListener {
                 characters.layoutParams.width = RelativeLayout.LayoutParams.WRAP_CONTENT
                 characters.requestLayout()
                 spoonCnt++
-                if (chewCnt >= 30) {
+                if (chewCnt >= 10) {
                     successCnt++
                     successChewCnt += chewCnt
                     //성공 -> success_get_carrot애니메이션 보여줌

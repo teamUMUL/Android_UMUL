@@ -74,6 +74,8 @@ class RecordReadyFragment : Fragment(), View.OnClickListener {
                 else{
                     setCustomToast("Tinyam과 연결해주세요")
                 }
+                (activity as MainActivity?)?.startRecordActivity()
+
             }
 
             R.id.shopBtn -> {
