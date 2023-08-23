@@ -11,8 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import inu.thebite.umul.R
@@ -29,7 +32,8 @@ class RecordReadyFragment : Fragment(), View.OnClickListener {
     private var isBluetoothConnected : Boolean = false
     private lateinit var memberNumber: String
     private lateinit var childName: String
-
+    private var gameState : String = "Carrot"
+    private var gameLevelState : Int = 1
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,26 +59,38 @@ class RecordReadyFragment : Fragment(), View.OnClickListener {
         val gameStartBtn : ImageButton = binding.gameStart
         val shopBtn : ImageButton = binding.shopBtn
         val logoBtn : ImageButton = binding.logoHome
+        val nextGameBtn : ImageButton = binding.nextGame
+        val prevGameBtn : ImageButton = binding.prevGame
+        val gameLevelHighBtn : RadioButton = binding.gameLevelHigh
+        val gameLevelMiddleBtn : RadioButton = binding.gameLevelMiddle
+        val gameLevelLowBtn : RadioButton = binding.gameLevelLow
+
 
         gameStartBtn.setOnClickListener(this)
         shopBtn.setOnClickListener(this)
         logoBtn.setOnClickListener(this)
-
+        nextGameBtn.setOnClickListener(this)
+        prevGameBtn.setOnClickListener(this)
+        gameLevelHighBtn.setOnClickListener(this)
+        gameLevelMiddleBtn.setOnClickListener(this)
+        gameLevelLowBtn.setOnClickListener(this)
     }
 
     @SuppressLint("ShowToast")
     override fun onClick(v: View?) {
+        val mainImage : ImageView = binding.mainImage
+
         when(v?.id) {
             //게임화면
             R.id.gameStart -> {
                 getBluetoothConnectionInfo()
                 if(isBluetoothConnected){
-                    (activity as MainActivity?)?.startRecordActivity()
+                    (activity as MainActivity?)?.startRecordActivity(gameState, gameLevelState)
                 }
                 else{
                     setCustomToast("Tinyam과 연결해주세요")
                 }
-                (activity as MainActivity?)?.startRecordActivity()
+                (activity as MainActivity?)?.startRecordActivity(gameState, gameLevelState)
 
             }
 
@@ -85,6 +101,33 @@ class RecordReadyFragment : Fragment(), View.OnClickListener {
                 parentFragmentManager.beginTransaction().replace(R.id.mainFrame, HomeFragment())
                     .commit()
                 (activity as MainActivity?)?.setHomeChecked()
+            }
+            R.id.prev_game->{
+                if(gameState=="Carrot"){
+                    gameState="Balloon"
+                    mainImage.setImageResource(R.drawable.temp_image_balloon_game_ready)
+                } else{
+                    gameState="Carrot"
+                    mainImage.setImageResource(R.drawable.temp_image_carrot_game_ready)
+                }
+            }
+            R.id.next_game->{
+                if(gameState=="Carrot"){
+                    gameState="Balloon"
+                    mainImage.setImageResource(R.drawable.temp_image_balloon_game_ready)
+                } else{
+                    gameState="Carrot"
+                    mainImage.setImageResource(R.drawable.temp_image_carrot_game_ready)
+                }
+            }
+            R.id.game_level_high->{
+                gameLevelState = 5
+            }
+            R.id.game_level_middle->{
+                gameLevelState = 3
+            }
+            R.id.game_level_low->{
+                gameLevelState = 1
             }
         }
     }

@@ -177,10 +177,13 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionCallback {
     }
 
     //RecordReadyFragment에서 게임 실행 누를 시 RecordActivity 실행
-    fun startRecordActivity(){
-        val intent = Intent(this, RecordActivity::class.java)
-        intent.putExtra("memberNumber", memberNumber)
-        intent.putExtra("childName", childName)
+    fun startRecordActivity(gameState:String, gameLevelState:Int){
+        val intent = if(gameState == "Carrot"){
+            Intent(this, CarrotGameActivity::class.java)
+        } else{
+            Intent(this, BalloonGameActivity::class.java)
+        }
+        intent.putExtra("gameLevelState", gameLevelState)
         startActivityForResult(intent, 2)
     }
 
