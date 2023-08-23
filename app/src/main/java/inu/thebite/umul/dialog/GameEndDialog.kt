@@ -13,6 +13,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
 import inu.thebite.umul.R
+import inu.thebite.umul.activity.BalloonGameActivity
+import inu.thebite.umul.activity.CarrotGameActivity
 import inu.thebite.umul.activity.MainActivity
 import inu.thebite.umul.activity.RecordActivity
 import inu.thebite.umul.databinding.GameEndDialogBinding
@@ -24,6 +26,7 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
     private lateinit var carrotBox : ImageView
     var carrotNum = MutableLiveData("")
     var successCount = 0
+    private lateinit var gameState : String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,6 +36,7 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
         binding.gameEndDialog = this
         binding.lifecycleOwner = this
         val carrotArgs = arguments?.getString("successNum")
+        gameState = arguments?.getString("game_state").toString()
         carrotNum.value = "\'당근 "+ carrotArgs+"개\'를 얻었습니다"
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.setCanceledOnTouchOutside(false)
@@ -62,7 +66,13 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.goHome -> {
-                (activity as RecordActivity?)?.setMainActivityStart()
+                if(gameState=="Balloon"){
+                    (activity as BalloonGameActivity?)?.setMainActivityStart()
+                }
+                else{
+                    //(activity as CarrotGameActivity?)?.setMainActivityStart()
+
+                }
             }
         }
     }
