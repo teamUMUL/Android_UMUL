@@ -14,10 +14,13 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.os.SystemClock
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -65,6 +68,7 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var gameStartButton: ImageButton
     private lateinit var gameEndButton: ImageButton
     private lateinit var backPressButton: ImageButton
+    private lateinit var tempBalloonInflateButton: ImageButton
     private lateinit var character: ImageView
     private lateinit var darkLayer: View
     private lateinit var balloon: ImageView
@@ -91,6 +95,8 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
 
     private var originalBalloonScaleX = 1.0f
     private var originalBalloonScaleY = 1.0f
+    private var screenWidth : Int = 0
+    private var screenHeight : Int = 0
 
     companion object {
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
@@ -104,6 +110,7 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
         getMemberNumberFromPref()
         getChildNameFromPref()
         gameLevel = intent.getIntExtra("gameLevelState", 0)
+        Toast.makeText(this, gameLevel.toString(), Toast.LENGTH_LONG).show()
         //리시버, 서비스 연결
         bluetoothReceiver = object : BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -113,13 +120,16 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
                         balloonPops.isVisible = false
                         totalCnt++
                         chewCnt++
-                        if(chewCnt%gameLevel == 0){
-                            animateCharacter()
+                        //레벨이 1이 아닌 경우에는 성공 이펙트가 나온 후에 chewCnt가 오르더라도 3번 or 5번이 될 때까지 계속 토끼가 손을 올리고 있기에
+                        //레벨이 1이 아닐 때는 chewCnt가 1일 될 때 토끼를 기본 이미지로 변경한다.
+
+                        if(gameLevel != 1 && chewCnt == 1){
+                            character.setImageResource(R.drawable.balloon_rabbit_1)
+                        }
+                        if(chewCnt%gameLevel == 0 || chewCnt == 10){
                             setBalloonImage()
                         }
-                        if(chewCnt==10){
-                            chewCnt = 0
-                        }
+                        animateCharacter()
                     }
                 }
             }
@@ -152,11 +162,42 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
         character = binding.balloonGameRabbit
         darkLayer = binding.darkLayer
         balloonPops = binding.balloonGamePops
-
+        tempBalloonInflateButton = binding.tempBalloonInflate
         gameEndButton.isVisible = false
         character.isVisible = false
 
+        val displayMetrics : DisplayMetrics = resources.displayMetrics
+        screenWidth = displayMetrics.widthPixels
+        screenHeight = displayMetrics.heightPixels
+
+        //디스플레이에서 비율만큼 캐릭터 크기 설정
+        resizeImageView(character, 0.4f, 0.9f)
+
+        //디스플레이에서 비율만큼 버튼 크기 설정
+        resizeImageButton(backPressButton, 0.2f, 0.2f)
+        resizeImageButton(tempBalloonInflateButton, 0.2f, 0.2f)
+        resizeImageButton(gameEndButton, 0.2f, 0.2f)
+
     }
+
+    private fun resizeImageView(imageView:ImageView, newX: Float, newY: Float){
+        val imageWidth : Int = (screenWidth*newX).toInt()
+        val imageHeight : Int = (screenHeight*newY).toInt()
+        val characterLayoutParams: ViewGroup.LayoutParams = imageView.layoutParams
+        characterLayoutParams.width = imageWidth
+        characterLayoutParams.height = imageHeight
+        imageView.layoutParams = characterLayoutParams
+    }
+
+    private fun resizeImageButton(imageButton: ImageButton, newX: Float, newY: Float){
+        val btnWidth : Int = (screenWidth*newX).toInt()
+        val btnHeight : Int = (screenHeight*newY).toInt()
+        val btnLayoutParams: ViewGroup.LayoutParams = imageButton.layoutParams
+        btnLayoutParams.width = btnWidth
+        btnLayoutParams.height = btnHeight
+        imageButton.layoutParams = btnLayoutParams
+    }
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -218,14 +259,14 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
                 chewCnt++
                 //레벨이 1이 아닌 경우에는 성공 이펙트가 나온 후에 chewCnt가 오르더라도 3번 or 5번이 될 때까지 계속 토끼가 손을 올리고 있기에
                 //레벨이 1이 아닐 때는 chewCnt가 1일 될 때 토끼를 기본 이미지로 변경한다.
+
                 if(gameLevel != 1 && chewCnt == 1){
                     character.setImageResource(R.drawable.balloon_rabbit_1)
                 }
                 if(chewCnt%gameLevel == 0 || chewCnt == 10){
-                    animateCharacter()
                     setBalloonImage()
                 }
-
+                animateCharacter()
             }
         }
     }
@@ -252,9 +293,11 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
             if(chewCnt<10){
                 balloon.isVisible = true
                 balloonPops.isVisible = false
-                val balloonScaleFactor = 1.0f+(gameLevel/10f)
+                val balloonScaleFactor = 1.0f+(gameLevel/20f)
                 balloon.scaleX *= balloonScaleFactor
                 balloon.scaleY *= balloonScaleFactor
+
+
             }
             else{
                 balloon.isVisible = false

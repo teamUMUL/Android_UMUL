@@ -1,5 +1,8 @@
 package inu.thebite.umul.activity
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -13,34 +16,41 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.SystemClock
+import android.util.DisplayMetrics
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import inu.thebite.umul.R
-import inu.thebite.umul.databinding.ActivityBalloonGameBinding
+import inu.thebite.umul.databinding.ActivityCarrotGameBinding
 import inu.thebite.umul.dialog.GameEndDialog
 import inu.thebite.umul.model.SaveRecordRequest
 import inu.thebite.umul.retrofit.RetrofitSaveRecord
 import inu.thebite.umul.service.BluetoothService
+import kotlin.random.Random
+
 
 @Suppress("DEPRECATION")
-class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
+class CarrotGameActivity : AppCompatActivity(), View.OnClickListener {
 
-/*    //블루투스 통신-------------------------------------
+    //블루투스 통신-------------------------------------
     //bluetoothReceiver = Service에서 보낸 데이터를 받기
     //bluetoothService = 블루투스 연결을 유지하기 위한 Service
     private lateinit var bluetoothReceiver : BroadcastReceiver
     private lateinit var bluetoothService: BluetoothService
     private var bound: Boolean = false
     private var filter: IntentFilter? = null
+
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as BluetoothService.LocalBinder
@@ -54,14 +64,13 @@ class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
     }
 
     //---------------------------------------------------
-    private lateinit var binding: ActivityBalloonGameBinding
+    private lateinit var binding: ActivityCarrotGameBinding
     private lateinit var gameStartButton: ImageButton
     private lateinit var gameEndButton: ImageButton
     private lateinit var backPressButton: ImageButton
-    private lateinit var character: ImageView
+    private lateinit var tempPullCarrotButton: ImageButton
+    private lateinit var characters: ImageView
     private lateinit var darkLayer: View
-    private lateinit var balloon: ImageView
-    private lateinit var balloonPops: ImageView
     private lateinit var ani: AnimationDrawable
     private lateinit var handler: Handler
     private var gameLevel = 0
@@ -72,18 +81,12 @@ class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
     private var chewCnt = 0             //chewCount = 저작횟수(뽑기 -> 초기화)
     private var totalCnt = 0            //totalCnt = 총 저작횟수(뽑기 -> 초기화X)
     private var successCnt = 0          //succssCnt = 성공 횟수(chewCount>=30 -> +1)
-    //private var avgABiteCnt = 0         //avgABiteCnt = 한 입당 저작횟수(totalCnt/spoonCnt)
-    //private var successChewCnt = 0      //successChewCnt = 성공할 때의 총 저작횟수
-    //private var successAvgABiteCnt = 0  //successAvgABiteCnt = 성공 시에 한 입당 저작횟수(successChewCnt/successCnt)
-    //private var failChewCnt = 0         //failChewCnt = 실패할 때의 총 저작횟수
-    //private var failAvgABiteCnt = 0     //failAvgABiteCnt = 실패 시에 한 입당 저작횟수(failChewCnt/(spoonCnt-successCnt))
-    //private var spoonCnt = 0            //spoonCnt = 한 입 횟수(수저횟수)
     private var isStart : Boolean = false                   //게임 시작 유무
     private lateinit var memberNumber: String
     private lateinit var childName: String
-
-    private var originalBalloonScaleX = 1.0f
-    private var originalBalloonScaleY = 1.0f
+    //---------------------------------------------------
+    private var screenWidth : Int = 0
+    private var screenHeight : Int = 0
 
     companion object {
         const val ACTION_DATA_RECEIVED = "com.example.bluetooth.DATA_RECEIVED"
@@ -92,27 +95,26 @@ class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_record)
         binding =
-            DataBindingUtil.setContentView<ActivityBalloonGameBinding>(this, R.layout.activity_carrot_game)
-        binding.balloonGameActivity = this
+            DataBindingUtil.setContentView<ActivityCarrotGameBinding>(this, R.layout.activity_carrot_game)
+        binding.carrotGameActivity = this
         getMemberNumberFromPref()
         getChildNameFromPref()
+
         gameLevel = intent.getIntExtra("gameLevelState", 0)
-        //리시버, 서비스 연결
+        Toast.makeText(this, gameLevel.toString(), Toast.LENGTH_LONG).show()
+
         bluetoothReceiver = object : BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
                 if(intent?.action == ACTION_DATA_RECEIVED){
                     if(isStart) {
-                        balloon.isVisible = true
-                        totalCnt++
                         chewCnt++
-                        if(chewCnt%gameLevel == 0){
-                            animateCharacter()
-                            setBalloonImage()
-                        }
+                        totalCnt++
                     }
                 }
             }
         }
+
+
         filter = IntentFilter(ACTION_DATA_RECEIVED)
         val intent = Intent(this, BluetoothService::class.java)
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
@@ -127,24 +129,55 @@ class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         windowInsetsCompat.hide(WindowInsetsCompat.Type.navigationBars())
 
-        //시계 핸들러
         handler = Handler()
+        createClouds()
 
-        //원래 풍선 크기 저장
-        balloon = binding.balloonGameBalloon
-        originalBalloonScaleX = balloon.scaleX
-        originalBalloonScaleY = balloon.scaleY
 
-        gameStartButton = binding.balloonGameStart
-        gameEndButton = binding.balloonGameEnd
-        backPressButton = binding.balloonGameBackPress
-        character = binding.balloonGameRabbit
         darkLayer = binding.darkLayer
-        balloonPops = binding.balloonGamePops
+        characters = binding.carrotGameRabbitBearCarrot
+        gameEndButton = binding.carrotGameEnd
+        gameStartButton = binding.carrotGameStart
+        backPressButton = binding.carrotGameBackPress
+        tempPullCarrotButton = binding.tempPullCarrot
 
+        darkLayer.isVisible = true
+        characters.isVisible = false
         gameEndButton.isVisible = false
-        character.isVisible = false
+        gameStartButton.isVisible = true
+        backPressButton.isVisible = true
+        tempPullCarrotButton.isVisible = false
 
+        val displayMetrics : DisplayMetrics = resources.displayMetrics
+        screenWidth = displayMetrics.widthPixels
+        screenHeight = displayMetrics.heightPixels
+
+        //디스플레이에서 비율만큼 캐릭터 크기 설정
+        resizeImageView(characters, 0.8f, 0.8f)
+
+        //디스플레이에서 비율만큼 버튼 크기 설정
+        resizeImageButton(backPressButton, 0.2f, 0.2f)
+        resizeImageButton(tempPullCarrotButton, 0.2f, 0.2f)
+        resizeImageButton(gameEndButton, 0.2f, 0.2f)
+
+
+    }
+
+    private fun resizeImageView(imageView:ImageView, newX: Float, newY: Float){
+        val imageWidth : Int = (screenWidth*newX).toInt()
+        val imageHeight : Int = (screenHeight*newY).toInt()
+        val characterLayoutParams: ViewGroup.LayoutParams = imageView.layoutParams
+        characterLayoutParams.width = imageWidth
+        characterLayoutParams.height = imageHeight
+        imageView.layoutParams = characterLayoutParams
+    }
+
+    private fun resizeImageButton(imageButton: ImageButton, newX: Float, newY: Float){
+        val btnWidth : Int = (screenWidth*newX).toInt()
+        val btnHeight : Int = (screenHeight*newY).toInt()
+        val btnLayoutParams: ViewGroup.LayoutParams = imageButton.layoutParams
+        btnLayoutParams.width = btnWidth
+        btnLayoutParams.height = btnHeight
+        imageButton.layoutParams = btnLayoutParams
     }
 
 
@@ -152,95 +185,206 @@ class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
     override fun onClick(v: View?) {
 
         when (v?.id) {
-            R.id.balloon_game_start->{
+            R.id.carrot_game_start->{
                 startTimer() //타이머 시작
                 registerReceiver(bluetoothReceiver, filter) //데이터 받기 시작
                 darkLayer.isVisible = false
                 gameStartButton.isVisible = false
                 backPressButton.isVisible = false
-                character.isVisible = true
+                characters.isVisible = true
                 gameEndButton.isVisible = true
+                tempPullCarrotButton.isVisible = true
                 //타이머 시작
                 startTimer()
                 isStart = true
             }
 
-            R.id.balloon_game_end -> {
+            R.id.carrot_game_end -> {
 
                 showEndDialog()
 
-
                 //타이머 종료
                 stopTimer()
-                // retrofit
-                *//*                val result = SaveRecordRequest(LocalDate.now().toString(), "저녁", seconds, totalCnt, avgABiteCnt, successCnt, successAvgABiteCnt, failAvgABiteCnt)
-                                Log.d("date = ", result.date)
-                                Log.d("slot = ", result.slot)
-                                Log.d("totalTime = ", result.totalTime.toString())
-                                Log.d("totalCnt = ", result.totalCount.toString())
-                                Log.d("avgABiteCnt = ", result.biteCountByMouth.toString())
-                                Log.d("successCnt = ", result.successCount.toString())
-                                Log.d("successAvgABiteCnt = ", result.countPerSuccess.toString())
-                                Log.d("failAvgABiteCnt = ", result.countPerFail.toString())
-
-                                saveEatingHabitData(result)*//*
 
                 backPressButton.isVisible = true
                 gameStartButton.isVisible = true
-                character.isVisible = false
-
+                characters.isVisible = false
                 gameEndButton.isVisible = false
 
 
-                Toast.makeText(this, seconds.toString()+"초, 성공횟수 :"+ successCnt.toString() +totalCnt.toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, seconds.toString()+"초, 성공횟수 :"+ successCnt.toString() + "총 저작횟수: "+totalCnt.toString(), Toast.LENGTH_LONG).show()
                 //모든 데이터 리셋
                 resetAllData()
             }
-            R.id.balloon_game_back_press->{
+            R.id.carrot_game_back_press->{
                 finish()
             }
             //임시버튼
-            R.id.temp_balloon_inflate->{
-                balloon.isVisible = true
+            R.id.temp_pull_carrot->{
                 totalCnt++
                 chewCnt++
-                if(chewCnt%gameLevel == 0){
-                    animateCharacter()
-                    setBalloonImage()
-                }
+                animateCharacters()
+                addSuccessCnt()
             }
         }
     }
 
-    private fun animateCharacter(){
-        if(chewCnt<10){
-            character.setImageResource(R.drawable.balloon_inflate)
-            ani = binding.balloonGameRabbit.drawable as AnimationDrawable
-            ani.start()
-        }
-        else{
-            chewCnt = 0
-            character.setImageResource(R.drawable.balloon_pop_success_rabbit)
-            ani = binding.balloonGameRabbit.drawable as AnimationDrawable
-            ani.start()
-        }
-    }
-    private fun setBalloonImage(){
-        if(chewCnt<10){
-            balloon.isVisible = true
-            balloonPops.isVisible = false
-            val balloonScaleFactor = 1.0f+(gameLevel/10f)
-            balloon.scaleX *= balloonScaleFactor
-            balloon.scaleY *= balloonScaleFactor
-        }
-        else{
-            balloon.isVisible = false
-            balloonPops.isVisible = true
-            balloon.scaleX = originalBalloonScaleX // 초기 크기로 복원
-            balloon.scaleY = originalBalloonScaleY
+    private fun animateCharacters(){
+        when (gameLevel) {
+            1 -> {
+                when (chewCnt) {
+                    in 1..2 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_1)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    3 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_2)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    4 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_3)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+
+                    5 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_4)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    6 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_5)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    7 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_6)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    8 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_7)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    9 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_8)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    10 -> {
+                        characters.setImageResource(R.drawable.carrot_game_success)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+                }
+            }
+            3 -> {
+                when (chewCnt) {
+                    in 1..2 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_1)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    3 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_3)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    in 4..5 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_3)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+
+                    6 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_5)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    in 7..8 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_5)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    9 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_8)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    10 -> {
+                        characters.setImageResource(R.drawable.carrot_game_success)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+                }
+            }
+            else -> {
+                when (chewCnt) {
+                    in 1..4 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_1)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    5 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_4)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    in 6..9 -> {
+                        characters.setImageResource(R.drawable.carrot_game_pulled_carrot_4)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+
+                    10 -> {
+                        characters.setImageResource(R.drawable.carrot_game_success)
+                        ani = binding.carrotGameRabbitBearCarrot.drawable as AnimationDrawable
+                        ani.start()
+                    }
+                }
+
+            }
         }
 
     }
+
+    private fun addSuccessCnt(){
+        if(chewCnt == 10){
+            chewCnt = 0
+            successCnt++
+        }
+    }
+
+    private fun getMemberNumberFromPref(){
+        val memberNumberPref = getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
+        memberNumber =  memberNumberPref.getString("MemberNumber", "010-0000-0000").toString()
+    }
+
+    private fun getChildNameFromPref(){
+        val childNamePref: SharedPreferences = getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
+        childName = childNamePref.getString("selectedChild", "홍길동").toString()
+    }
+
+
 
     private fun saveEatingHabitData(saveRecordRequest: SaveRecordRequest) {
         RetrofitSaveRecord(memberNumber, childName).save(saveRecordRequest)
@@ -273,12 +417,11 @@ class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
         }
     }
 
-    private fun showEndDialog() {
+    fun showEndDialog() {
         //게임 종료 시 dialog에 성공횟수 데이터 보내면서 열기
         val dialog = GameEndDialog()
         val args = Bundle()
         args.putString("successNum", successCnt.toString())
-        args.putString("game_state", "Balloon")
         dialog.arguments = args
         dialog.show(supportFragmentManager, "click_game_end")
     }
@@ -300,14 +443,49 @@ class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
-    private fun getMemberNumberFromPref(){
-        val memberNumberPref = getSharedPreferences("MemberNumber", Context.MODE_PRIVATE)
-        memberNumber =  memberNumberPref.getString("MemberNumber", "010-0000-0000").toString()
+
+    private fun createClouds() {
+        //구름 생성
+        for (x in 0 until 20) {
+            val cloud = createCloud()
+            val set = ConstraintSet()
+            val parentLayout = binding.cloudContainer
+            cloud.id = View.generateViewId()
+            parentLayout.addView(cloud, 0)
+            set.clone(parentLayout)
+            set.connect(cloud.id, ConstraintSet.TOP, parentLayout.id, ConstraintSet.TOP, 0)
+            set.connect(cloud.id, ConstraintSet.END, parentLayout.id, ConstraintSet.END, 0)
+            set.connect(cloud.id, ConstraintSet.BOTTOM, parentLayout.id, ConstraintSet.BOTTOM, 0)
+
+            set.setVerticalBias(cloud.id, Random.nextDouble(0.0, 1.0).toFloat())
+            set.applyTo(parentLayout)
+            animateCloud(cloud)
+        }
     }
 
-    private fun getChildNameFromPref(){
-        val childNamePref: SharedPreferences = getSharedPreferences("selectedChild", Context.MODE_PRIVATE)
-        childName = childNamePref.getString("selectedChild", "홍길동").toString()
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun createCloud(): ImageView {
+        return ImageView(baseContext).apply {
+            setImageDrawable(getDrawable(R.drawable.ic_cloud))
+            layoutParams = LinearLayout.LayoutParams(
+                Random.nextInt(100, 250),
+                Random.nextInt(100, 250)
+            )
+            //투명도 = alpha
+            alpha = Random.nextDouble(0.4, 0.8).toFloat()
+            //이동 범위 = translationX
+            translationX = Random.nextDouble(-500.0, 300.0).toFloat()
+        }
+    }
+
+    private fun animateCloud(cloud: ImageView) {
+        ObjectAnimator.ofFloat(cloud, "translationX", -2400f).apply {
+            //속도 = duration(클 수록 느림)
+            duration = Random.nextLong(18000, 23000)
+            repeatCount = ValueAnimator.INFINITE
+            start()
+        }
     }
 
     private fun resetAllData(){
@@ -316,8 +494,8 @@ class CarrotGameActivity : AppCompatActivity()/* View.OnClickListener*/ {
         startTime = 0
         elapsedTime = 0
         isTimerRunning = false
+        chewCnt = 0
         totalCnt = 0
         successCnt = 0
-        chewCnt = 0
-    }*/
+    }
 }

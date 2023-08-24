@@ -90,7 +90,7 @@
 
                 <RadioButton
                     android:checked="true"
-                    android:id="@+id/game_level_high"
+                    android:id="@+id/game_level_low"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -134,7 +134,7 @@
                     />
 
                 <RadioButton
-                    android:id="@+id/game_level_low"
+                    android:id="@+id/game_level_high"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

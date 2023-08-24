@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -11,6 +12,91 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/carrot_game_bg">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cloud_container"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/carrot_game_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/game_end_btn"
+            android:background="@null"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:onClick="@{CarrotGameActivity::onClick}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/carrot_game_rabbit_bear_carrot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/carrot_game_carrot_1_1"
+            android:layout_marginBottom="36dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/carrot_game_rabbit_bear_carrot_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/carrot_game_rabbit_bear_success_1"
+            android:layout_marginBottom="36dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible"/>
+
+        <ImageButton
+            android:id="@+id/temp_pull_carrot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/temp_balloon_inflate"
+            android:background="@null"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="20dp"
+            android:onClick="@{CarrotGameActivity::onClick}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <View
+            android:id="@+id/darkLayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#88000000"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/carrot_game_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/game_start"
+            android:background="@null"
+            android:onClick="@{CarrotGameActivity::onClick}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/carrot_game_back_press"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_press"
+            android:background="@null"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:onClick="@{CarrotGameActivity::onClick}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

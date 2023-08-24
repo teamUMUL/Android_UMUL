@@ -70,7 +70,7 @@ class GameEndDialog : DialogFragment(), View.OnClickListener {
                     (activity as BalloonGameActivity?)?.setMainActivityStart()
                 }
                 else{
-                    //(activity as CarrotGameActivity?)?.setMainActivityStart()
+                    (activity as CarrotGameActivity?)?.setMainActivityStart()
 
                 }
             }
