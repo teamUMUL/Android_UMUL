@@ -29,6 +29,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
+import androidx.core.view.marginStart
 import androidx.databinding.DataBindingUtil
 import inu.thebite.umul.R
 import inu.thebite.umul.databinding.ActivityBalloonGameBinding
@@ -165,19 +166,30 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
         tempBalloonInflateButton = binding.tempBalloonInflate
         gameEndButton.isVisible = false
         character.isVisible = false
+        tempBalloonInflateButton.isVisible = false
 
         val displayMetrics : DisplayMetrics = resources.displayMetrics
         screenWidth = displayMetrics.widthPixels
         screenHeight = displayMetrics.heightPixels
 
         //디스플레이에서 비율만큼 캐릭터 크기 설정
-        resizeImageView(character, 0.4f, 0.9f)
+        resizeImageView(character, 0.3f, 0.8f)
+        resizeImageView(balloon, 0.2f, 0.4f)
+        resizeImageView(balloonPops, 0.5f, 0.7f)
+        setBalloonXY()
 
         //디스플레이에서 비율만큼 버튼 크기 설정
-        resizeImageButton(backPressButton, 0.2f, 0.2f)
-        resizeImageButton(tempBalloonInflateButton, 0.2f, 0.2f)
-        resizeImageButton(gameEndButton, 0.2f, 0.2f)
+        resizeImageButton(backPressButton, 0.15f, 0.15f)
+        resizeImageButton(gameStartButton, 0.3f, 0.3f)
+        resizeImageButton(tempBalloonInflateButton, 0.15f, 0.15f)
+        resizeImageButton(gameEndButton, 0.15f,0.15f)
 
+    }
+    private fun setBalloonXY(){
+        val balloonXlayoutParams = balloon.layoutParams as ViewGroup.MarginLayoutParams
+        balloonXlayoutParams.marginStart = -(balloon.width*0.2).toInt()
+        balloonXlayoutParams.bottomMargin = (balloon.width*0.2).toInt()
+        balloon.layoutParams = balloonXlayoutParams
     }
 
     private fun resizeImageView(imageView:ImageView, newX: Float, newY: Float){
@@ -190,13 +202,14 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun resizeImageButton(imageButton: ImageButton, newX: Float, newY: Float){
-        val btnWidth : Int = (screenWidth*newX).toInt()
-        val btnHeight : Int = (screenHeight*newY).toInt()
-        val btnLayoutParams: ViewGroup.LayoutParams = imageButton.layoutParams
+        val btnWidth: Int = (screenWidth * newX).toInt()
+        val btnHeight: Int = (screenHeight * newY).toInt()
+        val btnLayoutParams = imageButton.layoutParams
         btnLayoutParams.width = btnWidth
         btnLayoutParams.height = btnHeight
         imageButton.layoutParams = btnLayoutParams
     }
+
 
 
 
@@ -212,6 +225,8 @@ class BalloonGameActivity : AppCompatActivity(), View.OnClickListener {
                 backPressButton.isVisible = false
                 character.isVisible = true
                 gameEndButton.isVisible = true
+                tempBalloonInflateButton.isVisible = true
+                setBalloonXY()
                 //타이머 시작
                 startTimer()
                 isStart = true

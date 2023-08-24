@@ -150,16 +150,16 @@ class CarrotGameActivity : AppCompatActivity(), View.OnClickListener {
         val displayMetrics : DisplayMetrics = resources.displayMetrics
         screenWidth = displayMetrics.widthPixels
         screenHeight = displayMetrics.heightPixels
+        Toast.makeText(this, "x: $screenWidth y:$screenHeight", Toast.LENGTH_LONG).show()
 
         //디스플레이에서 비율만큼 캐릭터 크기 설정
-        resizeImageView(characters, 0.8f, 0.8f)
+        resizeImageView(characters, 0.7f, 0.7f)
 
         //디스플레이에서 비율만큼 버튼 크기 설정
-        resizeImageButton(backPressButton, 0.2f, 0.2f)
-        resizeImageButton(tempPullCarrotButton, 0.2f, 0.2f)
-        resizeImageButton(gameEndButton, 0.2f, 0.2f)
-
-
+        resizeImageButton(backPressButton, 0.15f, 0.15f)
+        resizeImageButton(gameStartButton, 0.3f, 0.3f)
+        resizeImageButton(tempPullCarrotButton, 0.15f, 0.15f)
+        resizeImageButton(gameEndButton, 0.15f, 0.15f)
     }
 
     private fun resizeImageView(imageView:ImageView, newX: Float, newY: Float){
@@ -172,9 +172,9 @@ class CarrotGameActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun resizeImageButton(imageButton: ImageButton, newX: Float, newY: Float){
-        val btnWidth : Int = (screenWidth*newX).toInt()
-        val btnHeight : Int = (screenHeight*newY).toInt()
-        val btnLayoutParams: ViewGroup.LayoutParams = imageButton.layoutParams
+        val btnWidth: Int = (screenWidth * newX).toInt()
+        val btnHeight: Int = (screenHeight * newY).toInt()
+        val btnLayoutParams = imageButton.layoutParams
         btnLayoutParams.width = btnWidth
         btnLayoutParams.height = btnHeight
         imageButton.layoutParams = btnLayoutParams
