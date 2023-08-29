@@ -107,8 +107,10 @@ class CarrotGameActivity : AppCompatActivity(), View.OnClickListener {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if(intent?.action == ACTION_DATA_RECEIVED){
                     if(isStart) {
-                        chewCnt++
                         totalCnt++
+                        chewCnt++
+                        animateCharacters()
+                        addSuccessCnt()
                     }
                 }
             }

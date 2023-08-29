@@ -62,18 +62,34 @@
             </LinearLayout>
 
 
-            <ImageView
+            <TextView
                 android:id="@+id/topFrame"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="19dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/record_ready_banner"
+                android:gravity="center"
+                android:text="식습관 개선을 위해 \n 게임을 시작해보세요"
+                android:textColor="#fff"
+                android:fontFamily="@font/jua_regular"
+                android:textSize="21sp"
+                android:textAlignment="gravity"
+                android:shadowDx="0.0"
+                android:shadowDy="4.0"
+                android:shadowColor="#999"
+                android:shadowRadius="25.0"
+                android:textFontWeight="400"
+                android:lineHeight="26sp"
+                android:background="@drawable/record_ready_top_banner_vector"
                 android:scaleType="centerInside"
                 app:layout_constraintBottom_toTopOf="@+id/game_level_btn_container"
                 app:layout_constraintTop_toBottomOf="@+id/reportLinearlayout"
-                tools:layout_editor_absoluteX="0dp" />
+                tools:layout_editor_absoluteX="0dp">
+
+
+
+            </TextView>
 
             <RadioGroup
                 android:id="@+id/game_level_btn_container"
@@ -94,8 +110,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
                     android:text="하"
                     android:fontFamily="@font/jua_regular"
                     android:textSize="30sp"
@@ -115,8 +129,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
                     android:text="중"
                     android:fontFamily="@font/jua_regular"
                     android:textSize="30sp"
@@ -138,8 +150,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
                     android:text="상"
                     android:fontFamily="@font/jua_regular"
                     android:textSize="30sp"

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import inu.thebite.umul.R
@@ -24,6 +25,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var mainActivity : MainActivity
     private var isBluetoothConnected = false
     private lateinit var memberNumber: String
+    private lateinit var tinyamConnectBtn : ImageButton
+    private lateinit var recordAndBMIBtnLayout : LinearLayout
     private lateinit var childName: String
     val bundle = Bundle()
 
@@ -39,6 +42,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
         childName = getChildNameFromPref()
         Log.d("HomeFragment memberNumber = ", memberNumber)
         Log.d("HomeFragment childName = ", childName)
+
+        tinyamConnectBtn = binding.homeBleButton
+        recordAndBMIBtnLayout = binding.centerButtonLayout
+        setLayoutMargin(recordAndBMIBtnLayout,getImageButtonMargin(tinyamConnectBtn))
 
         return binding.root
     }
@@ -104,6 +111,19 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
 
         }
+    }
+
+    private fun getImageButtonMargin(imageButton: ImageButton): Int {
+
+        val layoutParams = imageButton.layoutParams as ViewGroup.MarginLayoutParams
+
+        return layoutParams.leftMargin
+    }
+
+    private fun setLayoutMargin(linearLayout: LinearLayout, margin: Int){
+        val layoutParams = linearLayout.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.marginStart = margin
+        layoutParams.marginEnd = margin
     }
 
     private fun setNotionUrl(){
